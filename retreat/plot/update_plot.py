@@ -5,6 +5,7 @@ import sys
 import concurrent.futures
 import numpy as np
 import matplotlib as mpl
+mpl.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import matplotlib.ticker as mtick
@@ -12,10 +13,9 @@ from matplotlib.colorbar import ColorbarBase
 from matplotlib.colors import Normalize
 from obspy.imaging.cm import obspy_sequential
 from obspy.core import UTCDateTime
-from rms_rmes import window_rms, window_rmes, tr2rms, tr2rmes
-from get_array_response import get_array_response
-from processpool import get_nproc
-mpl.use('Agg')
+from retreat.plot.rms_rmes import window_rms, window_rmes, tr2rms, tr2rmes
+from retreat.data.get_array_response import get_array_response
+from retreat.tools.processpool import get_nproc
 
 def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
     """update output figures in the figure window based on the latest data"""
@@ -113,7 +113,7 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
         #rmes_average = False # not yet implemented...
 
     if to_plot["usestack"]: # calculate stack to plot
-        from stack import stack
+        from retreat.data.stack import stack
         # use simple linear stack for now
         try:
         # allow 30 seconds difference in trace length (realtime lag)
@@ -424,7 +424,7 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
 
         print("Plotting map of back azimuth projection")
 
-        from mapping import deg2num, num2deg, get_image_cluster, displace
+        from retreat.plot.mapping import deg2num, num2deg, get_image_cluster, displace
         from mpl_toolkits.basemap import Basemap
         from obspy.signal.array_analysis import get_geometry
 

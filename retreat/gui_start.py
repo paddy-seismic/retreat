@@ -10,15 +10,15 @@ from multiprocessing import Process
 import threading
 import psutil
 # custom module to allow threads to be killed
-from KThread import KThread
+from retreat.tools.KThread import KThread
 #print('MAIN process (gui) id: {}'.format(os.getpid()))
 
 # Import realtime update routines
-from realtime3_gui import realtime
-from monitoring_routines import print_log_to_screen, update_image_window
+from retreat.realtime import realtime
+from retreat.tools.monitoring_routines import print_log_to_screen, update_image_window
 
 #### IMPORT GUI LAYOUT ####
-from gui_layout import layout, sg
+from retreat.gui.gui_layout import layout, sg
 #from gui_layout import myinput, mybuttons, myout, layout, sg, defaults
 
 #### DEFINE GLOBAL VARIABLES
@@ -96,7 +96,7 @@ def create_fig_window(webfigs):
 
 # find and add default image dimension values:
 if sg.__package__ != 'PySimpleGUIWeb':
-    from default_input_values import default_figure_dims
+    from retreat.defaults.default_input_values import default_figure_dims
     mydims, quot = default_figure_dims(window)
     for key in ('timelinex', 'timeliney', 'polarx', 'polary', 'arrayx', 'arrayy', 'mapx', 'mapy'):
         window.FindElement(key).Update(value=mydims[key])

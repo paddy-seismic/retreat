@@ -5,7 +5,7 @@ import PySimpleGUI as sg
 #import PySimpleGUIWeb as sg
 
 # Import DEFAULT VALUES
-from default_input_values import defaults
+from retreat.defaults.default_input_values import defaults
 
 # Set GUI colour scheme and text options
 #sg.ChangeLookAndFeel('GreenTan')
