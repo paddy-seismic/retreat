@@ -5,7 +5,6 @@ from obspy.core.util import AttribDict
 from obspy.core import UTCDateTime
 from obspy import read, read_inventory, Stream
 #from obspy.io.xseed import Parser
-from pytictoc import TicToc
 import sys, os
 #import concurrent.futures
 #from processpool import get_nproc
@@ -33,8 +32,7 @@ def array_preproc(st, inv, preproc,logfile):
     # remove instrument response
     if preproc["removeresponse"]:
         # reponse removal
-        t = TicToc()
-        t.tic
+
         print("Starting response removal...")
 
         st.attach_response(inv)
@@ -48,8 +46,6 @@ def array_preproc(st, inv, preproc,logfile):
 #            with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc()) as executor:
 #                #tr = executor.submit(tr.remove_response,output="VEL", inventory=inv, pre_filt=pre_filt, zero_mean=False, taper=False).result()
 #                executor.submit(tr.remove_response,output="VEL", inventory=inv, pre_filt=pre_filt, zero_mean=False, taper=False)
-
-        t.toc
         print("...complete")
 
     # remove mean
