@@ -60,8 +60,13 @@ def gui_start(web):
     ###########################################################################
 
     #### CREATE AND OPEN THE GUI WINDOW ####
-    window = sg.Window('Real-Time Tremor Analysis Tool', layout, font=("Helvetica", 11), \
-    location=(400, 0), resizable=True)
+    
+    if not web:
+        window = sg.Window('Real-Time Tremor Analysis Tool', layout, font=("Helvetica", 11), \
+        location=(400, 0), resizable=True)
+    else:
+        window = sg.Window('Real-Time Tremor Analysis Tool', layout)
+
     window.Finalize()
 
     #### define function to CREATE FIGURE WINDOW but don't open!- YET ####
@@ -91,7 +96,7 @@ def gui_start(web):
     #################################
 
     # find and add default image dimension values:
-    if sg.__package__ != 'PySimpleGUIWeb':
+    if not web:
         from retreat.defaults.default_input_values import default_figure_dims
         mydims, quot = default_figure_dims(window)
         for key in ('timelinex', 'timeliney', 'polarx', 'polary', 'arrayx', 'arrayy', 'mapx', 'mapy'):
@@ -282,11 +287,14 @@ def gui_start(web):
         if EVENT == 'Exit':
 
             # position and create a popup button:
-            if quot != 1.0:
-                res = sg.PopupYesNo('Are you sure you wish to close the program?', \
-                location=(100+mydims["timelinex"]/2, mydims["timeliney"]/2))
+            if not web:
+                if quot != 1.0:
+                    res = sg.PopupYesNo('Are you sure you wish to close the program?', \
+                    location=(100+mydims["timelinex"]/2, mydims["timeliney"]/2))
+                else:
+                    res = sg.PopupYesNo('Are you sure you wish to close the program?')
             else:
-                res = sg.PopupYesNo('Are you sure you wish to close the program?')
+                 res = sg.PopupYesNo('Are you sure you wish to close the program?')
 
             if res == 'Yes':
                 print("Exiting")
