@@ -79,6 +79,8 @@ def start(web):
         from retreat.defaults.default_input_values import my_defaults
         defaults = my_defaults(os.getcwd())
         for key in defaults:
+#            print("key = ", key)
+#            print("defaults[key] = ", defaults[key])
             window.FindElement(key).Update(value=defaults[key])
 
     #### define function to CREATE FIGURE WINDOW but don't open!- YET ####
@@ -137,7 +139,7 @@ def start(web):
 
                     global logfile
                     logfile = gui_input["logpath"]+"/"+gui_input["logfile"]
-                    if web:
+#                    if web:
 #                        print("gui_input", gui_input)
 #                        print("logpath = ",gui_input["logpath"])
 #                        print("logfile = ",gui_input["logfile"])
