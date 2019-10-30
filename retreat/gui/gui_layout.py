@@ -1,8 +1,8 @@
 """SET UP GUI WINDOW LAYOUT"""
-def gui_layout(web, cwd):
+def gui_layout(web, window_size, cwd):
     """Uses PySimpleGUI framework to create the layout for the GUI window. Defines and creates the
-    input elements and logfile output element. Returns the complete window layout ('layout' variable)
-    and the framework ('sg' variable) to the gui_start module."""
+    input elements and logfile output element. Returns the complete window layout ('layout' 
+    variable) and the framework ('sg' variable) to the start module."""
     # Import GUI framework
     if web:
         import PySimpleGUIWeb as sg
@@ -10,14 +10,20 @@ def gui_layout(web, cwd):
         font_med = 18
         font_smaller = 16
         font_small = 14
-        output_size = [1000,200]
+        output_size = [int(window_size[0]*0.48), int(window_size[1]*0.75)]
+        line_chars = 1
+        nchars = int(window_size[0]/18)
     else:
         import PySimpleGUI as sg
         font_large = 14
         font_med = 12
         font_smaller = 10
         font_small = 9
-        output_size = [125,60]
+        output_size = [int(window_size[0]*0.48/9.5), int(window_size[1]/21)] # DEFAULT conversion
+        line_chars = int(window_size[0]*0.52/8.7)
+        nchars = 200
+        # factors from: https://pysimplegui.readthedocs.io/en/latest/#common-element-parameters
+        # and adjusted slightly
 
     #import PySimpleGUIQt as sg
 
@@ -59,9 +65,9 @@ def gui_layout(web, cwd):
                 sg.InputCombo(['', '*', 'D', 'R'], key='sds_type', size=(1, 1), font=('Helvetica', font_small)),
                 sg.Text('Data format', size=(10, 1), font=('Helvetica', font_smaller)),
                 sg.InputCombo(['MSEED', 'SAC', 'GCF', 'SEISAN'], key='dataformat', size=(7, 1), font=('Helvetica', font_small))],
-               [sg.Checkbox('Custom Format:', size=(13, 1), default=defaults["customfmt"], key='customfmt', font=('Helvetica', font_smaller)),
+               [sg.Checkbox('Custom Format:', size=(15, 1), default=defaults["customfmt"], key='customfmt', font=('Helvetica', font_smaller)),
                 sg.Input(defaults["myFMTSTR"], key='myFMTSTR', size=(85, 1), font=('Helvetica', font_small))],
-               [sg.Text('_'  * 200, size=(114, 1))],
+               [sg.Text('_'  * nchars, size=(line_chars, 1))],
                ### PRE-PROCESSING ############
                [sg.Text('Pre-processing parameters:', font=('Helvetica', font_large))],
                [sg.Checkbox('Use Z components only', size=(20, 1), default=defaults["zcomps"], key='zcomps', font=('Helvetica', font_smaller)),
@@ -80,7 +86,7 @@ def gui_layout(web, cwd):
                 sg.In(default_text=defaults["Fmin"], size=(7, 1), key='Fmin', font=('Helvetica', font_small)),
                 sg.Text('Fmax [Hz]', size=(10, 1), font=('Helvetica', font_smaller)),
                 sg.In(default_text=defaults["Fmax"], size=(7, 1), key='Fmax', font=('Helvetica', font_small))],
-               [sg.Text('_'  * 200, size=(114, 1))],
+               [sg.Text('_'  * nchars, size=(line_chars, 1))],
                ### TIMIMG ####################
                [sg.Text('Timing parameters:', font=('Helvetica', font_large))],
                [sg.Text('Start Time [UTC]', size=(14, 1), font=('Helvetica', font_smaller)),
@@ -95,7 +101,7 @@ def gui_layout(web, cwd):
                 sg.In(default_text=defaults["prebuf"], size=(7, 1), key='prebuf', font=('Helvetica', font_small)),
                 sg.Text('Fill window on start', size=(16, 1), font=('Helvetica', font_smaller)),
                 sg.Checkbox('', size=(1, 1), default=defaults["fill_on_start"], key='fill_on_start', font=('Helvetica', font_small))],
-               [sg.Text('_'  * 200, size=(114, 1))],
+               [sg.Text('_'  * nchars, size=(line_chars, 1))],
                ### ARRAY PROCESSiNG #########
                [sg.Text('Array Processing parameters:', font=('Helvetica', font_large))],
                [sg.Text('Xmin, Xmax, Ymin, Ymax, Slowness step (Slowness grid)', font=('Helvetica', font_smaller), justification='left'),
@@ -117,7 +123,7 @@ def gui_layout(web, cwd):
                 sg.In(default_text=defaults["win_frac"], size=(5, 1), key='win_frac', font=('Helvetica', font_small)),
                 sg.Text('Semblance threshold', size=(17, 1), font=('Helvetica', font_smaller)),
                 sg.In(default_text=defaults["semb_thresh"], size=(7, 1), key='semb_thresh', font=('Helvetica', font_small))],
-               [sg.Text('_'  * 200, size=(114, 1))],
+               [sg.Text('_'  * nchars, size=(line_chars, 1))],
                ### PLOTTING #################
                [sg.Text('Results to plot:', font=('Helvetica', font_large), )],
                [sg.Checkbox('Back Azimuth', size=(16, 1), default=defaults["baz"], key='baz', font=('Helvetica', font_smaller)),
@@ -157,7 +163,7 @@ def gui_layout(web, cwd):
                 sg.In(default_text=defaults["seis_ymin"], size=(5, 1), key='seis_ymin', font=('Helvetica', font_small)),
                 sg.In(default_text=defaults["seis_ymax"], size=(5, 1), key='seis_ymax', font=('Helvetica', font_small))],
                #### break
-               [sg.Text('_'  * 200, size=(114, 1))],
+               [sg.Text('_'  * nchars, size=(line_chars, 1))],
                #### break
                [sg.Checkbox('Array response function', size=(20, 1), default=defaults["resp"], key='resp', font=('Helvetica', font_smaller)),
                 sg.Text('Coordinates [\'xy\' or \'lonlat\']', font=('Helvetica', font_smaller)),
@@ -171,7 +177,7 @@ def gui_layout(web, cwd):
                 sg.In(default_text=defaults["arrayx"], size=(5, 1), key='arrayx', font=('Helvetica', font_small)),
                 sg.In(default_text=defaults["arrayy"], size=(5, 1), key='arrayy', font=('Helvetica', font_small))],
                #### break
-               [sg.Text('_'  * 200, size=(114, 1))],
+               [sg.Text('_'  * nchars, size=(line_chars, 1))],
                #### break
                [sg.Checkbox('Map display', size=(10, 1), default=defaults["bazmap"], key='bazmap', font=('Helvetica', font_smaller)),
                 sg.Checkbox('Array at centre?', size=(13, 1), default=defaults["map_array_centre"], key='map_array_centre', font=('Helvetica', font_smaller)),
@@ -186,7 +192,7 @@ def gui_layout(web, cwd):
                 sg.Text('Longitude limits (deg) [min, max]', size=(26, 1), font=('Helvetica', font_smaller)),
                 sg.In(default_text=defaults["lon_min"], size=(5, 1), key='lon_min', font=('Helvetica', font_small)),
                 sg.In(default_text=defaults["lon_max"], size=(5, 1), key='lon_max', font=('Helvetica', font_small)),],
-               [sg.Text('_'  * 200, size=(114, 1))],
+               [sg.Text('_'  * nchars, size=(line_chars, 1))],
                ### SPECTROGRAM ############
                [sg.Text('Spectrogram parameters:', font=('Helvetica', font_med))],
                [sg.Text('Fmin [Hz]', size=(9, 1), font=('Helvetica', font_smaller)),
@@ -202,20 +208,20 @@ def gui_layout(web, cwd):
                 sg.In(default_text=defaults["clim2"], size=(5, 1), key='clim2', font=('Helvetica', font_small)),
                 sg.Text('Colormap', size=(8, 1), font=('Helvetica', font_smaller)),
                 sg.In(default_text=defaults["cmap"], size=(10, 1), key='cmap', font=('Helvetica', font_small))],
-               [sg.Text('_'  * 200, size=(114, 1))],
+               [sg.Text('_'  * nchars, size=(line_chars, 1))],
                #### OUTPUT ###############
                [sg.Text('Output parameters:', font=('Helvetica', font_large))],
                [sg.Text('Figure output path', size=(15, 1), font=('Helvetica', font_smaller)),
-                sg.In(default_text=defaults["figpath"], size=(45, 1), key='figpath', font=('Helvetica', font_small)),
-                sg.Text('filenames:', size=(10, 1), font=('Helvetica', font_smaller)),
+                sg.In(default_text=defaults["figpath"], size=(49, 1), key='figpath', font=('Helvetica', font_small)),
+                sg.Text('filenames:', size=(8, 1), font=('Helvetica', font_smaller)),
                 sg.In(default_text=defaults["timelinefigname"], size=(11, 1), key='timelinefigname', font=('Helvetica', font_small)),
                 sg.In(default_text=defaults["polarfigname"], size=(11, 1), key='polarfigname', font=('Helvetica', font_small)),
                 sg.In(default_text=defaults["arrayfigname"], size=(11, 1), key='arrayfigname', font=('Helvetica', font_small)),
                 sg.In(default_text=defaults["mapfigname"], size=(6, 1), key='mapfigname', font=('Helvetica', font_small))],
                [sg.Text('Log file path', size=(10, 1), font=('Helvetica', font_smaller)),
-                sg.In(default_text=defaults["logpath"], size=(40, 1), key='logpath', font=('Helvetica', font_small)),
+                sg.In(default_text=defaults["logpath"], size=(49, 1), key='logpath', font=('Helvetica', font_small)),
                 sg.Text('Log file name', size=(12, 1), font=('Helvetica', font_smaller)),
-                sg.In(default_text=defaults["logfile"], size=(38, 1), key='logfile', font=('Helvetica', font_small))]
+                sg.In(default_text=defaults["logfile"], size=(15, 1), key='logfile', font=('Helvetica', font_small))]
               ]# close myinput
 
     ######## SUBMIT BUTTON ############
@@ -233,10 +239,10 @@ def gui_layout(web, cwd):
     ######## CREATE LAYOUT ############
     
     if not web:
-        layout = [[sg.Column(myinput, scrollable=True, vertical_scroll_only=True),
-                   sg.VerticalSeparator(pad=None), sg.Column(myout)]]
+        layout = [[sg.Column(myinput, scrollable=True, vertical_scroll_only=True, size=(window_size[0]*0.52, window_size[1])),
+                   sg.VerticalSeparator(pad=None), sg.Column(myout, size=(window_size[0]*0.48, window_size[1]))]]
     else:
-        layout = myout
+        layout = myinput + myout
 
     # RETURN the layout and framework variable
     return layout, sg

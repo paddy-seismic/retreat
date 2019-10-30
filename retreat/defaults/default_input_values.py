@@ -109,8 +109,8 @@ def my_defaults(CWD):
         lat_max="auto",
         # OUTPUT
         #logpath=os.getcwd(),
-        logpath=CWD,
-        logfile="retreat/output/retreat.log",
+        logpath=CWD+"/retreat/output/",
+        logfile="retreat.log",
         #figpath=os.getcwd()+"/retreat/output/",
         figpath=CWD+"/retreat/output/",
         timelinefigname="MainTimeline",
@@ -120,61 +120,3 @@ def my_defaults(CWD):
         ########################
     )
     return defaults
-
-#### get screen size and calculate default figure and window sizes
-def default_figure_dims(window):
-    """Determines and returns size of figure window based on screen dimensions"""
-    # get screen dims first:
-    x, y = window.GetScreenDimensions()
-
-    # get aspect ratio
-    myratio = x/y
-
-    if (myratio % (16.0/9.0)) < 0.01:
-        #myaspect = '16:9'
-        quot, rem = divmod(myratio, (16.0/9.0))
-    elif (myratio % (4.0/3.0)) < 0.01:
-        #myaspect = '4:3'
-        quot, rem = divmod(myratio, (16.0/9.0))
-    else:
-        #myaspect = 'other'
-        quot = 1.0
-#    print('quot =',quot)
-#    print('myaspect=',myaspect)
-#    print('myratio=',myratio)
-
-    # calculate default figure sizes to fit
-    if quot != 1.0:
-        x = x/quot
-    # remove edge buffer
-    nbuf = 50 # px
-    x = x - (2*nbuf)
-    y = y - (2*nbuf)
-
-    # set dims:
-    dims = dict()
-    # Fig1 - timeline
-    dims["timelinex"] = int(x-(y/2.))
-    dims["timeliney"] = int(y)
-    # Fig2 - polar
-    dims["polarx"] = int(y/2.)
-    dims["polary"] = int(y/2.)
-    # Fig3 - array resp
-    dims["arrayx"] = int(y/2.)
-    dims["arrayy"] = int(y/2.)
-    # Fig4 - map
-    dims["mapx"] = int(y/2.)
-    dims["mapy"] = int(y/2.)
-
-#    # set default screen LOCATIONS for all windows too:
-#    loc=[
-#    # Fig1 - timeline
-#    [( int(x-(y/2.)), int(y) )],
-#    # Fig2 - polar
-#    [( int(y/2.), int(y/2.) )],
-#    # Fig3 - array resp
-#    [( int(y/2.), int(y/2.) )]
-#    ]
-    #################
-
-    return dims, quot

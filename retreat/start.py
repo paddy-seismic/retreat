@@ -1,5 +1,5 @@
-"""gui_start - Initialize and start main GUI window"""
-def gui_start(web):
+"""start - Initialize and start main GUI window"""
+def start(web):
     #### IMPORTS ####
     import sys
     import time
@@ -15,11 +15,16 @@ def gui_start(web):
     # Import realtime update routines
     from retreat.realtime import realtime
     from retreat.tools.monitoring_routines import print_log_to_screen, update_image_window
+    
+    #### GET SCREEN AND WINDOW SIZES ####
+    from retreat.gui.gui_sizes import get_screen_size, get_window_size, get_quotient
+    screenx, screeny, aspect = get_screen_size()
+    window_size = get_window_size(screenx, screeny, aspect)
 
-    #### IMPORT GUI LAYOUT ####
+    #### CREATE GUI LAYOUT ####
     #from retreat.gui.gui_layout import layout, sg
     from retreat.gui.gui_layout import gui_layout
-    layout, sg = gui_layout(web,os.getcwd())
+    layout, sg = gui_layout(web, window_size, os.getcwd())
 
     #### DEFINE GLOBAL VARIABLES
     global P_LOCK, T1_LOCK, T2_LOCK, PT_LOCK, EVENT
@@ -68,6 +73,13 @@ def gui_start(web):
         window = sg.Window('Real-Time Tremor Analysis Tool', layout)
 
     window.Finalize()
+    
+    if web:
+        ## add default values
+        from retreat.defaults.default_input_values import my_defaults
+        defaults = my_defaults(os.getcwd())
+        for key in defaults:
+            window.FindElement(key).Update(value=defaults[key])
 
     #### define function to CREATE FIGURE WINDOW but don't open!- YET ####
 
@@ -89,18 +101,16 @@ def gui_start(web):
 
         return figwindow, image_elem
 
-    ################################
-    ## add default values
-    #for key in defaults:
-    #    window.FindElement(key).Update(value=defaults[key])
-    #################################
+
 
     # find and add default image dimension values:
-    if not web:
-        from retreat.defaults.default_input_values import default_figure_dims
-        mydims, quot = default_figure_dims(window)
-        for key in ('timelinex', 'timeliney', 'polarx', 'polary', 'arrayx', 'arrayy', 'mapx', 'mapy'):
-            window.FindElement(key).Update(value=mydims[key])
+#    if not web:
+#        from retreat.defaults.default_input_values import default_figure_dims
+#        mydims, quot = default_figure_dims(window)
+    from retreat.gui.gui_sizes import get_figure_dims
+    mydims, quot = get_figure_dims(screenx, screeny, aspect)
+    for key in ('timelinex', 'timeliney', 'polarx', 'polary', 'arrayx', 'arrayy', 'mapx', 'mapy'):
+        window.FindElement(key).Update(value=mydims[key])
 
     # set flags:
     # lock flags for child process and threads
@@ -127,6 +137,11 @@ def gui_start(web):
 
                     global logfile
                     logfile = gui_input["logpath"]+"/"+gui_input["logfile"]
+                    if web:
+#                        print("gui_input", gui_input)
+#                        print("logpath = ",gui_input["logpath"])
+#                        print("logfile = ",gui_input["logfile"])
+#                        print("logfile = ",logfile)
 
                     mystdout = sys.stdout  # store this
                     p = Process(target=realtime, name='realtime', args=(gui_input, logfile))
@@ -155,19 +170,21 @@ def gui_start(web):
                         figwindow, image_elem = create_fig_window(gui_input["webfigs"])
                         figwindow.Finalize()
                         F_LOCK = True
-                        if not gui_input["webfigs"]:
+                        if not web:
                             figwindow.Maximize()
                             F_LOCK = True
-
-                    window.TKroot.focus_force()
+                    if not web:
+                        window.TKroot.focus_force()
 
                     # 2. monitor figures and update:
 
                     if 't2' not in locals() or 't2' not in globals():
                         t2 = KThread(target=update_image_window, args=(image_elem,\
                         gui_input["figpath"], gui_input["savefig"], gui_input["timelinefigname"],\
-                        gui_input["polarfigname"], gui_input["arrayfigname"], gui_input["mapfigname"],\
-                        gui_input["polar"], gui_input["resp"], gui_input["bazmap"], ptime), daemon=True)
+                        gui_input["polarfigname"], gui_input["arrayfigname"],\
+                        gui_input["mapfigname"], gui_input["polar"], gui_input["resp"],\
+                        gui_input["bazmap"], ptime), daemon=True)
+
                     if not t2.is_alive() and not T2_LOCK:
                         t2.start()
                         T2_LOCK = True
