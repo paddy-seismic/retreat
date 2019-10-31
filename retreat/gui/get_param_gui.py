@@ -52,6 +52,8 @@ def get_param(gui_input):
     )
 
     #### waveform data
+    
+    print(gui_input)
 
     mydata = dict(
         t=tstart - (window_length + prebuf),

@@ -13,8 +13,8 @@ def get_screen_size():
     return screenx, screeny, myratio
 
 def get_quotient(myratio):
-    """Returns quotient based on aspect ratio. Used for detecting multiple screens. NB assumes 
-    monitor is 16:9 or 4:3 aspect ratio"""
+    """Returns quotient based on aspect ratio. Used for detecting multiple screens. NB assumes
+    monitor is most likely to be 16:9 or 4:3 aspect ratio"""
     if (myratio % (16.0/9.0)) < 0.01:
         #myaspect = '16:9'
         quot, rem = divmod(myratio, (16.0/9.0))
@@ -27,7 +27,7 @@ def get_quotient(myratio):
     return quot
 
 def get_window_size(screenx, screeny, myratio):
-
+    """Determines and returns size of main GUI window based on screen dimensions"""
     # process aspect ratio:
     quot = get_quotient(myratio)
     # correct x-dimension if necessary:
@@ -41,7 +41,7 @@ def get_figure_dims(x, y, myratio):
     """Determines and returns size of figure window based on screen dimensions"""
     # process aspect ratio:
     quot = get_quotient(myratio)
-    
+
     # correct x-dimension if necessary:
     if quot != 1.0:
         x = x/quot

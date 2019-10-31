@@ -1,5 +1,7 @@
 """start - Initialize and start main GUI window"""
 def start(web):
+    """Function to launch the program. Takes command line argument to determine whether to launch
+    GUI or web interface"""
     #### IMPORTS ####
     import sys
     import time
@@ -15,9 +17,9 @@ def start(web):
     # Import realtime update routines
     from retreat.realtime import realtime
     from retreat.tools.monitoring_routines import print_log_to_screen, update_image_window
-    
+
     #### GET SCREEN AND WINDOW SIZES ####
-    from retreat.gui.gui_sizes import get_screen_size, get_window_size, get_quotient
+    from retreat.gui.gui_sizes import get_screen_size, get_window_size
     screenx, screeny, aspect = get_screen_size()
     window_size = get_window_size(screenx, screeny, aspect)
 
@@ -65,7 +67,7 @@ def start(web):
     ###########################################################################
 
     #### CREATE AND OPEN THE GUI WINDOW ####
-    
+
     if not web:
         window = sg.Window('Real-Time Tremor Analysis Tool', layout, font=("Helvetica", 11), \
         location=(400, 0), resizable=True)
@@ -73,42 +75,49 @@ def start(web):
         window = sg.Window('Real-Time Tremor Analysis Tool', layout)
 
     window.Finalize()
-    
+
     if web:
-        ## add default values
+        ## fetch default values
         from retreat.defaults.default_input_values import my_defaults
         defaults = my_defaults(os.getcwd())
-        for key in defaults:
-#            print("key = ", key)
-#            print("defaults[key] = ", defaults[key])
-            window.FindElement(key).Update(value=defaults[key])
 
+#        # re-reverse order of combo-boxes (PySimpleGUIWeb reverses order for some reason?!)
+#        for combolist in (defaults["connection"], defaults["sds_type"], defaults["dataformat"],\
+#                          defaults["inv_type"]):
+#            combolist.reverse()
+
+        ## re-add default values (PySimpleGUIWeb doesn't seem to inherit these for some reason?!)
+        for key in defaults:
+            window.FindElement(key).Update(value=defaults[key])
+            #print(window.FindElement(key))
+
+#        for key in ('connection', 'sds_type', 'dataformat','inv_type'):
+#            window.FindElement(key).Update(value=defaults[key])
+
+    ######################################################################
     #### define function to CREATE FIGURE WINDOW but don't open!- YET ####
 
     def create_fig_window(webfigs):
         """Creates and returns the output figure window object"""
         # change call based on figure output destination
         if webfigs:
-            import PySimpleGUIWeb as sg
+            import PySimpleGUIWeb as sgf
         else:
-            import PySimpleGUI as sg
+            import PySimpleGUI as sgf
 
-        image_elem = [sg.Image(filename='', key='mytimeline'), sg.Image(filename='', key='mypolar'),\
-        sg.Image(filename='', key='myflexfig')]# NB the ORDER of the figure elements
+        image_elem = [sgf.Image(filename='', key='mytimeline'),
+                      sgf.Image(filename='', key='mypolar'),
+                      sgf.Image(filename='', key='myflexfig')]# NB the ORDER of the figure elements
         # is important for later - default order is assumed to be: 1) timeline, 2) polar, 3) array
         col = [[image_elem[1]], [image_elem[2]]]
-        figlayout = [[image_elem[0], sg.Column(col)]]
+        figlayout = [[image_elem[0], sgf.Column(col)]]
 
-        figwindow = sg.Window('Output Figures', figlayout, resizable=True)
+        figwindow = sgf.Window('Output Figures', figlayout, resizable=True)
 
-        return figwindow, image_elem
-
-
+        return figwindow, image_elem, figlayout
+    ######################################################################
 
     # find and add default image dimension values:
-#    if not web:
-#        from retreat.defaults.default_input_values import default_figure_dims
-#        mydims, quot = default_figure_dims(window)
     from retreat.gui.gui_sizes import get_figure_dims
     mydims, quot = get_figure_dims(screenx, screeny, aspect)
     for key in ('timelinex', 'timeliney', 'polarx', 'polary', 'arrayx', 'arrayy', 'mapx', 'mapy'):
@@ -169,10 +178,10 @@ def start(web):
                     ## NOW CREATE AND OPEN THE FIGURE WINDOW
 
                     if not F_LOCK:
-                        figwindow, image_elem = create_fig_window(gui_input["webfigs"])
+                        figwindow, image_elem, figlayout = create_fig_window(gui_input["webfigs"])
                         figwindow.Finalize()
                         F_LOCK = True
-                        if not web:
+                        if not gui_input["webfigs"]:
                             figwindow.Maximize()
                             F_LOCK = True
                     if not web:
@@ -313,7 +322,7 @@ def start(web):
                 else:
                     res = sg.PopupYesNo('Are you sure you wish to close the program?')
             else:
-                 res = sg.PopupYesNo('Are you sure you wish to close the program?')
+                res = sg.PopupYesNo('Are you sure you wish to close the program?')
 
             if res == 'Yes':
                 print("Exiting")

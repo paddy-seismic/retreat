@@ -7,17 +7,21 @@ def my_defaults(CWD):
         #########################
         # DATA SOURCES - REALTIME
         myclient="IRIS",
+        connection=['FDSN', 'seedlink'],
         # DATA SOURCES - REPLAY
         replay=False,
         customfmt=True,
         sds_root="/mnt/REPO/13-FUTUREVOLC/MINISEED",
+        sds_type=['', '*', 'D', 'R'],
         myFMTSTR="{year}/{network}/{station}/{channel}/{network}.{station}.{location}.{channel}.{year}.{doy:03d}.00.00.mseed",
+        dataformat=['MSEED', 'SAC', 'GCF', 'SEISAN'],
         # SCNL
         S="SP??",
         C="HHZ",
         N="NO",
         L="00",
         # METADATA
+        inv_type=['STATIONXML', 'SEED', 'XSEED', 'RESP'],
         inv_supply=False,
         inv_file='/mnt/home_geo/psmith/obspy/realtime/NO.xml',
         # PRE-PROCESSING

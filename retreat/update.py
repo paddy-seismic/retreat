@@ -92,6 +92,8 @@ def update(timing, mydata, preproc, kwargs, to_plot, spectro, array_resp, logfil
         else:
 
         ## REALTIME DATA SOURCE
+        
+            #print(mydata)
 
             # check whether we want to backfill entire plot window
             if timing["fill_on_start"]:
@@ -120,6 +122,7 @@ def update(timing, mydata, preproc, kwargs, to_plot, spectro, array_resp, logfil
 
                 else:
                     logging.error("Invalid datasource specified")
+                    print("mydata-connection = ",mydata["connection"])
                     print("Invalid datasource specified")
 
 #                t_in = t_in = mydata["t"]
@@ -148,6 +151,7 @@ def update(timing, mydata, preproc, kwargs, to_plot, spectro, array_resp, logfil
                         t_in, timing["window_length"], logfile).result()
                 else:
                     logging.error("Invalid datasource specified")
+                    print("mydata-connection = ",mydata["connection"])
                     print("Invalid datasource specified")
 
     #            print str(datetime.datetime.utcnow())

@@ -1,7 +1,7 @@
 """SET UP GUI WINDOW LAYOUT"""
 def gui_layout(web, window_size, cwd):
     """Uses PySimpleGUI framework to create the layout for the GUI window. Defines and creates the
-    input elements and logfile output element. Returns the complete window layout ('layout' 
+    input elements and logfile output element. Returns the complete window layout ('layout'
     variable) and the framework ('sg' variable) to the start module."""
     # Import GUI framework
     if web:
@@ -40,7 +40,7 @@ def gui_layout(web, window_size, cwd):
     myinput = [[sg.Text('Input data:', font=('Helvetica', font_large))],
                ### REALTIME SOURCES
                [sg.Text('Connection type:', font=('Helvetica', font_smaller)),
-                sg.InputCombo(['FDSN', 'seedlink'], key='connection', font=('Helvetica', font_small)),
+                sg.InputCombo(defaults["connection"], key='connection', font=('Helvetica', font_small)),
                 sg.Text('Client/Server', size=(11, 1), font=('Helvetica', font_smaller)),
                 sg.Input(defaults["myclient"], key='myclient', size=(28, 1), font=('Helvetica', font_small)),
                 sg.Text('S', size=(1, 1), font=('Helvetica', font_smaller)),
@@ -56,15 +56,15 @@ def gui_layout(web, window_size, cwd):
                 sg.Input(default_text=defaults["inv_file"], size=(12, 1), font=('Helvetica', font_small), key='inv_file'),
                 sg.FileBrowse(font=('Helvetica', font_small)),
                 sg.Text('File format:', font=('Helvetica', font_smaller)),
-                sg.InputCombo(['STATIONXML', 'SEED', 'XSEED', 'RESP'], key='inv_type', font=('Helvetica', font_small), size=(11, 1))],
+                sg.InputCombo(defaults["inv_type"], key='inv_type', font=('Helvetica', font_small), size=(11, 1))],
                ### FILES/REPLAY MODE
                [sg.Checkbox('Replay mode', size=(11, 1), default=defaults["replay"], key='replay', font=('Helvetica', font_smaller)),
                 sg.Text('SDS directory', size=(11, 1), font=('Helvetica', font_smaller)),
                 sg.Input(defaults["sds_root"], key='sds_root', size=(35, 1), font=('Helvetica', font_small)),
                 sg.Text('SDS type', size=(8, 1), font=('Helvetica', font_smaller)),
-                sg.InputCombo(['', '*', 'D', 'R'], key='sds_type', size=(1, 1), font=('Helvetica', font_small)),
+                sg.InputCombo(defaults["sds_type"], key='sds_type', size=(1, 1), font=('Helvetica', font_small)),
                 sg.Text('Data format', size=(10, 1), font=('Helvetica', font_smaller)),
-                sg.InputCombo(['MSEED', 'SAC', 'GCF', 'SEISAN'], key='dataformat', size=(7, 1), font=('Helvetica', font_small))],
+                sg.InputCombo(defaults["dataformat"], key='dataformat', size=(7, 1), font=('Helvetica', font_small))],
                [sg.Checkbox('Custom Format:', size=(15, 1), default=defaults["customfmt"], key='customfmt', font=('Helvetica', font_smaller)),
                 sg.Input(defaults["myFMTSTR"], key='myFMTSTR', size=(85, 1), font=('Helvetica', font_small))],
                [sg.Text('_'  * nchars, size=(line_chars, 1))],
@@ -237,7 +237,7 @@ def gui_layout(web, window_size, cwd):
             ]
 
     ######## CREATE LAYOUT ############
-    
+
     if not web:
         layout = [[sg.Column(myinput, scrollable=True, vertical_scroll_only=True, size=(window_size[0]*0.52, window_size[1])),
                    sg.VerticalSeparator(pad=None), sg.Column(myout, size=(window_size[0]*0.48, window_size[1]))]]
