@@ -13,8 +13,8 @@ def my_defaults(cwd):
         customfmt=True,
         sds_root="/mnt/REPO/13-FUTUREVOLC/MINISEED",
         sds_type=['', '*', 'D', 'R'],
-        myFMTSTR="{year}/{network}/{station}/{channel}/\
-        {network}.{station}.{location}.{channel}.{year}.{doy:03d}.00.00.mseed",
+        myFMTSTR="{year}/{network}/{station}/{channel}/"\
+        "{network}.{station}.{location}.{channel}.{year}.{doy:03d}.00.00.mseed",
         dataformat=['MSEED', 'SAC', 'GCF', 'SEISAN'],
         # SCNL
         S="SP??",
