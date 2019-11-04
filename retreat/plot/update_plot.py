@@ -1,5 +1,4 @@
 """update_plot"""
-import io
 import gc
 import sys
 import concurrent.futures
@@ -18,7 +17,7 @@ from retreat.data.get_array_response import get_array_response
 from retreat.tools.processpool import get_nproc
 
 def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
-    """update output figures in the figure window based on the latest data"""
+    """Updates output figures in the figure window based on the latest data"""
     # redirect output to log file:
     sys.stdout = open(logfile, 'a+')
     sys.stderr = sys.stdout
@@ -50,6 +49,13 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
 
 #    global fig, ax
 #    global my_dpi
+
+    # shrink figures *slightly* if webfigs output (to account for menu bar etc in browser):
+    if to_plot["webfigs"]:
+        shrinkage = 0.9
+        for key in ('timelinex', 'timeliney', 'arrayx', 'arrayy',\
+        'polarx', 'polary', 'mapx', 'mapy'):
+            to_plot[key] = int(shrinkage*to_plot[key])
 
     my_dpi = 100
     fig, ax = plt.subplots(nsubplots, 1, sharex=False, sharey=False,\

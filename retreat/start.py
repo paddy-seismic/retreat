@@ -64,36 +64,6 @@ def start(web):
                 print('Error:  Realtime processing has died!')
                 print("Please check input parameters and try again")
 
-    ###########################################################################
-
-    #### CREATE AND OPEN THE GUI WINDOW ####
-
-    if not web:
-        window = sg.Window('Real-Time Tremor Analysis Tool', layout, font=("Helvetica", 11), \
-        location=(400, 0), resizable=True)
-    else:
-        window = sg.Window('Real-Time Tremor Analysis Tool', layout)
-
-    window.Finalize()
-
-    if web:
-        ## fetch default values
-        from retreat.defaults.default_input_values import my_defaults
-        defaults = my_defaults(os.getcwd())
-
-#        # re-reverse order of combo-boxes (PySimpleGUIWeb reverses order for some reason?!)
-#        for combolist in (defaults["connection"], defaults["sds_type"], defaults["dataformat"],\
-#                          defaults["inv_type"]):
-#            combolist.reverse()
-
-        ## re-add default values (PySimpleGUIWeb doesn't seem to inherit these for some reason?!)
-        for key in defaults:
-            window.FindElement(key).Update(value=defaults[key])
-            #print(window.FindElement(key))
-
-#        for key in ('connection', 'sds_type', 'dataformat','inv_type'):
-#            window.FindElement(key).Update(value=defaults[key])
-
     ######################################################################
     #### define function to CREATE FIGURE WINDOW but don't open!- YET ####
 
@@ -117,11 +87,7 @@ def start(web):
         return figwindow, image_elem, figlayout
     ######################################################################
 
-    # find and add default image dimension values:
-    from retreat.gui.gui_sizes import get_figure_dims
-    mydims, quot = get_figure_dims(screenx, screeny, aspect)
-    for key in ('timelinex', 'timeliney', 'polarx', 'polary', 'arrayx', 'arrayy', 'mapx', 'mapy'):
-        window.FindElement(key).Update(value=mydims[key])
+    ###########################################################################
 
     # set flags:
     # lock flags for child process and threads
@@ -129,13 +95,56 @@ def start(web):
     F_LOCK, P_LOCK, T1_LOCK, T2_LOCK, PT_LOCK = False, False, False, False, False
     lock = threading.Lock()
 
-    #### WHILE LOOP OVER GUI EVENTS ######
+    #### CREATE AND OPEN THE GUI WINDOW ####
+
+    if not web:
+        window = sg.Window('Real-Time Tremor Analysis Tool', layout, font=("Helvetica", 11), \
+        location=(400, 0), resizable=True)
+    else:
+        # can't use a GUI figure window with a web interface - or open a new web window - so append
+        # the figure window to the existing web interface layout NOW, before window is created:
+        dummy_webfigs = True
+        figwindow, image_elem, figlayout = create_fig_window(dummy_webfigs) # set "webfigs flag"
+        #figwindow.Finalize()
+        F_LOCK = True
+
+        layout_buffer = [[sg.Text('_'  * 150, size=(150, 1))], [sg.Text('Output Figures:',
+                                                                        font=('Helvetica', 20))]]
+
+        window = sg.Window('Real-Time Tremor Analysis Tool', layout + layout_buffer + figlayout)
+
+    #### FINALIZE and OPEN the GUI window
+    window.Finalize()
+
+    #### RE-IMPORT
+    if web:
+        ## fetch default values
+        from retreat.defaults.default_input_values import my_defaults
+        defaults = my_defaults(os.getcwd())
+
+        ## re-add default values (PySimpleGUIWeb doesn't seem to inherit these for some reason?!)
+        for key in defaults:
+            window.FindElement(key).Update(value=defaults[key])
+
+    # find and add default image dimension values:
+    from retreat.gui.gui_sizes import get_figure_dims
+    mydims, quot = get_figure_dims(screenx, screeny, aspect)
+    for key in ('timelinex', 'timeliney', 'polarx', 'polary', 'arrayx', 'arrayy', 'mapx', 'mapy'):
+        window.FindElement(key).Update(value=mydims[key])
+
+    #### WHILE LOOP OVER GUI EVENTS #######################################
 
     # begin while loop over button "EVENTS"
     while True:
 
         ##### READ INPUT DATA AND EVENTS FROM THE WINDOW
         EVENT, gui_input = window.Read()
+
+        # fix InputCombo boxes in web interface mode
+        if web:
+            for key in ('connection', 'sds_type', 'dataformat', 'inv_type'):
+                if gui_input[key] is None:
+                    gui_input[key] = defaults[key][0]
 
         ######## START PRESSED - START REAL-TIME PROCESS ########
         if EVENT == 'Start':
@@ -148,11 +157,6 @@ def start(web):
 
                     global logfile
                     logfile = gui_input["logpath"]+"/"+gui_input["logfile"]
-#                    if web:
-#                        print("gui_input", gui_input)
-#                        print("logpath = ",gui_input["logpath"])
-#                        print("logfile = ",gui_input["logfile"])
-#                        print("logfile = ",logfile)
 
                     mystdout = sys.stdout  # store this
                     p = Process(target=realtime, name='realtime', args=(gui_input, logfile))
@@ -182,15 +186,19 @@ def start(web):
                         figwindow.Finalize()
                         F_LOCK = True
                         if not gui_input["webfigs"]:
-                            figwindow.Maximize()
+                            #figwindow.Maximize()
+                            figwindow.Refresh()
                             F_LOCK = True
                     if not web:
                         window.TKroot.focus_force()
+                        if not gui_input["webfigs"]:
+                            figwindow.Maximize()
+                            figwindow.Refresh()
 
                     # 2. monitor figures and update:
 
                     if 't2' not in locals() or 't2' not in globals():
-                        t2 = KThread(target=update_image_window, args=(image_elem,\
+                        t2 = KThread(target=update_image_window, args=(image_elem, figwindow,\
                         gui_input["figpath"], gui_input["savefig"], gui_input["timelinefigname"],\
                         gui_input["polarfigname"], gui_input["arrayfigname"],\
                         gui_input["mapfigname"], gui_input["polar"], gui_input["resp"],\

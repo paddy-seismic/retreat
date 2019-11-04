@@ -2,7 +2,7 @@
 # import necessary functions
 import sys
 import gc
-import logging
+#import logging
 import concurrent.futures
 from obspy.signal.array_analysis import array_processing
 from retreat.data.fdsn2st3 import fdsn2st
@@ -92,7 +92,7 @@ def update(timing, mydata, preproc, kwargs, to_plot, spectro, array_resp, logfil
         else:
 
         ## REALTIME DATA SOURCE
-        
+
             #print(mydata)
 
             # check whether we want to backfill entire plot window
@@ -121,8 +121,8 @@ def update(timing, mydata, preproc, kwargs, to_plot, spectro, array_resp, logfil
                         tt_in, timing["plot_window"], logfile).result()
 
                 else:
-                    logging.error("Invalid datasource specified")
-                    print("mydata-connection = ",mydata["connection"])
+                    #logging.error("Invalid datasource specified")
+                    #print("mydata-connection = ", mydata["connection"])
                     print("Invalid datasource specified")
 
 #                t_in = t_in = mydata["t"]
@@ -150,8 +150,8 @@ def update(timing, mydata, preproc, kwargs, to_plot, spectro, array_resp, logfil
                         st_in = executor.submit(slink2st, mydata["scnl"], mydata["myclient"],\
                         t_in, timing["window_length"], logfile).result()
                 else:
-                    logging.error("Invalid datasource specified")
-                    print("mydata-connection = ",mydata["connection"])
+                    #logging.error("Invalid datasource specified")
+                    #print("mydata-connection = ",mydata["connection"])
                     print("Invalid datasource specified")
 
     #            print str(datetime.datetime.utcnow())
@@ -204,7 +204,7 @@ def update(timing, mydata, preproc, kwargs, to_plot, spectro, array_resp, logfil
                     st_in = slink2st(mydata["scnl"], mydata["myclient"],\
                     t_in, timing["window_length"], logfile)
                 else:
-                    logging.error("Invalid datasource specified")
+                    #logging.error("Invalid datasource specified")
                     print("Invalid datasource specified")
 
             else:
@@ -221,7 +221,7 @@ def update(timing, mydata, preproc, kwargs, to_plot, spectro, array_resp, logfil
                     st_in = slink2st(mydata["scnl"], mydata["myclient"], t_in,\
                     timing["window_length"], logfile)
                 else:
-                    logging.error("Invalid datasource specified")
+                    #logging.error("Invalid datasource specified")
                     print("Invalid datasource specified")
             ############
             print("New data chunk:")

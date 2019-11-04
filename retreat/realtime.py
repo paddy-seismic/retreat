@@ -1,12 +1,12 @@
 """realtime"""
 def realtime(gui_input, logfile):
-    """Performs an update based on input from the gui.
+    """Performs an update based on input from the GUI.
     Fetches data, performs processing and updates output."""
     # import necessary functions
     import time
     import sys
     import gc
- #   import os
+#    import os
 #    import schedule
 #   from safe_schedule3 import SafeScheduler
     from retreat.tools.time_to_wait import time_to_wait

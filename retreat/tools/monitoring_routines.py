@@ -27,10 +27,16 @@ def print_log_to_screen(log_file):
         # restart
             pass
 
-def update_image_window(image_elem, figpath, savefig, timelinefig, polarfig, arrayfig, mapfig, \
-    polar, resp, bazmap, ptime):
+def update_image_window(image_elem, figwindow, figpath, savefig, timelinefig, polarfig, arrayfig,\
+    mapfig, polar, resp, bazmap, ptime):
     """checks for new and updated figues and updates the gui window"""
 #print('Thread t2 (images) id: {}'.format(os.getpid()))
+
+#    # redirect output to log file:
+#    sys.stdout = open(logfile, 'a+')
+#    sys.stderr = sys.stdout
+
+    figwindow.Refresh()
 
     # process arguments:
     fignames = [timelinefig, polarfig]
@@ -64,14 +70,15 @@ def update_image_window(image_elem, figpath, savefig, timelinefig, polarfig, arr
 
 #                    print('Checking figures...')
 #                    print(figdex)
+
                     for j in figdex: # loop over indices of figures we need to process
 
                         image_filename = figpath + "/" + fignames[j] + ".png"
 
                         if os.path.exists(image_filename):
-                            #print(image_filename + ' exists')
-        #                    print("ii = ",ii)
-        #                    print("moddate1 = ", moddate1)
+#                            print(image_filename + ' exists')
+#                            print("ii = ",ii)
+#                            print("moddate1 = ", moddate1)
 
                             # get mod time of image 1st time in loop
                             if ii < 1:
@@ -83,18 +90,19 @@ def update_image_window(image_elem, figpath, savefig, timelinefig, polarfig, arr
 
                                 if j < 2: # i.e. figure is NOT array plot
 
-        #                            print("moddate1[j] = ",moddate1[j])
-        #                            print("moddate2[j] = ",moddate2[j])
+#                                    print("moddate1[j] = ",moddate1[j])
+#                                    print("moddate2[j] = ",moddate2[j])
 
                                     if moddate2[j] > moddate1[j] and moddate2[j] > ptime:
                                     # i.e. image has changed, AND timestamp is newer
                                     # than update process start time (NOT an old file)
 
-            #                            print(moddate1)
-            #                            print(moddate2)
+#                                        print(moddate1)
+#                                        print(moddate2)
                                         # image changed - reload !
                                         print('Adding ' + image_filename + ' to figure window')
                                         image_elem[j].Update(filename=image_filename)
+                                        figwindow.Refresh()
 
                                         # reset mod date
                                         moddate1[j] = moddate2[j]
@@ -117,6 +125,7 @@ def update_image_window(image_elem, figpath, savefig, timelinefig, polarfig, arr
                                             # image changed - reload !
                                             print('Adding ' + image_filename + ' to figure window')
                                             image_elem[j].Update(filename=image_filename)
+                                            figwindow.Refresh()
 
                                             # reset mod date
                                             moddate1[j] = moddate2[j]
@@ -128,6 +137,7 @@ def update_image_window(image_elem, figpath, savefig, timelinefig, polarfig, arr
                                             # image changed - reload !
                                             print('Updating image: ' + image_filename)
                                             image_elem[j].Update(filename=image_filename)
+                                            figwindow.Refresh()
 
                                             array_plotted = True
 
@@ -169,6 +179,7 @@ def update_image_window(image_elem, figpath, savefig, timelinefig, polarfig, arr
                                     print("Adding " + image_filename + " to figure window")
                                     image_elem[j].Update(filename=image_filename)
                                     myalreadyplottedfig[j] = image_filename
+                                    figwindow.Refresh()
                             else:
 
                                 if bazmap:
@@ -177,6 +188,7 @@ def update_image_window(image_elem, figpath, savefig, timelinefig, polarfig, arr
                                         print("Adding " + image_filename + " to figure window")
                                         image_elem[j].Update(filename=image_filename)
                                         myalreadyplottedfig[j] = image_filename
+                                        figwindow.Refresh()
 
                                 if resp:
 
@@ -184,6 +196,7 @@ def update_image_window(image_elem, figpath, savefig, timelinefig, polarfig, arr
                                     if moddate[j] > ptime and not array_plotted:
                                         print('Adding ' + image_filename + ' to figure window')
                                         image_elem[j].Update(filename=image_filename)
+                                        figwindow.Refresh()
                                         array_plotted = True
                         else:
                             #print(image_filename+ " does not exist (yet)")

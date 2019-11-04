@@ -40,7 +40,7 @@ def gui_layout(web, window_size, cwd):
     myinput = [[sg.Text('Input data:', font=('Helvetica', font_large))],
                ### REALTIME SOURCES
                [sg.Text('Connection type:', font=('Helvetica', font_smaller)),
-                sg.InputCombo(defaults["connection"], key='connection', font=('Helvetica', font_small)),
+                sg.InputCombo(defaults["connection"], default_value=defaults["connection"][0], key='connection', font=('Helvetica', font_small)),
                 sg.Text('Client/Server', size=(11, 1), font=('Helvetica', font_smaller)),
                 sg.Input(defaults["myclient"], key='myclient', size=(28, 1), font=('Helvetica', font_small)),
                 sg.Text('S', size=(1, 1), font=('Helvetica', font_smaller)),
@@ -53,7 +53,7 @@ def gui_layout(web, window_size, cwd):
                 sg.In(default_text=defaults["L"], size=(3, 1), key='L', font=('Helvetica', font_small))],
                [sg.Checkbox('Inventory file', size=(20, 1), default=defaults["inv_supply"], key='inv_supply', font=('Helvetica', font_smaller)),
                 sg.Text('Inventory filename', font=('Helvetica', font_smaller)),
-                sg.Input(default_text=defaults["inv_file"], size=(12, 1), font=('Helvetica', font_small), key='inv_file'),
+                sg.Input(default_text=defaults["inv_file"], size=(30, 1), font=('Helvetica', font_small), key='inv_file'),
                 sg.FileBrowse(font=('Helvetica', font_small)),
                 sg.Text('File format:', font=('Helvetica', font_smaller)),
                 sg.InputCombo(defaults["inv_type"], key='inv_type', font=('Helvetica', font_small), size=(11, 1))],
@@ -231,7 +231,9 @@ def gui_layout(web, window_size, cwd):
                 ]
 
     ######## OUTPUT ###################
-    myout = [mybuttons,
+    myout = [[sg.Text('_'  * nchars, size=(line_chars, 1))],
+             mybuttons,
+             [sg.Text('_'  * nchars, size=(line_chars, 1))],
              [sg.Text('Program output:', font=('Helvetica', font_large))],
              [sg.Output(size=(output_size[0], output_size[1]), key='outputwindow')]
             ]

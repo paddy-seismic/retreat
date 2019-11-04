@@ -1,6 +1,6 @@
-"""Dictionary containing Default Input Values"""
-def my_defaults(CWD):
-    import os
+"""default_input_values"""
+def my_defaults(cwd):
+    """Dictionary containing Default Input Values"""
     from obspy.core import UTCDateTime
     # default parameter values:
     defaults = dict(
@@ -13,7 +13,8 @@ def my_defaults(CWD):
         customfmt=True,
         sds_root="/mnt/REPO/13-FUTUREVOLC/MINISEED",
         sds_type=['', '*', 'D', 'R'],
-        myFMTSTR="{year}/{network}/{station}/{channel}/{network}.{station}.{location}.{channel}.{year}.{doy:03d}.00.00.mseed",
+        myFMTSTR="{year}/{network}/{station}/{channel}/\
+        {network}.{station}.{location}.{channel}.{year}.{doy:03d}.00.00.mseed",
         dataformat=['MSEED', 'SAC', 'GCF', 'SEISAN'],
         # SCNL
         S="SP??",
@@ -113,10 +114,10 @@ def my_defaults(CWD):
         lat_max="auto",
         # OUTPUT
         #logpath=os.getcwd(),
-        logpath=CWD+"/retreat/output/",
+        logpath=cwd+"/retreat/output/",
         logfile="retreat.log",
         #figpath=os.getcwd()+"/retreat/output/",
-        figpath=CWD+"/retreat/output/",
+        figpath=cwd+"/retreat/output/",
         timelinefigname="MainTimeline",
         polarfigname="fkpolar",
         arrayfigname="arrayresp",
