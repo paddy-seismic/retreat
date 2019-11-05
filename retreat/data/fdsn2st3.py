@@ -1,14 +1,22 @@
-"""fdsn2st3"""
-import logging
+"""fdsn2st3.py"""
 import time
 import sys
 from obspy.clients.fdsn import Client
-#from obspy.clients.fdsn.header import FDSNException
-#from obspy import UTCDateTime
-#import PySimpleGUI as sg
 
 def fdsn2st(scnl, myclient, t, length, logfile):
-    """Fetches stream object from server using FDSN client"""
+    """
+    Fetches a stream object from server using FDSN client
+
+    Args:
+        scnl (dict): Dictionary containing desired SCNL values for the stream
+        myclient (str): Name of client (default="IRIS"")
+        t (UTCDateTime): Desired stream start time
+        length (float): Desired length of stream in seconds
+        logfile (str): name and path to the logfile
+
+    Returns:
+        st (stream): obspy stream object containing retrieved data
+    """
     # redirect output to log file:
     sys.stdout = open(logfile, 'a+')
     sys.stderr = sys.stdout
@@ -27,9 +35,9 @@ def fdsn2st(scnl, myclient, t, length, logfile):
         except Exception as e:
             # ... log it, sleep, etc. ...
             print('Connection error: '+ str(e))
-            logging.error('Connection error: '+ str(e))
+            #logging.error('Connection error: '+ str(e))
             print("Will retry in ", str(nsleep), "s")
-            logging.info("Will retry in %ss", nsleep)
+            #logging.info("Will retry in %ss", nsleep)
             time.sleep(nsleep)
             continue
         else:

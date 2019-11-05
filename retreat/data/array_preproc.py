@@ -71,7 +71,7 @@ def array_preproc(st, inv, preproc, logfile):
         st.filter("bandpass", freqmin=fmin, freqmax=fmax)
 
     if preproc["decimate"]:
-        # decimate to new samping rate
+        # decimate to new sampling rate
         for tr in st:
             factor = int(round(tr.stats.sampling_rate/preproc["newfreq"]))
             tr.decimate(factor)
