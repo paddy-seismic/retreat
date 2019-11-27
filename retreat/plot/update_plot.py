@@ -45,7 +45,7 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
     'lat_max', 'lon_min', 'lon_max', 'nbin_baz', 'nbin_slow', 'timelinefigname', 'polarfigname',\
     'arrayfigname', 'first')])
 
-    print("Number of subplots selected =", nsubplots)
+    print("Number of subplots selected = ", nsubplots)
 
 #    global fig, ax
 #    global my_dpi

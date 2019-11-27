@@ -1,7 +1,6 @@
-# retreat - REal-time TREmor Analysis Tool
-> Short blurb about what your product does  
-  
-  **retreat** is a REal-time TREmor Analysis Tool written in python, making use of the *obspy* framework. It performs frequency-wavenumber (f-k) analysis on realtime (or optionally archive) seismic array data to calculate the back azimuth and slowness values in a given time window, with the aim of aiding in the location of volcanic tremor signals.
+# RETREAT - *RE*al-time *TRE*mor *A*nalysis *T*ool
+<!-- Short blurb about what your product does   -->
+>**RETREAT** is a **RE**al-time **TRE**mor **A**nalysis **T**ool written in python, making use of the [*obspy*](https://www.obspy.org/) framework. It performs frequency-wavenumber (f-k) analysis on realtime (or optionally archive) seismic array data to calculate the back azimuth and slowness values in a given time window, with the aim of aiding in the location of volcanic tremor signals.
 
 [![NPM Version][npm-image]][npm-url]
 [![Build Status][travis-image]][travis-url]
@@ -13,25 +12,81 @@ One to two paragraph statement about your product and what it does
 
 ## Installation
 
-OS X & Linux:
+#### Download
 
-```sh
-npm install my-crazy-module --save
-```
+#### Setup
 
-Windows:
+#### Requirements
 
-```sh
-edit autoexec.bat
-```
+This software requires python3. A list of required python modules is contained in the _requirements.txt_ file.
 
-## Usage example
+These are:
 
-A few motivating and useful examples of how your product can be used. Spice this up with code blocks and potentially more screenshots.
+- scipy (```python3-scipy```)
+- matplotlib (```python3-matplotlib```)
+- numpy (```python3-numpy```)
+- pygtail (```python3-pygtail```)
+- obspy (```python3-obspy```)
+- psutil (```python3-psutil```)
+- Pillow (```python3-pil```)
+- PySimpleGUI
+- PySimpleGUIWeb
 
-```sh
-python3 -m retreat
-```
+More information on *obspy* and *PySimpleGUI* is available from:
+
+[https://www.obspy.org/]() and [https://pysimplegui.readthedocs.io/en/latest/#install]()
+
+Ubuntu/Debian package names are shown in brackets where available, and can be installed via: 
+
+><code>sudo apt-get install *packagename*</code>
+
+To install the required modules using **pip**, you can type the following:
+
+>```pip3 install -r /path/to/requirements.txt```
+
+<!--Windows:-->
+
+<!--```sh-->
+<!--edit autoexec.bat-->
+<!--```-->
+
+## Starting the software
+
+The **RETREAT** package can be run in 2 modes:
+
+1. With a GUI interface, running in its own window
+2. With a web interface, where the input and output is displayed in a browser
+
+### GUI window
+
+This the default mode. In a terminal window navigate to the installation directory and run:
+
+>```python3 -m retreat```
+
+This will open a GUI window that should look something like this:
+
+![GUI](doc/retreat_GUI_screenshot.jpg)
+
+with the Input Parameters in the left hand pane, and the Control Buttons and Output Pane on the right hand side. 
+Figures will appear in a *new window*.
+
+### Web interface
+
+To run with a web interface in a browser, do the same as above, but simply give the ``-w`` command line argument, i.e. :
+
+>```python3 -m retreat -w```
+
+This will open as a new tab in your browser and should look like this:
+
+![GUI](doc/retreat_WEB_screenshot1.jpg)
+
+with the Input Parameters listed at the top of the page,
+
+![GUI](doc/retreat_WEB_screenshot2.jpg)
+
+and the Control Buttons and Output Pane visible below if you scroll down the page.
+Figures will appear *below the Output Pane*.
+
 
 _For more examples and usage, please refer to the [Wiki][wiki]._
 
@@ -46,17 +101,28 @@ npm test
 
 ## Description of Input Parameters
 
-### Input Data
+#### Input Data
 
-### Pre-processing
+These parameters define the source and properties of the input data. The fields are:
 
-### Timing
+* **Connection type** - Used for realtime data only. Can currently use the dropbox to choose from an FDSN or seedlink client.
+* **Client/Server** - Details of the server for the chosen connection type. For FDSN this is simply the name, e.g. *IRIS*, and for Seedlink this is the server URL and port, e.g. *rtserve.washington.edu:18000*
+* **SCNL** - These specify the data Station, Channel, Network and Location codes (wildcard ? can be used)
+* 
 
-### Array Processing parameters
+#### Pre-processing
 
-### Results and Plots
+#### Timing
 
-### Output
+#### Array Processing parameters
+
+#### Results and Plots
+
+#### Output
+
+## Control Buttons
+
+## Figures and Output
 
 
 
