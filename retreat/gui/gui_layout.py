@@ -37,9 +37,9 @@ def gui_layout(web, window_size, cwd):
     sg.SetOptions(text_justification='right')
 
     ######## DATA INPUT #############
-    myinput = [[sg.Text('Input data:', font=('Helvetica', font_large))],
+    # put the first section in a separate column element to display alongside the logo:
                ### REALTIME SOURCES
-               [sg.Text('Connection type:', font=('Helvetica', font_smaller)),
+    myLHcol = [[sg.Text('Connection type:', font=('Helvetica', font_smaller)),
                 sg.InputCombo(defaults["connection"], default_value=defaults["connection"][0], key='connection', font=('Helvetica', font_small)),
                 sg.Text('Client/Server', size=(11, 1), font=('Helvetica', font_smaller)),
                 sg.Input(defaults["myclient"], key='myclient', size=(28, 1), font=('Helvetica', font_small)),
@@ -58,7 +58,7 @@ def gui_layout(web, window_size, cwd):
                 sg.Text('File format:', font=('Helvetica', font_smaller)),
                 sg.InputCombo(defaults["inv_type"], key='inv_type', font=('Helvetica', font_small), size=(11, 1))],
                ### FILES/REPLAY MODE
-               [sg.Checkbox('Replay mode', size=(11, 1), default=defaults["replay"], key='replay', font=('Helvetica', font_smaller)),
+               [sg.Checkbox('Replay mode', size=(13, 1), default=defaults["replay"], key='replay', font=('Helvetica', font_smaller)),
                 sg.Text('SDS directory', size=(11, 1), font=('Helvetica', font_smaller)),
                 sg.Input(defaults["sds_root"], key='sds_root', size=(35, 1), font=('Helvetica', font_small)),
                 sg.Text('SDS type', size=(8, 1), font=('Helvetica', font_smaller)),
@@ -66,15 +66,20 @@ def gui_layout(web, window_size, cwd):
                 sg.Text('Data format', size=(10, 1), font=('Helvetica', font_smaller)),
                 sg.InputCombo(defaults["dataformat"], key='dataformat', size=(7, 1), font=('Helvetica', font_small))],
                [sg.Checkbox('Custom Format:', size=(15, 1), default=defaults["customfmt"], key='customfmt', font=('Helvetica', font_smaller)),
-                sg.Input(defaults["myFMTSTR"], key='myFMTSTR', size=(85, 1), font=('Helvetica', font_small))],
+                sg.Input(defaults["myFMTSTR"], key='myFMTSTR', size=(85, 1), font=('Helvetica', font_small))]]
+               ###
+    # NOW start the main input element
+    myinput = [[sg.Text('Input data:', font=('Helvetica', font_large))],
+               [sg.Column(myLHcol),
+                sg.Image(cwd+"/doc/retreat_trans96.png")],
                [sg.Text('_'  * nchars, size=(line_chars, 1))],
                ### PRE-PROCESSING ############
                [sg.Text('Pre-processing parameters:', font=('Helvetica', font_large))],
                [sg.Checkbox('Use Z components only', size=(20, 1), default=defaults["zcomps"], key='zcomps', font=('Helvetica', font_smaller)),
-                sg.Checkbox('Demean', size=(8, 1), key='demean', default=defaults["demean"], font=('Helvetica', font_smaller)),
+                sg.Checkbox('Demean', size=(9, 1), key='demean', default=defaults["demean"], font=('Helvetica', font_smaller)),
                 sg.Checkbox('Linear detrend', size=(13, 1), default=defaults["detrend"], key='detrend', font=('Helvetica', font_smaller)),
                 sg.Checkbox('Remove instrument response', size=(27, 1), default=defaults["removeresponse"], key='removeresponse', font=('Helvetica', font_smaller))],
-               [sg.Checkbox('Taper', size=(5, 1), default=defaults["taper"], key='taper', font=('Helvetica', font_smaller)),
+               [sg.Checkbox('Taper', size=(7, 1), default=defaults["taper"], key='taper', font=('Helvetica', font_smaller)),
                 sg.Text('Taper fraction', size=(14, 1), font=('Helvetica', font_smaller)),
                 sg.In(default_text=defaults["taper_pc"], size=(5, 1), key='taper_pc', font=('Helvetica', font_small)),
                 sg.Checkbox('Decimate', size=(9, 1), default=defaults["decimate"], key='decimate', font=('Helvetica', font_smaller)),
@@ -99,8 +104,7 @@ def gui_layout(web, window_size, cwd):
                 sg.In(default_text=defaults["update_interval"], size=(7, 1), key='update_interval', font=('Helvetica', font_small)),
                 sg.Text('Pre-buffer [s]', size=(11, 1), font=('Helvetica', font_smaller)),
                 sg.In(default_text=defaults["prebuf"], size=(7, 1), key='prebuf', font=('Helvetica', font_small)),
-                sg.Text('Fill window on start', size=(16, 1), font=('Helvetica', font_smaller)),
-                sg.Checkbox('', size=(1, 1), default=defaults["fill_on_start"], key='fill_on_start', font=('Helvetica', font_small))],
+                sg.Checkbox('Fill window on start', size=(20, 1), default=defaults["fill_on_start"], key='fill_on_start', font=('Helvetica', font_small))],
                [sg.Text('_'  * nchars, size=(line_chars, 1))],
                ### ARRAY PROCESSiNG #########
                [sg.Text('Array Processing parameters:', font=('Helvetica', font_large))],
@@ -109,7 +113,7 @@ def gui_layout(web, window_size, cwd):
                 sg.In(default_text=defaults["frqlow"], size=(6, 1), key='frqlow', font=('Helvetica', font_small)),
                 sg.Text('Fmax [Hz]', size=(8, 1), font=('Helvetica', font_smaller)),
                 sg.In(default_text=defaults["frqhigh"], size=(5, 1), key='frqhigh', font=('Helvetica', font_small)),
-                sg.Checkbox('Pre-whiten', size=(9, 1), key='prewhiten', default=defaults["prewhiten"], font=('Helvetica', font_smaller)),
+                sg.Checkbox('Pre-whiten', size=(11, 1), key='prewhiten', default=defaults["prewhiten"], font=('Helvetica', font_smaller)),
                 sg.Text('Velocity threshold', size=(14, 1), font=('Helvetica', font_smaller)),
                 sg.In(default_text=defaults["vel_thresh"], size=(7, 1), key='vel_thresh', font=('Helvetica', font_small))],
                [sg.In(default_text=defaults["sll_x"], size=(6, 1), key='sll_x', font=('Helvetica', font_small)),
@@ -155,7 +159,7 @@ def gui_layout(web, window_size, cwd):
                 sg.Text('Number of slowness bins', font=('Helvetica', font_smaller)),
                 sg.In(default_text=defaults["nbin_slow"], size=(5, 1), key='nbin_slow', font=('Helvetica', font_small)),
                 sg.Checkbox('Plot timestamp', size=(15, 1), default=defaults["timestamp"], key='timestamp', font=('Helvetica', font_smaller)),
-                sg.Checkbox('Use stack for plots', size=(15, 1), default=defaults["usestack"], key='usestack', font=('Helvetica', font_smaller))],
+                sg.Checkbox('Use stack for plots', size=(16, 1), default=defaults["usestack"], key='usestack', font=('Helvetica', font_smaller))],
                [sg.Text('RMS/RMeS limits (m/s) [min, max]', size=(29, 1), font=('Helvetica', font_smaller)),
                 sg.In(default_text=defaults["rms_ymin"], size=(5, 1), key='rms_ymin', font=('Helvetica', font_small)),
                 sg.In(default_text=defaults["rms_ymax"], size=(5, 1), key='rms_ymax', font=('Helvetica', font_small)),
@@ -179,9 +183,9 @@ def gui_layout(web, window_size, cwd):
                #### break
                [sg.Text('_'  * nchars, size=(line_chars, 1))],
                #### break
-               [sg.Checkbox('Map display', size=(10, 1), default=defaults["bazmap"], key='bazmap', font=('Helvetica', font_smaller)),
-                sg.Checkbox('Array at centre?', size=(13, 1), default=defaults["map_array_centre"], key='map_array_centre', font=('Helvetica', font_smaller)),
-                sg.Text('Radius from array [km]', size=(1, 1), font=('Helvetica', font_small)),
+               [sg.Checkbox('Map display', size=(11, 1), default=defaults["bazmap"], key='bazmap', font=('Helvetica', font_smaller)),
+                sg.Checkbox('Array at centre?', size=(14, 1), default=defaults["map_array_centre"], key='map_array_centre', font=('Helvetica', font_smaller)),
+                sg.Text('Radius from array [km]', size=(20, 1), font=('Helvetica', font_smaller)),
                 sg.In(default_text=defaults["map_array_radius"], size=(7, 1), key='map_array_radius', font=('Helvetica', font_small))],
                [sg.Text('Plot dimensions (x, y) [px]', size=(21, 1), font=('Helvetica', font_smaller)),
                 sg.In(default_text=defaults["mapx"], size=(5, 1), key='mapx', font=('Helvetica', font_small)),

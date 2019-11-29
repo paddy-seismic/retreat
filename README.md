@@ -1,10 +1,14 @@
 # RETREAT - *RE*al-time *TRE*mor *A*nalysis *T*ool
 <!-- Short blurb about what your product does   -->
->**RETREAT** is a **RE**al-time **TRE**mor **A**nalysis **T**ool written in python, making use of the [*obspy*](https://www.obspy.org/) framework. It performs frequency-wavenumber (f-k) analysis on realtime (or optionally archive) seismic array data to calculate the back azimuth and slowness values in a given time window, with the aim of aiding in the location of volcanic tremor signals.
+>|||
+|---|---|
+|**RETREAT** is a **RE**al-time **TRE**mor **A**nalysis **T**ool written in python, making use of the [*obspy*](https://www.obspy.org/) framework. It performs frequency-wavenumber (f-k) analysis on realtime (or optionally archive) seismic array data to calculate the back azimuth and slowness values in a given time window, with the aim of aiding in the location of volcanic tremor signals.|![logo](doc/retreat_trans96.png)|
 
 [![NPM Version][npm-image]][npm-url]
 [![Build Status][travis-image]][travis-url]
 [![Downloads Stats][npm-downloads]][npm-url]
+
+## Background 
 
 One to two paragraph statement about your product and what it does  
 
@@ -101,28 +105,125 @@ npm test
 
 ## Description of Input Parameters
 
-#### Input Data
+### Input Data
 
 These parameters define the source and properties of the input data. The fields are:
 
 * **Connection type** - Used for realtime data only. Can currently use the dropbox to choose from an FDSN or seedlink client.
-* **Client/Server** - Details of the server for the chosen connection type. For FDSN this is simply the name, e.g. *IRIS*, and for Seedlink this is the server URL and port, e.g. *rtserve.washington.edu:18000*
-* **SCNL** - These specify the data Station, Channel, Network and Location codes (wildcard ? can be used)
-* 
+* **Client/Server** - Details of the server for the chosen connection type. For FDSN this is simply the name, e.g. *IRIS*, and for Seedlink this is the server URL:port, e.g. *rtserve.iris.washington.edu:18000*
+* **SCNL** - These specify the data Station, Channel, Network and Location codes for the data (wildcard ? can be used)
+* **Inventory file** - checkbox to specify if you are supplying an inventory or metadata file (required if Connection type is **not** FDSN or if using archive data)
+* **Inventory filename** - Path and name of inventory file (can use *Browse* button to select)
+* **File format** - Specify format of inventory file. You can use all formats supported by *obspy* (including: STATIONXML, dataless SEED, XSEED or RESP)
+* **Replay mode** - check for for replay or archive data. Leave unchecked for real-time data.
+* **SDS directory** - path to the root of an SDS (Seiscomp Directory Structure)
+* **SDS type** - dropdown box to choose value for the *TYPE* field of the SDS
+* **Data format** - format of the waveform data. You can use all formats supported by *obspy* (including: MSEED, SAC, SEISAN, GCF)
+* **Custom Format** - checkbox to specify if you are using a non-standard SDS structure. If so, fill in your format in the box. Can be specified as {year}/{network}/{station}/{channel}/ etc.
 
-#### Pre-processing
+### Pre-processing
 
-#### Timing
+These parameters define any pre-processing applied to the data before the array analysis is carried out. The fields are:
 
-#### Array Processing parameters
+* **Use Z-components only** - checkbox to select only vertical (Z) components from the stream (checked by default)
+* **Demean** - checkbox to select whether to subtract the mean from each trace
+* **Linear detrend** - checkbox to select whether to remove a linear trend from the data
+* **Remove instrument response**- checkbox to select whether to remove the instrument response (output is velocity)
+* **Taper** -  checkbox to select whether to apply a taper to the data (uses a ? taper)
+* **Taper fraction** - length of taper to apply (as a fraction of the window length)
+* **Decimate** - checkbox to select whether to decimate or downsample to data (less data, speeds up array processing)
+* **New sampling frequency** - specify the new sampling frequency to downsample to if the *Decimate* box is checked
+* **Pre-filter**- checkbox to select whether to Pre-filter the data
+* **Bandpass** - checkbox to select whether to Bandpass filter the data. The next 2 boxes specify the upper and lower frequency limits (in Hz) for the filter
 
-#### Results and Plots
+### Timing
 
-#### Output
+This set of parameters define the amount of data to be processed, by defining the length of the window and how often it is updated (real-time mode). The parameters are:
+
+* **Start Time** -  specify the start time (UTC). This defaults to the current time (when software is started) when using real-time mode
+* **Plot window** - length of the window to be plotted in the output figure timeseries (in seconds)
+* **Window length** - amount of data to fetch on each update (in seconds)
+* **Update interval** - How often to update (fetch new data) - specified in seconds. If the processing for each update step takes longer than this update interval to complete, the software will warn you that realtime processing may lag. For non-realtime/archive data this parameter is ignored and the next chunk of data is processed immediately.
+* **Pre-buffer** - amount to pre-buffer (in seconds) before the start time to ensure no gaps in the data stream. This is only really relevant for realtime mode
+* **Fill window on start** - if this box is checked the software will fetch enough data to fill the entire window (specified by the *Plot window*) on the first update. Otherwise, it will fetch only *Window length* seconds and the window will grow with each update until it reaches the length of the *Plot Window*
+
+### Array Processing parameters
+
+Set parameters for the array processing, using the standard *array_analysis* routines in *obspy*. See the *obspy* documentation [here](https://docs.obspy.org/packages/autogen/obspy.signal.array_analysis.array_processing.html#obspy.signal.array_analysis.array_processing). The choice of these values will depend very much on the particular array being used. 
+
+* The first set of 5 values define the **slowness grid** over which to perform the beamforming. These are the minimum and maximum slowness values in the *x*- and *y*-directions, and the desired slowness step (or resolution).
+
+The next 2 define the bandpass filter limits:
+
+* **Fmin** and **Fmax** - define the minimum and maximum frequency (in Hz) for the f-k analysis
+
+To provide a timeseries output, the f-k analysis is performed on shorter time windows by sliding a window across the entire trace.
+
+* **Window length** - defines the sliding window length (in seconds)
+* **Overlap fraction** - defines the amount to overlap each window [0,1] (a higher value will increase the time resolution and hence processing time)
+
+Other parameters:
+
+* **Pre-whiten** - checkbox to select whether to Pre-whiten the data (unchecked/disabled by default)
+* **Velocity threshold** - Threshold for velocity for f-k analysis
+* **Semblance threshold** - Threshold for semblance for f-k analysis
+
+### Results and Plots
+
+The parameters in this section define what you wish to plotted as the output of the analysis as well as various settings for these figures. The main timeseries figure can have up to 5 panels, with the desired output selected by the 5 checkboxes:
+
+* **Back azimuth** - checkbox to select to plot a timeseries of the calculated back azimuths (in degrees)
+* **Slowness** - checkbox to select to plot a timeseries of the calculated slowness (in s/km)
+* **Seismogram** - checkbox to select to plot the (filtered) seismogram
+* **Spectrogram** - checkbox to select to plot a spectrogram of the data (in degrees)
+* **RMeS** - checkbox to select to plot the RMeS envelope (Root-Median-Square)
+
+RMeS is the envelope of the seismogram calculated using a Root-Median-Square sliding window. The parameters than control this window are:
+
+* **RMeS Window** - length of the window to calculate RMeS in seconds
+* **Overlap fraction** - defines the amount to overlap each window [0,1] (a higher value will increase the time resolution and hence processing time)
+
+The 6th checkbox, **F-K Polar plot** creates a separate figure with the power from the f-k analysis represented in *Polar* form, with the *Back azimuth* on the *angular* axis, and the *slowness* on the *radial* axis.
+
+* **Save figures** - checkbox to select whether to save each figure. If checked each update will save the figure as a NEW file with a unique filename based on the timestamp. Otherwise, if unchecked, the same image file is overwritten on eahc update.
+* **Web Figures** - checkbox to select whether to display output figures in a web browser rather than a separate GUI window (**NOTE** this the default if the software is started in Web interface mode and cannot be changed)
+
+The next set of parameters define the size of the output figures, as pairs of *x* and *y* values. The sizes are specified in pixels (resolution is set to 100 DPI):
+
+* **Timeline plot dimensions** - size of main timeline figure (with up to 5 panels)
+* **Polar plot dimensions** -  size of f-k polar form figure 
+
+Fixed *y*-axis limtis for the various figures can also be set. If set to *auto* the figure will automatically scale the axes:
+
+* **Slowness plot axis limits** - minimum and maximum slowness values for the *y*-axis (in s/km)
+* **Back-azimuth plot axis limits** - minimum and maximum azimuth values for the *y*-axis (in degrees)
+
+You can also define the resolution for the histogram in the polar representation of the results:
+
+* **Number of azimuth bins** - It is expected that 360/this_value is an integer
+* **Number of slowness bins** - Higher values increase the resolution but take longer to process
+
+Other options include:
+
+* **Plot timestamp**  - if checked this will print the timestamp onto each figure (*current* time if in realtime mode OR ? time if archive?)
+* **Use stack for plots**  - if checked a *stack* of the traces in the array will be used as the *seismogram* plot. Otherwise the first station trace is used.
+* **RMS/RMeS limits** - minimum and maximum velocity values for the *y*-axis (in m/s). If set to *auto* the figure will automatically scale the axes
+* **Seismogram ampltiude limits** - minimum and maximum velocity values for the *y*-axis (in m/s). Again, if set to *auto* the figure will automatically scale the axes
+
+### Output
+
+
+### Default values
 
 ## Control Buttons
 
 ## Figures and Output
+
+## Examples
+
+### Real-time unsing data from SPITS array
+
+### Archive data from...
 
 
 
