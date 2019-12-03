@@ -1,37 +1,22 @@
 """get_array_response"""
-#import obspy
-#from obspy.clients.fdsn import Client
-#from obspy.imaging.cm import obspy_sequential
 from obspy.signal.array_analysis import array_transff_wavenumber
-#from obspy.core import UTCDateTime
 import numpy as np
-#import matplotlib.pyplot as plt
 
 def get_array_response(st, inv, array_resp):
     """returns array response and transfer function based on stream object and metadata"""
-    # get arguments
-#    scnl = array_resp["scnl"]
-#    myclient = array_resp["myclient"]
-    #client = Client(myclient)
 
-#    print(st)
-#    print(inv)
-#    print(array_resp)
-
-    # Process coordinates
+    # Extract coordinates for Array response function plotting and convert units if needed
     coords = []
-    # grab from channels
-    for tr in st:
-        coords.append([
-            inv.get_coordinates(tr.get_id(), tr.stats.starttime)["longitude"],
-            inv.get_coordinates(tr.get_id(), tr.stats.starttime)["latitude"],
-            inv.get_coordinates(tr.get_id(), tr.stats.starttime)["elevation"],
-        ])
-    # convert list to array
-    coords = np.array(coords)
+    trace = st[0]
+    if 'latitude' in trace.stats.coordinates:
+        for trace in st:
+            coords.append(np.array([trace.stats.coordinates.longitude, trace.stats.coordinates.latitude, trace.stats.coordinates.elevation]))
+        coords = np.array(coords)
+    else:
+        print('no coordinates found in stream')
 
     if array_resp["elev_in_m"]:
-        # convert elevation from km to m
+        # convert elevation from m to km
         coords[:, 2] /= 1000.
 
     # set limits for wavenumber differences to analyze

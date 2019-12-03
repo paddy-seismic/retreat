@@ -168,7 +168,7 @@ Other parameters:
 * **Velocity threshold** - Threshold for velocity for f-k analysis
 * **Semblance threshold** - Threshold for semblance for f-k analysis
 
-Note on **coordinates**: although the *obspy* array_processing module accepts coordinates as either Cartesian (*xy*) or latitude and longitude (*lonlat*), for convenience in plotting the array response function and map of the array, please note that latitude and longitude (*lonlat*) format is assumed. Therefore, please ensure your station coordinates are specified as latitude and longitude in your station metadata/inventory file.
+Note on **coordinates**: although the *obspy* array_processing module accepts coordinates as either Cartesian (*xy*) or lattiude and longitude (*lonlat*), for convenience in plotting the array response function and map of the array, please note that latitude and longitude (*lonlat*) format is assumed. Therefore, please ensure your station coordinates are specified as latitude and longitude in your station metadata/inventory file.
  
 ### Results and Plots
 
@@ -233,7 +233,7 @@ The final set of values control the (optional) map of the array, overlain by the
 
 * **Map display** - checkbox to select whether to produce a map using data from [OpenTopoMap](https://wiki.openstreetmap.org/wiki/OpenTopoMap). A working internet connection is required to download the relevant tiles. Note that *only one of* the array response function or map can be selected.
 * **Array at centre** - checkbox to select whether to have the array at the centre of the map
-* **Radius from array** - 
+* **Radisu frim array** - 
 * **Plot dimensions** - size of the output figure (*x* and *y* values) specified in *pixels*.
 
 If the array at centre box is unchecked, or if so desired, the x- and y-axis limits can be manually specified.

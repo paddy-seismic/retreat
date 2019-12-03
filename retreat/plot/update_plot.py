@@ -29,8 +29,6 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
     baz = data[:, 3]
     slow = data[:, 4]
 
-#    print ("array_results time span = ", (time[-1]-time[0])*24*60*60)
-
     # make output human readable, adjust backazimuth to values between 0 and 360
     baz[baz < 0.0] += 360
 
@@ -137,7 +135,6 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
                 rmes, rtimes = executor.submit(window_rmes, mystack[0], to_plot["rmes_wind"],\
                 to_plot["rmes_ovlp"], logfile).result()
         else:
-#            rmes, rtimes = window_rmes(st[0],to_plot["rmes_wind"],to_plot["rmes_ovlp"],logfile)
             with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc()) as executor:
                 rmes, rtimes = executor.submit(window_rmes, st[0], to_plot["rmes_wind"],\
                 to_plot["rmes_ovlp"], logfile).result()
@@ -180,7 +177,6 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
         ax[aindex, 0].xaxis.set_major_formatter(mdates.AutoDateFormatter(xlocator))
         ax[aindex, 0].set_ylabel('Velocity [ms$^{-1}$]')
 
-        #ax[aindex,0].ticklabel_format(axis='y', style='sci')
         ax[aindex, 0].yaxis.set_major_formatter(mtick.FormatStrFormatter('%.1e'))
         #
         if (aindex+1) == nsubplots:
@@ -207,9 +203,6 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
             mystack[0].spectrogram(**spectro)
         else:
             st[0].spectrogram(**spectro)
-#        with concurrent.futures.ProcessPoolExecutor(max_workers=1) as executor:
-#            executor.submit(st[0].spectrogram(**spectro))
-
         # Grab image for manipulation
         im = ax[aindex, 0].images[0]
 
@@ -240,57 +233,22 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
 
     fig.tight_layout()
 
-################### CREATE FIGURE WINDOW ######################
-##    if to_plot["first"] and not to_plot["webfigs"] and not Global.figwindowlock:
-#    if to_plot["first"] and not Global.figwindowlock:
-#        global image_elem
-#        image_elem = [sg.Image(filename='',key='mytimeline'), sg.Image(filename='',
-#        key='mypolar'), sg.Image(filename='',key='myarrayresp')]
-#        col = [ [image_elem[1]], [image_elem[2]] ]
-#        figlayout = [ [image_elem[0], sg.Column(col)] ]
-#        figwindow = sg.Window('Output Figures',figlayout,resizable=True)
-#        figwindow.Finalize()
-##        # lock flag to prevent duplicate windows
-#        Global.figwindowlock = True
-
-###############################################################
-#    # UPDATE IMAGE ELEMENT FOR OUTPUT
-#    buf = io.BytesIO()
-#    fig.savefig(buf, format='PNG')
-
-#    buf.seek(0)
-#    image_elem[0].Update(data=buf.getvalue())
-#    del buf
-#    gc.collect()
-#    del gc.garbage[:]
-#    gc.collect()
-
     # save figure
 
     if to_plot["savefig"]:
-        #figname = "MainTimeline-{}-{}.png".format(st[0].stats.network,\
-        #st[0].stats.starttime.strftime("%Y%m%d_%H%M%S"))
+
         figname = "{}/{}-{}-{}.png".format(to_plot["figpath"], to_plot["timelinefigname"],\
         st[0].stats.network, st[0].stats.starttime.strftime("%Y%m%d_%H%M%S"))
     else:
         figname = to_plot["figpath"] + to_plot["timelinefigname"] + ".png"
     if to_plot["timestamp"]:
         spt = ax[0, 0].set_title("Plot last updated: "+UTCDateTime.now().ctime())
-    #spt = fig.suptitle("Last updated: "+UTCDateTime.now().ctime())
+
     print("Saving figure: ", figname)
     if to_plot["timestamp"]:
         fig.savefig(figname, bbox_extra_artists=[spt], bbox_inches='tight')
     else:
         fig.savefig(figname, bbox_inches='tight')
-
-#        backend=mpl.get_backend()
-#        with concurrent.futures.ProcessPoolExecutor(max_workers=1) as executor:
-#            mpl.use('Agg')
-#            executor.submit(fig.savefig,figname)
-#        mpl.use(backend)
-#        # ensure that stdout and stderr are redirected to output window
-#        sys.stdout = window.FindElement('outputwindow').TKOut
-#        sys.stderr = window.FindElement('outputwindow').TKOut
 
     ### polar plot of f-k space ##############################
     if to_plot["polar"]:
@@ -319,10 +277,6 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
         # create the azimuth and slowness bins
         abins = np.arange(N + 1) * 360. / N
         sbins = np.linspace(0, 3, N2 + 1)
-
-        # sum rel power in bins given by abins and sbins
-#        hist, baz_edges, sl_edges = \
-#        np.histogram2d(baz, slow, bins=[abins, sbins], weights=relpow)
 
         with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc()) as executor:
             hist, baz_edges, sl_edges = executor.submit(np.histogram2d,\
@@ -359,12 +313,6 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
         axp.set_title(maxstring, y=-0.125, fontsize=10)
         plt.figtext(0.25, 0.9, my_time_label)
         #fig.tight_layout()
-
-#        # UPDATE IMAGE ELEMENT FOR OUTPUT
-#        buf = io.BytesIO()
-#        figp.savefig(buf, format='PNG')
-#        buf.seek(0)
-#        image_elem[1].Update(data=buf.getvalue())
 
         ## SAVE FIGURE
         if to_plot["savefig"]:
@@ -408,12 +356,6 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
             fig.tight_layout()
 
             plt.gca().set_aspect('equal', 'datalim')
-
-#            # UPDATE IMAGE FOR WEB OUTPUT
-#            buf = io.BytesIO()
-#            figa.savefig(buf, format='PNG')
-#            buf.seek(0)
-#            image_elem[2].Update(data=buf.getvalue())
 
             ## SAVE FIGURE
             if to_plot["savefig"]:
@@ -545,14 +487,6 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
 ###########################################################################
 # END OF PLOTTING
 ###########################################################################
-
-#    ## return focus to main window
-#    window.BringToFront()
-#    window.TKroot.focus_force()
-
-#    data = None
-#    buf = None
-#    del data, buf
 
     plt.close('all')
     gc.collect()

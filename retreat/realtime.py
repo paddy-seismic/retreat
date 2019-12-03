@@ -6,15 +6,9 @@ def realtime(gui_input, logfile):
     import time
     import sys
     import gc
-#    import os
-#    import schedule
-#   from safe_schedule3 import SafeScheduler
     from retreat.tools.time_to_wait import time_to_wait
     from retreat.gui.get_param_gui import get_param
     from retreat.update import update
-#    from obspy.core import UTCDateTime
-#   # non-blocking window read:
-#    from cancel import check_for_cancel_exit
 
     # redirect output to log file:
     sys.stdout = open(logfile, 'a+')
@@ -23,23 +17,12 @@ def realtime(gui_input, logfile):
     print("#####################################")
     print("Starting logging: "+ time.strftime('%Y-%m-%d %H:%M:%S'))
 
-    #print('Process p (realtime) id: {}'.format(os.getpid()))
-#    ## set up logs
-#    import logging
-#    logging.root.setLevel(logging.NOTSET)
-#    logging.basicConfig(level=logging.INFO,format='%(asctime)s %(message)s')
-#    logging.Formatter.converter = time.gmtime
-#    logging.getLogger('schedule').setLevel(logging.CRITICAL + 10)
-
     ## get input parameters
     print("Fetching parameters")
     #print(gui_input)
 
     timing, mydata, preproc, kwargs, to_plot, spectro, array_resp = get_param(gui_input)
 
-#    logging.info("target plot window length = %ss",timing["plot_window"])
-#    logging.info("update_interval = %ss",timing["update_interval"])
-#    logging.info("amount of data to fetch each update = %ss",timing["window_length"])
     print("Target plot window length = {0:.2f}s".format(timing["plot_window"]))
     print("Amount of data to fetch each update = {0:.2f}s".format(timing["window_length"]))
     if not mydata["replay"]:
@@ -53,16 +36,8 @@ def realtime(gui_input, logfile):
     gc.collect()
     ###############
 
-    #raise StopIteration
-
     # reset flag
     to_plot["first"] = False
-
-#    if not mydata["replay"]:
-#        ############# schedule loop ##### (REALTIME MODE ONLY)
-#        scheduler = SafeScheduler()
-#        scheduler.every(timing["update_interval"]).seconds.do(update, timing, mydata, \
-#        preproc, kwargs, to_plot, spectro, array_resp, logfile)
 
     ## begin update loop
     while True:

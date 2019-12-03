@@ -3,8 +3,6 @@ def get_param(gui_input):
     """Reads and returns input parameters from the GUI window"""
     import sys
     from obspy.core import UTCDateTime
-    #from round_to_nmin import round_down_to_nmin
-    #import logging
 
     #### timing options
     # need to define some dependent variables outside dictionary
@@ -30,7 +28,6 @@ def get_param(gui_input):
             tstart = UTCDateTime()
 
     if type(tstart).__name__ != 'UTCDateTime':
-        #logging.error('Invalid time format. Using current time.')
         print('Invalid time format. Using current time.')
         tstart = UTCDateTime()
 
@@ -47,7 +44,6 @@ def get_param(gui_input):
         # update interval
         update_interval=float(gui_input["update_interval"]), #in SECONDS
         fill_on_start=gui_input["fill_on_start"], # backfill entire plot window on startup
-        ###tdiff=tdiff,
         prebuf=prebuf,
     )
 
@@ -72,14 +68,6 @@ def get_param(gui_input):
         inv_file=gui_input["inv_file"],
         inv_type=gui_input["inv_type"],
     )
-
-#    # adjust OVERALL start time of window if necessary
-##    if window_length > tdiff:
-##        mydata["t"] = UTCDateTime() - (window_length+prebuf)
-#    while ( mydata["t"] + window_length ) > UTCDateTime():
-#        print("Adjusting start time:")
-#        mydata["t"] = mydata["t"] - (60*mins_to_round_to)
-#    print "New start time: ",mydata["t"]
 
     #### pre-processing parameters
 
@@ -116,9 +104,6 @@ def get_param(gui_input):
         prewhiten=int(gui_input["prewhiten"]),
         # restrict output
         semb_thres=float(gui_input["semb_thresh"]), vel_thres=float(gui_input["vel_thresh"]),
-        #semb_thres=0.85, vel_thres=-1e9,
-        #stime=max(starts),
-        #etime=min(ends),
         stime=None,
         etime=None,
         store=None,
@@ -172,7 +157,6 @@ def get_param(gui_input):
         arrayfigname=gui_input["arrayfigname"],
         mapfigname=gui_input["mapfigname"],
         first=True, # do NOT adjust this!
-        #no_overlap=True,
     )
 
     spectro = dict(
@@ -188,7 +172,7 @@ def get_param(gui_input):
     )
 
     array_resp = dict(
-        coordsys=gui_input["coordsys"],
+        coordsys='lonlat',
         klim=float(gui_input["klim"]),
         kstep_factor=1./(float(gui_input["kstep"])),
         elev_in_m=gui_input["elev_in_m"],

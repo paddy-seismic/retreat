@@ -12,7 +12,6 @@ def get_meta(mydata, logfile):
     sys.stderr = sys.stdout
 
     if mydata["inv_supply"]:
-        #parser = Parser(mydata["inv_file"],format='STATIONXML')
         print("Importing inventory file: ", mydata["inv_file"])
         inv = read_inventory(mydata["inv_file"], format=mydata["inv_type"])
     else:
@@ -23,9 +22,6 @@ def get_meta(mydata, logfile):
             inv = client.get_stations(network=mydata["scnl"]["N"], \
             station=mydata["scnl"]["S"], channel=mydata["scnl"]["C"], \
             location=mydata["scnl"]["L"], level='response')
-
-            #parser = None
-#           inv.write('my_inventory.xml', format='STATIONXML')
 
         else:
             print("No valid inventory specified.")

@@ -71,7 +71,6 @@ def my_defaults(cwd):
         spec=True,
         resp=False,
         bazmap=True,
-        coordsys="lonlat",
         elev_in_m=True,
         klim=30.0,
         kstep=0.025,
