@@ -386,7 +386,8 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
         array_lon = geom[-1, 0] # x-coord
         array_lat = geom[-1, 1] # y-coord
 
-        if to_plot["map_array_centre"]:
+        if to_plot["map_array_centre"]: # array at centre
+            print('Array at centre')
             # define lat/lon limits using array centre and a radius (in km)
             my_radius = to_plot["map_array_radius"] # km
 
@@ -394,19 +395,60 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
             lat_min = displace(array_lon, array_lat, 180, my_radius)[0] # min lat, due S of array
             lon_max = displace(array_lon, array_lat, 90, my_radius)[1] # min lon, due E of array
             lat_max = displace(array_lon, array_lat, 0, my_radius)[0] # max lat, due N of array
-        else:
-            lon_min = to_plot["lon_min"]
-            lat_min = to_plot["lat_min"]
-            lon_max = to_plot["lon_max"]
-            lat_max = to_plot["lat_max"]
 
-        # osm zoom level
-        zoom = int(round(7.12*np.exp(-0.0357*my_radius)+6.46)) # empirically derived approx formula!
-        delta_lat = lat_max - lat_min
-        delta_lon = lon_max - lon_min
+            # get differences/extent of map:
+            delta_lat = lat_max - lat_min
+            delta_lon = lon_max - lon_min
 
-        if not to_plot["map_array_centre"]:
-            my_radius = delta_lat/2
+            # check if any NON-auto values:
+            if any(to_plot[key] != 'auto' for key in ['lat_min', 'lat_max', 'lon_min', 'lon_max']):
+                print('Warning - you have specified array at centre with manual map extent')
+                if not all(to_plot[key] != 'auto' for key in ['lat_min', 'lat_max', 'lon_min', 'lon_max']):
+                    print('Error! You must specify ALL 4 limits')
+                    raise Exception
+#                else:
+#                    print('OK')
+
+                # check and use manually defined value(s)
+                if to_plot["lat_min"] != 'auto':
+                    lat_min = float(to_plot["lat_min"])
+                if to_plot["lat_max"] != 'auto':
+                    lat_max = float(to_plot["lat_max"])
+                if to_plot["lon_min"] != 'auto':
+                    lon_min = float(to_plot["lon_min"])
+                if to_plot["lon_max"] != 'auto':
+                    lon_max = float(to_plot["lon_max"])
+                    
+                # get differences/extent of map:
+                delta_lat = lat_max-lat_min
+                delta_lon = lon_max-lon_min
+                my_radius = (delta_lat/2)*111.32 # convert degrees to km
+                # APPROX. This is fine for the radius calculation for the line
+
+        else: # array NOT at centre
+            print('Manually defined extent')
+#           # check if any AUTO values:
+            for key in ['lat_min', 'lat_max', 'lon_min', 'lon_max']:
+                if to_plot[key] == 'auto': 
+                    print('Error! If array NOT at the map centre, all 4 lat/lon limits MUST be specified')
+                    raise Exception
+
+                if to_plot["lat_min"] != 'auto':
+                    lat_min = float(to_plot["lat_min"])
+                if to_plot["lat_max"] != 'auto':
+                    lat_max = float(to_plot["lat_max"])
+                if to_plot["lon_min"] != 'auto':
+                    lon_min = float(to_plot["lon_min"])
+                if to_plot["lon_max"] != 'auto':
+                    lon_max = float(to_plot["lon_max"])
+
+            # get differences/extent of map:
+            delta_lat = lat_max - lat_min
+            delta_lon = lon_max - lon_min
+            my_radius = (delta_lat/2)*111.32 # convert degrees to km - APPROX. This is fine for the radius calculation
+
+        # GET OpenTopo zoom level:
+        zoom = int(round(7.12*np.exp(-0.0357*my_radius)+6.46)) # WARNING - empirically derived approx formula!
 
         ### create image - fetch tiles from osm tileserver
         im, bbox = get_image_cluster(lat_min, lon_min, delta_lat, delta_lon, zoom, to_plot)

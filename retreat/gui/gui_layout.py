@@ -104,7 +104,7 @@ def gui_layout(web, window_size, cwd):
                 sg.In(default_text=defaults["update_interval"], size=(7, 1), key='update_interval', font=('Helvetica', font_small)),
                 sg.Text('Pre-buffer [s]', size=(11, 1), font=('Helvetica', font_smaller)),
                 sg.In(default_text=defaults["prebuf"], size=(7, 1), key='prebuf', font=('Helvetica', font_small)),
-                sg.Checkbox('Fill window on start', size=(20, 1), default=defaults["fill_on_start"], key='fill_on_start', font=('Helvetica', font_small))],
+                sg.Checkbox('Fill window on start', size=(20, 1), default=defaults["fill_on_start"], key='fill_on_start', font=('Helvetica', font_smaller))],
                [sg.Text('_'  * nchars, size=(line_chars, 1))],
                ### ARRAY PROCESSiNG #########
                [sg.Text('Array Processing parameters:', font=('Helvetica', font_large))],
@@ -160,10 +160,10 @@ def gui_layout(web, window_size, cwd):
                 sg.In(default_text=defaults["nbin_slow"], size=(5, 1), key='nbin_slow', font=('Helvetica', font_small)),
                 sg.Checkbox('Plot timestamp', size=(15, 1), default=defaults["timestamp"], key='timestamp', font=('Helvetica', font_smaller)),
                 sg.Checkbox('Use stack for plots', size=(16, 1), default=defaults["usestack"], key='usestack', font=('Helvetica', font_smaller))],
-               [sg.Text('RMS/RMeS limits (m/s) [min, max]', size=(29, 1), font=('Helvetica', font_smaller)),
+               [sg.Text('RMeS limits (m/s) [min, max]', size=(29, 1), font=('Helvetica', font_smaller)),
                 sg.In(default_text=defaults["rms_ymin"], size=(5, 1), key='rms_ymin', font=('Helvetica', font_small)),
                 sg.In(default_text=defaults["rms_ymax"], size=(5, 1), key='rms_ymax', font=('Helvetica', font_small)),
-                sg.Text('Seismogram ampltiude limits (m/s) [min, max]', size=(36, 1), font=('Helvetica', font_smaller)),
+                sg.Text('Seismogram amplitude limits (m/s) [min, max]', size=(36, 1), font=('Helvetica', font_smaller)),
                 sg.In(default_text=defaults["seis_ymin"], size=(5, 1), key='seis_ymin', font=('Helvetica', font_small)),
                 sg.In(default_text=defaults["seis_ymax"], size=(5, 1), key='seis_ymax', font=('Helvetica', font_small))],
                #### break
@@ -171,11 +171,11 @@ def gui_layout(web, window_size, cwd):
                #### break
                [sg.Checkbox('Array response function', size=(20, 1), default=defaults["resp"], key='resp', font=('Helvetica', font_smaller)),
                 sg.Checkbox('Elevation in [m]', size=(18, 1), default=defaults["elev_in_m"], key='elev_in_m', font=('Helvetica', font_smaller)),
-                sg.Text('wavenumber limit', size=(13, 1), font=('Helvetica', font_smaller)),
+                sg.Text('wavenumber limit', size=(14, 1), font=('Helvetica', font_smaller)),
                 sg.In(default_text=defaults["klim"], size=(6, 1), key='klim', font=('Helvetica', font_small)),
-                sg.Text('wavenumber step', size=(13, 1), font=('Helvetica', font_smaller)),
+                sg.Text('wavenumber step', size=(14, 1), font=('Helvetica', font_smaller)),
                 sg.In(default_text=defaults["kstep"], size=(6, 1), key='kstep', font=('Helvetica', font_small)),
-                sg.Text('Plot dimensions (x, y) [px]', size=(20, 1), font=('Helvetica', font_smaller)),
+                sg.Text('Plot dimensions (x, y) [px]', size=(21, 1), font=('Helvetica', font_smaller)),
                 sg.In(default_text=defaults["arrayx"], size=(5, 1), key='arrayx', font=('Helvetica', font_small)),
                 sg.In(default_text=defaults["arrayy"], size=(5, 1), key='arrayy', font=('Helvetica', font_small))],
                #### break

@@ -119,7 +119,7 @@ These parameters define the source and properties of the input data. The fields 
 * **SDS directory** - path to the root of an SDS (Seiscomp Directory Structure)
 * **SDS type** - dropdown box to choose value for the *TYPE* field of the SDS
 * **Data format** - format of the waveform data. You can use all formats supported by *obspy* (including: MSEED, SAC, SEISAN, GCF)
-* **Custom Format** - checkbox to specify if you are using a non-standard SDS structure. If so, fill in your format in the box. Can be specified as {year}/{network}/{station}/{channel}/ etc.
+* **Custom Format** - checkbox to specify if you are using a non-standard SDS structure. If so, fill in your format in the box. Can be specified as {year}/{network}/{station}/{channel}/ etc. See the *obspy* [source code](https://docs.obspy.org/_modules/obspy/clients/filesystem/sds.html) for more details.
 
 ### Pre-processing
 
@@ -140,7 +140,7 @@ These parameters define any pre-processing applied to the data before the array 
 
 This set of parameters define the amount of data to be processed, by defining the length of the window and how often it is updated (real-time mode). The parameters are:
 
-* **Start Time** -  specify the start time (UTC). This defaults to the current time (when software is started) when using real-time mode
+* **Start Time** -  specify the start time (UTC). This defaults to the current time (when software is started) when using real-time mode. It also accepts the keyword term '*now*'.
 * **Plot window** - length of the window to be plotted in the output figure timeseries (in seconds)
 * **Window length** - amount of data to fetch on each update (in seconds)
 * **Update interval** - How often to update (fetch new data) - specified in seconds. If the processing for each update step takes longer than this update interval to complete, the software will warn you that realtime processing may lag. For non-realtime/archive data this parameter is ignored and the next chunk of data is processed immediately.
@@ -149,7 +149,7 @@ This set of parameters define the amount of data to be processed, by defining th
 
 ### Array Processing parameters
 
-Set parameters for the array processing, using the standard *array_analysis* routines in *obspy*. See the *obspy* documentation [here](https://docs.obspy.org/packages/autogen/obspy.signal.array_analysis.array_processing.html#obspy.signal.array_analysis.array_processing). The choice of these values will depend very much on the particular array being used. 
+Sets parameters for the array processing, using the standard *array_analysis* routines in *obspy*. See the *obspy* documentation [here](https://docs.obspy.org/packages/autogen/obspy.signal.array_analysis.array_processing.html#obspy.signal.array_analysis.array_processing). The choice of these values will depend very much on the particular array being used. 
 
 * The first set of 5 values define the **slowness grid** over which to perform the beamforming. These are the minimum and maximum slowness values in the *x*- and *y*-directions, and the desired slowness step (or resolution).
 
@@ -209,23 +209,21 @@ Other options include:
 
 * **Plot timestamp**  - if checked this will print the timestamp onto each figure (*current* time if in realtime mode OR ? time if archive?)
 * **Use stack for plots**  - if checked a *stack* of the traces in the array will be used as the *seismogram* plot. Otherwise the first station trace is used.
-* **RMS/RMeS limits** - minimum and maximum velocity values for the *y*-axis (in m/s). If set to *auto* the figure will automatically scale the axes
+* **RMeS limits** - minimum and maximum velocity values for the RMes panel *y*-axis (in m/s). If set to *auto* the figure will automatically scale the axes
 * **Seismogram amplitude limits** - minimum and maximum velocity values for the *y*-axis (in m/s). Again, if set to *auto* the figure will automatically scale the axes
 
 The next set of values control the (optional) plot of the array response function:
 
 * **Array response function** - checkbox to select whether to produce plot of the array response function. Note that *only one of* the array response function or map can be selected.
-
-* **Coordinates** - defines the coordinate system used for the array. Allowed values are: *xy* for Cartesian coordinates or *lonlat* for latitude and longitude.
-
+<!--* **Coordinates** - defines the coordinate system used for the array. Allowed values are: *xy* for Cartesian coordinates or *lonlat* for latitude and longitude.-->
 * **Elevation in [m]** - checkbox to determine if elevation values are given in metres. If unchecked elevation values in kilometres are presumed.
 
-The wavenumber grid over which to evaluate the array response if first defined:
+>The wavenumber grid over which to evaluate the array response must also be defined:
 
 * **wavenumber limit** - limit or maximum wavenumber to analyze (assumed symmetric grid *-klim* to *klim* in both *x* and *y*-directions)
 * **wavenumber step** - wavenumber step or resolution of grid
 
-see [here](https://docs.obspy.org/tutorial/code_snippets/array_response_function.html) for the *obspy* documentation and an example of plotting the array response function.
+>see [here](https://docs.obspy.org/tutorial/code_snippets/array_response_function.html) for the *obspy* documentation and an example of plotting the array response function.
 
 * **Plot dimensions** - size of the output figure (*x* and *y* values) specified in *pixels*.
 
@@ -233,15 +231,15 @@ The final set of values control the (optional) map of the array, overlain by the
 
 * **Map display** - checkbox to select whether to produce a map using data from [OpenTopoMap](https://wiki.openstreetmap.org/wiki/OpenTopoMap). A working internet connection is required to download the relevant tiles. Note that *only one of* the array response function or map can be selected.
 * **Array at centre** - checkbox to select whether to have the array at the centre of the map
-* **Radius from array** - 
-* **Plot dimensions** - size of the output figure (*x* and *y* values) specified in *pixels*.
+* **Radius from array** - If array is at the centre of the map, this value defines a radius (in km) to automatically determine the map extent.
+* **Plot dimensions** - size of the map figure (*x* and *y* values) specified in *pixels*.
 
-If the array at centre box is unchecked, or if so desired, the x- and y-axis limits can be manually specified.
-If set to *auto* the figure will automatically scale the axes
+> The *x*- and *y*-axis limits of the map extent can also be manually specified. If the array at centre checkbox is **NOT** checked, these values **MUST** given. Else, if set to *auto* the figure will automatically scale the axes.
 
-* **Latitude limits** -
-* **Longitude limits**- 
+* **Latitude limits** - manually specify the latitude axis limits (min, max) in degrees.
+* **Longitude limits**- manually specify the latitude axis limits (min, max) in degrees.
 
+>If set to *auto* the figure will automatically scale the axes (for array at centre checked)
 #### Spectrogram 
 
 A separate section contains the settings for controlling the spectrogram figure (if selected to plot):
