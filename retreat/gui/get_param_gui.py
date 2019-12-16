@@ -196,5 +196,13 @@ def get_param(gui_input):
         if prebuf > window_length:
             print("Error: prebuffer should be LESS than window_length")
             sys.exit("Warning: prebuffer should be LESS than window_length")
+            
+    if not to_plot["map_array_centre"]: # array NOT at centre
+        for key in ['lat_min', 'lat_max', 'lon_min', 'lon_max']:
+            if to_plot[key] == 'auto': 
+                print('Error! If array NOT at the map centre, all 4 lat/lon limits MUST be specified')
+                sys.exit('Error! If array NOT at the map centre, all 4 lat/lon limits MUST be specified')
 
     return timing, mydata, preproc, kwargs, to_plot, spectro, array_resp
+    
+    

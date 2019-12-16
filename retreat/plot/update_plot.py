@@ -445,11 +445,17 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
             # get differences/extent of map:
             delta_lat = lat_max - lat_min
             delta_lon = lon_max - lon_min
-            my_radius = (delta_lat/2)*111.32 # convert degrees to km - APPROX. This is fine for the radius calculation
+
+            # convert degrees to km - very APPROX. But this is fine for the radius calculation
+            # only used to get zoom level
+            mean_lat = (lat_min+lat_max)/2
+            delta_x = 111.11*np.cos(mean_lat*np.pi/180)*delta_lon
+            delta_y = 111.11*delta_lat
+            my_radius = ( (delta_x/2)**2 + (delta_y/2)**2 )**(1./2)
 
         # GET OpenTopo zoom level:
         zoom = int(round(7.12*np.exp(-0.0357*my_radius)+6.46)) # WARNING - empirically derived approx formula!
-
+        print(zoom)
         ### create image - fetch tiles from osm tileserver
         im, bbox = get_image_cluster(lat_min, lon_min, delta_lat, delta_lon, zoom, to_plot)
 
@@ -480,7 +486,16 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
         # plot back azimuth line
         baz = abins[max_xy[0]]
         baz_err = 3.0 # e.g.
-        line_radius = 1/np.sqrt(2)*(xmax-xmin)
+
+        # calculate the length of the line
+        if to_plot["map_array_centre"]: # array at centre
+            line_radius = (xmax-xmin)/np.sqrt(2) # as we already know it's a square in Cartesian..
+
+        else: # array NOT at centre
+            # Now radius depends on position of array AND shape of map:
+            delta_array_x = np.max(np.abs((x-xmin,x-xmax)))
+            delta_array_y = np.max(np.abs((y-ymin,y-ymax)))
+            line_radius = (delta_array_x**2 + delta_array_x**2)**(1./2)
 
         # create points to join with line- centre of array to edge point
         xx = [x, x+line_radius*np.sin(baz*np.pi/180)]
