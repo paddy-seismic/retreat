@@ -170,14 +170,14 @@ def gui_layout(web, window_size, cwd):
                [sg.Text('_'  * nchars, size=(line_chars, 1))],
                #### break
                [sg.Checkbox('Array response function', size=(20, 1), default=defaults["resp"], key='resp', font=('Helvetica', font_smaller)),
-                sg.Checkbox('Elevation in [m]', size=(18, 1), default=defaults["elev_in_m"], key='elev_in_m', font=('Helvetica', font_smaller)),
+                sg.Checkbox('Elevation in [m]', size=(13, 1), default=defaults["elev_in_m"], key='elev_in_m', font=('Helvetica', font_smaller)),
                 sg.Text('wavenumber limit', size=(14, 1), font=('Helvetica', font_smaller)),
-                sg.In(default_text=defaults["klim"], size=(6, 1), key='klim', font=('Helvetica', font_small)),
+                sg.In(default_text=defaults["klim"], size=(5, 1), key='klim', font=('Helvetica', font_small)),
                 sg.Text('wavenumber step', size=(14, 1), font=('Helvetica', font_smaller)),
-                sg.In(default_text=defaults["kstep"], size=(6, 1), key='kstep', font=('Helvetica', font_small)),
+                sg.In(default_text=defaults["kstep"], size=(5, 1), key='kstep', font=('Helvetica', font_small)),
                 sg.Text('Plot dimensions (x, y) [px]', size=(21, 1), font=('Helvetica', font_smaller)),
-                sg.In(default_text=defaults["arrayx"], size=(5, 1), key='arrayx', font=('Helvetica', font_small)),
-                sg.In(default_text=defaults["arrayy"], size=(5, 1), key='arrayy', font=('Helvetica', font_small))],
+                sg.In(default_text=defaults["arrayx"], size=(4, 1), key='arrayx', font=('Helvetica', font_small)),
+                sg.In(default_text=defaults["arrayy"], size=(4, 1), key='arrayy', font=('Helvetica', font_small))],
                #### break
                [sg.Text('_'  * nchars, size=(line_chars, 1))],
                #### break

@@ -455,7 +455,7 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
 
         # GET OpenTopo zoom level:
         zoom = int(round(7.12*np.exp(-0.0357*my_radius)+6.46)) # WARNING - empirically derived approx formula!
-        print(zoom)
+        #print(zoom)
         ### create image - fetch tiles from osm tileserver
         im, bbox = get_image_cluster(lat_min, lon_min, delta_lat, delta_lon, zoom, to_plot)
 
