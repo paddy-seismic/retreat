@@ -3,5 +3,5 @@ __pycache__/
 retreat.log*
 retreat/output/*.png
 *.nfs*
-.cache
-README.md.bak
+.cache/
+*.md.bak
