@@ -54,15 +54,25 @@ Or alternatively click on the download button (at the top of the page, below the
 Navigate to the cloned repository directory, or unzip/untar the source code to a suitable directory. The contents of the repository should look something like this:
 
 ```
-retreat-git
+retreat
 ├── doc
-│   ├── retreat-buttons.jpg
-│   ├── retreat_GUI_screenshot.jpg
+│   ├── DIAS_logo.jpg
+│   ├── Eurovolc-header-1.jpg
+│   ├── EUROVOLC-logo.jpg
+│   ├── IRIS-NORSAR1.jpg
+│   ├── IRIS-NORSAR2.jpg
 │   ├── retreat_trans128.png
 │   ├── retreat_trans192.png
 │   ├── retreat_trans96.png
-│   ├── retreat_WEB_screenshot1.jpg
-│   └── retreat_WEB_screenshot2.jpg
+│   └── screenshots
+│       ├── retreat-buttons.jpg
+│       ├── retreat_GUI_figwindow.jpg
+│       ├── retreat_GUI.jpg
+│       ├── retreat_GUI_output.jpg
+│       ├── retreat_WEB_bottom.jpg
+│       ├── retreat_WEB_figwindow.jpg
+│       ├── retreat_WEB_output.jpg
+│       └── retreat_WEB_top.jpg
 ├── LICENSE.md
 ├── README.md
 ├── requirements.txt
@@ -90,12 +100,6 @@ retreat-git
     ├── __init__.py
     ├── __main__.py
     ├── output
-    │   ├── basemap.png
-    │   ├── fkpolar.png
-    │   ├── MainTimeline.png
-    │   ├── map.png
-    │   ├── retreat.log
-    │   └── retreat.log.offset
     ├── plot
     │   ├── __init__.py
     │   ├── mapping.py
