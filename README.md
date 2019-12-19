@@ -395,19 +395,29 @@ Data is acquired in real-time from [IRIS](https://www.iris.edu/hq/) via the *obs
 
 To run the example, simply copy the appropriate default values file (NO array) and overwrite the default values:
 
+> ```cd retreat/defaults/```
+
 >```cp default_input_values.py.NO default_input_values.py```
 
 and [start](#starting-the-software) the software. This should begin analysis of real-time data, with results similar to those shown [here](#figure-window).
 
 ### 2. *Archive* data from FUTUREVOLC
 
-The second example uses archive data from the 2014 eruption at B&aacute;r&eth;arbunga volcano in Iceland, collected as part of the FUTUREVOLC project. Several hours of data from 03 September are included with the distribtion. This corresponds to the time period analysed in [Eibl et al., (2017)](https://doi.org/10.1038/ngeo2906).
+The second example uses archive data from the 2014 eruption at B&aacute;r&eth;arbunga volcano in Iceland, collected as part of the FUTUREVOLC project. Several hours of data from 03 September 2014 are included with the distribtion. This corresponds to the time period analysed in [Eibl et al., (2017)](https://doi.org/10.1038/ngeo2906).
 
 Again, to run this example, simply copy the appropriate default values file (VI array) and overwrite the default values:
 
-> ```cp default_input_values.py.VI default_input_values.py```
+> ```cd retreat/defaults/```
+
+>```cp default_input_values.py.VI default_input_values.py```
+
+and [start](#starting-the-software) the software. This should begin analysis of the archive data.
 
 **CHECK - what can we make available here?? and HOW!?**
+
+## References
+
+Eibl, Eva P. S., Bean, C.J., Vogfjörd, K.S., Ying, Y., Lokmer, I., Möllhoff, M., O’Brien, G.S., & Pálsson, F.  (2017). Tremor-rich shallow dyke formation followed by silent magma flow at Bárðarbunga in Iceland. Nature Geoscience volume 10, pages 299–304, doi:[10.1038/ngeo2906](https://doi.org/10.1038/ngeo2906).
 
 ## Release History
 * 0.0.1
