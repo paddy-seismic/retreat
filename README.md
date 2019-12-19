@@ -412,7 +412,7 @@ To run the example, simply copy the appropriate default values file (NO array) a
 
 and [start](#starting-the-software) the software. This should begin analysis of real-time data, with results similar to those shown [here](#figure-window).
 
-### 2. *Archive* data from...
+### 2. *Archive* data from FUTUREVOLC
 
 The second example uses archive data from the 2014 eruption at B&aacute;r&eth;arbunga volcano in Iceland, collected as part of the FUTUREVOLC project. Several hours of data from 03 September are included with the distribtion. This corresponds to the time period analysed in [Eibl et al., (2017)](https://doi.org/10.1038/ngeo2906).
 
@@ -452,7 +452,7 @@ This software was developed and made available as part of the **EUROVOLC** proje
 
 For more information see [https://eurovolc.cp.dias.ie/index.php](https://eurovolc.cp.dias.ie/index.php/Open_software)
 
-![](doc/Eurovolc-header-1.jpg)
+![](doc/EUROVOLC-logo.jpg)
 
 <!--## Contributing-->
 
