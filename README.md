@@ -1,7 +1,7 @@
 # RETREAT - *RE*al-time *TRE*mor *A*nalysis *T*ool
 |||
 |---|---|
-|**RETREAT** is a **RE**al-time **TRE**mor **A**nalysis **T**ool written in python, making use of the [*obspy*](https://www.obspy.org/) framework. It performs frequency-wavenumber (f-k) analysis on realtime (or optionally archive) seismic array data to calculate the back azimuth and slowness values in a given time window, with the aim of aiding in the location of volcanic tremor signals.|<img src="doc/retreat_trans96.png" alt="logo" width="96"/>|
+|**RETREAT** is a **RE**al-time **TRE**mor **A**nalysis **T**ool written in python, making use of the [*obspy*](https://www.obspy.org/) framework. It performs frequency-wavenumber (f-k) analysis on realtime (or optionally archive) seismic array data to calculate the back azimuth and slowness values in a given time window, with the aim of aiding in the location of volcanic tremor signals.|<img src="doc/retreat_trans96.png" alt="logo" width="200"/>|
 
 ## Background 
 
