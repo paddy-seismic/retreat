@@ -13,45 +13,19 @@ This software tool uses seismic array data and array processing techniques to he
 
 ## Installation
 
-#### Requirements
-
-This software requires python3. A list of required python modules is contained in the _requirements.txt_ file.
-
-These are:
-
-- scipy (```python3-scipy```)
-- matplotlib (```python3-matplotlib```)
-- numpy (```python3-numpy```)
-- pygtail (```python3-pygtail```)
-- obspy (```python3-obspy```)
-- psutil (```python3-psutil```)
-- Pillow (```python3-pil```)
-- PySimpleGUI
-- PySimpleGUIWeb
-
-More information on *obspy* and *PySimpleGUI* is available from:
-
-[https://www.obspy.org/]() and [https://pysimplegui.readthedocs.io/en/latest/#install]()
-
-Ubuntu/Debian package names are shown in brackets where available, and can be installed via: 
-
-><code>sudo apt-get install *packagename*</code>
-
-To install the required modules using **pip**, you can type the following:
-
->```pip3 install -r /path/to/requirements.txt```
-
 #### Download
 
 If you wish to use *git* you can download the latest version of the software by cloning the repository to a suitable location by typing:
 
 >```git clone --recursive https://git.dias.ie/paddy/retreat```
 
-Or alternatively click on the download button (at the top of the page, below the project description) to download the source code as a zip, tar or compressed archive file.
+Or alternatively click on the download button (at the top of the page, below the project description) to download the source code as a zip, tar or compressed archive file:
+
+![](doc/screenshots/retreat-gitlab-download.png)
 
 #### Setup
 
-Navigate to the cloned repository directory, or unzip/untar the source code to a suitable directory. The contents of the repository should look something like this:
+After you cloned or downloaded the software, navigate to the repository directory, or unzip/untar the source code to a suitable directory. The contents of the repository should look something like this:
 
 ```
 retreat
@@ -116,7 +90,38 @@ retreat
     └── update.py
 ```
 
- To start the software follow the instructions below.
+Next, check and install all the required software and packages.
+
+#### Requirements
+
+This software requires python3. A list of required python modules is contained in the _requirements.txt_ file.
+
+These are:
+
+- scipy (```python3-scipy```)
+- matplotlib (```python3-matplotlib```)
+- numpy (```python3-numpy```)
+- pygtail (```python3-pygtail```)
+- obspy (```python3-obspy```)
+- psutil (```python3-psutil```)
+- Pillow (```python3-pil```)
+- PySimpleGUI
+- PySimpleGUIWeb
+
+More information on *obspy* and *PySimpleGUI* is available from:
+
+[https://www.obspy.org/]() and [https://pysimplegui.readthedocs.io/en/latest/#install]()
+
+Ubuntu/Debian package names are shown in brackets where available, and can be installed via: 
+
+><code>sudo apt-get install *packagename*</code>
+
+To install the required modules using **pip**, you can type the following:
+
+>```pip3 install -r /path/to/requirements.txt```
+
+
+Finally, to start the software follow the instructions below.
 
 ## Starting the software
 
