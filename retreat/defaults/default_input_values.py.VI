@@ -21,7 +21,7 @@ def my_defaults(cwd):
         N="VI",
         L="",
         # METADATA
-        inv_type=['STATIONXML', 'SEED', 'XSEED', 'RESP'],
+        inv_type=['SEED','STATIONXML', 'XSEED', 'RESP'],
         inv_supply=True,
         inv_file=cwd+"/retreat/example_data/dataless.seed.VI",
         # PRE-PROCESSING
