@@ -25,7 +25,7 @@ Or alternatively click on the download button (at the top of the page, below the
 
 #### Setup
 
-After you cloned or downloaded the software, navigate to the repository directory, or unzip/untar the source code to a suitable directory. The contents of the repository should look something like this:
+After you have cloned or downloaded the software, navigate to the repository directory, or unzip/untar the source code to a suitable directory. The contents of the repository should look something like this:
 
 ```
 retreat
@@ -40,6 +40,7 @@ retreat
 │   ├── retreat_trans96.png
 │   └── screenshots
 │       ├── retreat-buttons.jpg
+│       ├── retreat-gitlab-download.png
 │       ├── retreat_GUI_figwindow.jpg
 │       ├── retreat_GUI.jpg
 │       ├── retreat_GUI_output.jpg
@@ -49,6 +50,7 @@ retreat
 │       └── retreat_WEB_top.jpg
 ├── LICENSE.md
 ├── README.md
+├── README.md.bak
 ├── requirements.txt
 └── retreat
     ├── data
@@ -65,7 +67,17 @@ retreat
     │   ├── default_input_values.py
     │   ├── default_input_values.py.NO
     │   ├── default_input_values.py.VI
+    │   ├── default_input_values.py.VI.old
     │   └── __init__.py
+    ├── example_data
+    │   ├── dataless.seed.VI
+    │   ├── VI.URA..HHZ.2014.246.00.00.mseed
+    │   ├── VI.URB..HHZ.2014.246.00.00.mseed
+    │   ├── VI.URD..HHZ.2014.246.00.00.mseed
+    │   ├── VI.URE..HHZ.2014.246.00.00.mseed
+    │   ├── VI.URF..HHZ.2014.246.00.00.mseed
+    │   ├── VI.URG..HHZ.2014.246.00.00.mseed
+    │   └── VI.URH..HHZ.2014.246.00.00.mseed
     ├── gui
     │   ├── get_param_gui.py
     │   ├── gui_layout.py
@@ -73,7 +85,6 @@ retreat
     │   └── __init__.py
     ├── __init__.py
     ├── __main__.py
-    ├── output
     ├── plot
     │   ├── __init__.py
     │   ├── mapping.py
@@ -90,7 +101,7 @@ retreat
     └── update.py
 ```
 
-Next, check and install all the required software and packages.
+Next, check and install all the required software and packages by following the instructions in next section.
 
 #### Requirements
 
@@ -119,7 +130,6 @@ Ubuntu/Debian package names are shown in brackets where available, and can be in
 To install the required modules using **pip**, you can type the following:
 
 >```pip3 install -r /path/to/requirements.txt```
-
 
 Finally, to start the software follow the instructions below.
 
