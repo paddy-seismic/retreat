@@ -1,177 +1,125 @@
-"""Dictionary containing Default Input Values"""
-import os
-from obspy.core import UTCDateTime
-# default parameter values:
-defaults = dict(
-    #########################
-    # DATA SOURCES - REALTIME
-    myclient="IRIS",
-    # DATA SOURCES - REPLAY
-    replay=True,
-    customfmt=True,
-    sds_root="/mnt/REPO/13-FUTUREVOLC/MINISEED",
-    myFMTSTR="{year}/{network}/{station}/{channel}/{network}.{station}.\
-    {location}.{channel}.{year}.{doy:03d}.00.00.mseed",
-    # SCNL
-    S="UR*",
-    C="HHZ",
-    N="VI",
-    L="",
-    # METADATA
-    inv_supply=True,
-    inv_file='/mnt/home_geo/psmith/obspy/realtime/gui/dataless.seed.VI',
-    # PRE-PROCESSING
-    decimate=True,
-    newfreq=20.0,
-    demean=True,
-    detrend=True,
-    bandpass=True,
-    Fmin=0.1,
-    Fmax=10.0,
-    prefilt=True,
-    removeresponse=True,
-    taper=True,
-    taper_pc=0.005,
-    zcomps=True,
-    # TIMING
-    plot_window=1800,
-    window_length=120,
-    update_interval=30,
-    tstart=UTCDateTime('2014-09-03-00:00').isoformat(),
-    prebuf=30,
-    fill_on_start=True,
-    # ARRAY PROCESSING
-    sll_x=-0.6,
-    sll_y=-0.6,
-    slm_x=0.6,
-    slm_y=0.6,
-    sl_s=0.025,
-    win_len=5.88,
-    win_frac=0.30,
-    prewhiten=False,
-    frqlow=0.8,
-    frqhigh=2.6,
-    semb_thresh='-1e9',
-    vel_thresh='-1e9',
-    nbin_baz=72, # 360/72=5 deg bins
-    nbin_slow=50,
-    # PLOTTING
-    baz=True,
-    slow=True,
-    polar=True,
-    rmes=True,
-    rmes_wind=300.0,
-    rmes_ovlp=0.90,
-    seis=True,
-    spec=True,
-    resp=False,
-    bazmap=True,
-    coordsys="lonlat",
-    elev_in_m=True,
-    klim=10.0,
-    kstep=0.01,
-    timestamp=False,
-    usestack=True,
-    savefig=False,
-    webfigs=False,
-    # PLOT DIMENSIONS
-    timelinex=1600,
-    timeliney=1200,
-    polarx=800,
-    polary=600,
-    arrayx=650,
-    arrayy=600,
-    mapx=650,
-    mapy=650,
-    # AXIS LIMITS
-    slow_ymin="auto",
-    slow_ymax="auto",
-    baz_ymin="auto",
-    baz_ymax="auto",
-    rms_ymin="auto",
-    rms_ymax="auto",
-    seis_ymin="auto",
-    seis_ymax="auto",
-    # SPECTROGRAM
-    fmin=0.5,
-    fmax=2.5,
-    wlen=20.0,
-    per_lap=0.95,
-    clim1=0.75,
-    clim2=1.0,
-    cmap="jet",
-    # MAP
-    map_array_centre=True,
-    map_array_radius=25, # km
-    lon_min="auto",
-    lon_max="auto",
-    lat_min="auto",
-    lat_max="auto",
-    # OUTPUT
-    logpath=os.getcwd(),
-    logfile="retreat/output/retreat.log",
-    figpath=os.getcwd()+"/retreat/output/",
-    timelinefigname="MainTimeline",
-    polarfigname="fkpolar",
-    arrayfigname="arrayresp",
-    mapfigname="map",
-    ########################
-)
-
-#### get screen size and calculate default figure and window sizes
-def default_figure_dims(window):
-    """Determines and returns size of figure window based on screen dimensions"""
-    # get screen dims first:
-    x, y = window.GetScreenDimensions()
-
-    # get aspect ratio
-    myratio = x/y
-
-    if (myratio % (16.0/9.0)) < 0.01:
-        #myaspect = '16:9'
-        quot, rem = divmod(myratio, (16.0/9.0))
-    elif (myratio % (4.0/3.0)) < 0.01:
-        #myaspect = '4:3'
-        quot, rem = divmod(myratio, (16.0/9.0))
-    else:
-        #myaspect = 'other'
-        quot = 1.0
-#    print('quot =',quot)
-#    print('myaspect=',myaspect)
-#    print('myratio=',myratio)
-
-    # calculate default figure sizes to fit
-    if quot != 1.0:
-        x = x/quot
-    # remove edge buffer
-    nbuf = 50 # px
-    x = x - (2*nbuf)
-    y = y - (2*nbuf)
-
-    # set dims:
-    dims = dict()
-    # Fig1 - timeline
-    dims["timelinex"] = int(x-(y/2.))
-    dims["timeliney"] = int(y)
-    # Fig2 - polar
-    dims["polarx"] = int(y/2.)
-    dims["polary"] = int(y/2.)
-    # Fig3 - array resp
-    dims["arrayx"] = int(y/2.)
-    dims["arrayy"] = int(y/2.)
-    # Fig4 - map
-    dims["mapx"] = int(y/2.)
-    dims["mapy"] = int(y/2.)
-
-#    # set default screen LOCATIONS for all windows too:
-#    loc=[
-#    # Fig1 - timeline
-#    [( int(x-(y/2.)), int(y) )],
-#    # Fig2 - polar
-#    [( int(y/2.), int(y/2.) )],
-#    # Fig3 - array resp
-#    [( int(y/2.), int(y/2.) )]
-#    ]
-    #################
-
-    return dims, quot
+"""default_input_values"""
+def my_defaults(cwd):
+    """Dictionary containing Default Input Values"""
+    from obspy.core import UTCDateTime
+    # default parameter values:
+    defaults = dict(
+        #########################
+        # DATA SOURCES - REALTIME
+        myclient="IRIS",
+        connection=['FDSN', 'seedlink'],
+        # DATA SOURCES - REPLAY
+        replay=True,
+        customfmt=True,
+        sds_root=cwd+"/retreat/example_data",
+        sds_type=['', '*', 'D', 'R'],
+        myFMTSTR="{network}.{station}.{location}.{channel}.{year}.{doy:03d}.00.00.mseed",
+        dataformat=['MSEED', 'SAC', 'GCF', 'SEISAN'],
+        # SCNL
+        S="UR*",
+        C="HHZ",
+        N="VI",
+        L="",
+        # METADATA
+        inv_type=['STATIONXML', 'SEED', 'XSEED', 'RESP'],
+        inv_supply=True,
+        inv_file=cwd+"/retreat/example_data/dataless.seed.VI",
+        # PRE-PROCESSING
+        decimate=True,
+        newfreq=20.0,
+        demean=True,
+        detrend=True,
+        bandpass=True,
+        Fmin=0.1,
+        Fmax=10.0,
+        prefilt=True,
+        removeresponse=True,
+        taper=True,
+        taper_pc=0.005,
+        zcomps=True,
+        # TIMING
+        plot_window=1800,
+        window_length=120,
+        update_interval=30,
+        tstart=UTCDateTime('2014-09-03-00:00').isoformat(),
+        prebuf=30,
+        fill_on_start=True,
+        # ARRAY PROCESSING
+        sll_x=-0.6,
+        sll_y=-0.6,
+        slm_x=0.6,
+        slm_y=0.6,
+        sl_s=0.025,
+        win_len=5.88,
+        win_frac=0.30,
+        prewhiten=False,
+        frqlow=0.8,
+        frqhigh=2.6,
+        semb_thresh='-1e9',
+        vel_thresh='-1e9',
+        nbin_baz=72, # 360/72=5 deg bins
+        nbin_slow=50,
+        # PLOTTING
+        baz=True,
+        slow=True,
+        polar=True,
+        rmes=True,
+        rmes_wind=300.0,
+        rmes_ovlp=0.90,
+        seis=True,
+        spec=True,
+        resp=False,
+        bazmap=True,
+        elev_in_m=True,
+        klim=10.0,
+        kstep=0.01,
+        timestamp=False,
+        usestack=True,
+        savefig=False,
+        webfigs=False,
+        # PLOT DIMENSIONS
+        timelinex=1600,
+        timeliney=1200,
+        polarx=800,
+        polary=600,
+        arrayx=650,
+        arrayy=600,
+        mapx=650,
+        mapy=650,
+        # AXIS LIMITS
+        slow_ymin="auto",
+        slow_ymax="auto",
+        baz_ymin="auto",
+        baz_ymax="auto",
+        rms_ymin="auto",
+        rms_ymax="auto",
+        seis_ymin="auto",
+        seis_ymax="auto",
+        # SPECTROGRAM
+        fmin=0.5,
+        fmax=2.5,
+        wlen=20.0,
+        per_lap=0.95,
+        clim1=0.75,
+        clim2=1.0,
+        cmap="jet",
+        # MAP
+        map_array_centre=True,
+        map_array_radius=25, # km
+        lon_min="auto",
+        lon_max="auto",
+        lat_min="auto",
+        lat_max="auto",
+        # OUTPUT
+        #logpath=os.getcwd(),
+        logpath=cwd+"/retreat/output/",
+        logfile="retreat.log",
+        #figpath=os.getcwd()+"/retreat/output/",
+        figpath=cwd+"/retreat/output/",
+        timelinefigname="MainTimeline",
+        polarfigname="fkpolar",
+        arrayfigname="arrayresp",
+        mapfigname="map",
+        ########################
+    )
+    return defaults
