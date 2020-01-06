@@ -3,6 +3,8 @@ __pycache__/
 *.nfs*
 .cache/
 *.md.bak
+filenr.lis
+mulplt.out
 # exclude everything in output directory
 retreat/output/*
 # exception to the rule- should keep empty directory

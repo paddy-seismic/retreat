@@ -38,10 +38,10 @@ def my_defaults(cwd):
         taper_pc=0.005,
         zcomps=True,
         # TIMING
-        plot_window=1800,
-        window_length=120,
+        plot_window=3600,
+        window_length=600,
         update_interval=30,
-        tstart=UTCDateTime('2014-09-03-00:00').isoformat(),
+        tstart=UTCDateTime('2014-09-03-06:00').isoformat(),
         prebuf=30,
         fill_on_start=True,
         # ARRAY PROCESSING
