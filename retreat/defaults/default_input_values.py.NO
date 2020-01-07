@@ -10,8 +10,8 @@ def my_defaults(cwd):
         connection=['FDSN', 'seedlink'],
         # DATA SOURCES - REPLAY
         replay=False,
-        customfmt=True,
-        sds_root="/mnt/REPO/13-FUTUREVOLC/MINISEED",
+        customfmt=False,
+        sds_root=cwd+"/retreat/example_data",
         sds_type=['', '*', 'D', 'R'],
         myFMTSTR="{year}/{network}/{station}/{channel}/"\
         "{network}.{station}.{location}.{channel}.{year}.{doy:03d}.00.00.mseed",
@@ -24,7 +24,7 @@ def my_defaults(cwd):
         # METADATA
         inv_type=['STATIONXML', 'SEED', 'XSEED', 'RESP'],
         inv_supply=False,
-        inv_file='/mnt/home_geo/psmith/obspy/realtime/NO.xml',
+        inv_file=cwd+"/retreat/example_data/dataless.seed.VI",
         # PRE-PROCESSING
         decimate=True,
         newfreq=20.0,
