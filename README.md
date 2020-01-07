@@ -67,7 +67,6 @@ retreat
     │   ├── default_input_values.py
     │   ├── default_input_values.py.NO
     │   ├── default_input_values.py.VI
-    │   ├── default_input_values.py.VI.old
     │   └── __init__.py
     ├── example_data
     │   ├── dataless.seed.VI
