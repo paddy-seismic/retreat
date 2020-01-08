@@ -24,7 +24,7 @@ def my_defaults(cwd):
         # METADATA
         inv_type=['STATIONXML', 'SEED', 'XSEED', 'RESP'],
         inv_supply=False,
-        inv_file=cwd+"/retreat/example_data/dataless.seed.VI",
+        inv_file=cwd+"/retreat/example_data/dataless.seed.UR",
         # PRE-PROCESSING
         decimate=True,
         newfreq=20.0,

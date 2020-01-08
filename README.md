@@ -359,9 +359,9 @@ which contains values to run the *real-time* data example, using data from the S
 
 and
 
->```default_input_values.py.VI```
+>```default_input_values.py.UR```
 
-which contains values to run the *archive* data example, using data from the B&aacute;r&eth;arbunga (VI) array.
+which contains values to run the *archive* data example, using data from the B&aacute;r&eth;arbunga (UR) array.
 
 ## Control Buttons
 
@@ -417,13 +417,16 @@ and [start](#starting-the-software) the software. This should begin analysis of 
 
 ### 2. *Archive* mode using data from FUTUREVOLC
 
-The second example uses archive data from the 2014 eruption at B&aacute;r&eth;arbunga volcano in Iceland, collected as part of the FUTUREVOLC project. Several hours of data between 00:00 and 08:00 UTC on 03 September 2014 are included with the distribution. This corresponds to part of the time period analysed in [Eibl et al., (2017)](https://doi.org/10.1038/ngeo2906).
+The second example uses archive data from the 2014 eruption at B&aacute;r&eth;arbunga volcano/Holuhraun in Iceland, collected as part of the FUTUREVOLC project. Several hours of data from the UR array between 00:00 and 08:00 UTC on 03 September 2014 are included with the distribution. This corresponds to part of the time period analysed in [Eibl et al., (2017a)](https://doi.org/10.1038/ngeo2906). The map below (taken from  [Eibl et al., (2017b)](https://doi.org/10.1002/2016JB013892) shows the location of the seven station UR array in Iceland, relative to the erupted lava flow field in Holuhraun (red) and Bárdarbunga volcano (B, black dot) 
 
-Again, to run this example, simply copy the appropriate default values file (VI array) and overwrite the default values:
+
+![IRIS-Norsar-info](doc/UR-array-map.png)
+
+Again, to run this example, simply copy the appropriate default values file (UR array) and overwrite the default values:
 
 > ```cd retreat/defaults/```
 
->```cp default_input_values.py.VI default_input_values.py```
+>```cp default_input_values.py.UR default_input_values.py```
 
 and [start](#starting-the-software) the software. This should begin analysis of the archive data.
 
@@ -431,7 +434,9 @@ and [start](#starting-the-software) the software. This should begin analysis of 
 
 ## References
 
-Eibl, Eva P. S., Bean, C.J., Vogfjörd, K.S., Ying, Y., Lokmer, I., Möllhoff, M., O’Brien, G.S., & Pálsson, F.  (2017). Tremor-rich shallow dyke formation followed by silent magma flow at Bárðarbunga in Iceland. Nature Geoscience volume 10, pages 299–304, doi:[10.1038/ngeo2906](https://doi.org/10.1038/ngeo2906).
+Eibl, Eva P. S., Bean, C.J., Vogfjörd, K.S., Ying, Y., Lokmer, I., Möllhoff, M., O’Brien, G.S., & Pálsson, F.  (2017a). Tremor-rich shallow dyke formation followed by silent magma flow at Bárðarbunga in Iceland. Nature Geoscience volume 10, pages 299–304, doi:[10.1038/ngeo2906](https://doi.org/10.1038/ngeo2906).
+
+Eibl, E. P. S., Bean, C. J., Jónsdóttir, I., Höskuldsson, A., Thordarson, T., Coppola, D., Witt, T., and Walter, T. R. (2017b), Multiple coincident eruptive seismic tremor sources during the 2014–2015 eruption at Holuhraun, Iceland, J. Geophys. Res. Solid Earth, 122, 2972– 2987, doi:[10.1002/2016JB013892](https://doi.org/10.1002/2016JB013892).
 
 ## Release History
 * 0.0.1
