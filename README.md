@@ -419,8 +419,10 @@ and [start](#starting-the-software) the software. This should begin analysis of 
 
 The second example uses archive data from the 2014 eruption at B&aacute;r&eth;arbunga volcano/Holuhraun in Iceland, collected as part of the FUTUREVOLC project. Several hours of data from the UR array between 00:00 and 08:00 UTC on 03 September 2014 are included with the distribution. This corresponds to part of the time period analysed in [Eibl et al., (2017a)](https://doi.org/10.1038/ngeo2906). The map below (taken from  [Eibl et al., (2017b)](https://doi.org/10.1002/2016JB013892) shows the location of the seven station UR array in Iceland, relative to the erupted lava flow field in Holuhraun (red) and Bárdarbunga volcano (B, black dot) 
 
-
-![IRIS-Norsar-info](doc/UR-array-map.png)
+![UR-array-map](doc/UR-array-map.png)
+<!--<p align="center">-->
+<!--  <img src="doc/UR-array-map.png">-->
+<!--</p>-->
 
 Again, to run this example, simply copy the appropriate default values file (UR array) and overwrite the default values:
 
