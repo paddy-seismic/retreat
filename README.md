@@ -417,7 +417,7 @@ and [start](#starting-the-software) the software. This should begin analysis of 
 
 ### 2. *Archive* mode using data from FUTUREVOLC
 
-The second example uses archive data from the 2014 eruption at B&aacute;r&eth;arbunga volcano in Iceland, collected as part of the FUTUREVOLC project. Several hours of data from 03 September 2014 are included with the distribution. This corresponds to the time period analysed in [Eibl et al., (2017)](https://doi.org/10.1038/ngeo2906).
+The second example uses archive data from the 2014 eruption at B&aacute;r&eth;arbunga volcano in Iceland, collected as part of the FUTUREVOLC project. Several hours of data between 00:00 and 08:00 UTC on 03 September 2014 are included with the distribution. This corresponds to part of the time period analysed in [Eibl et al., (2017)](https://doi.org/10.1038/ngeo2906).
 
 Again, to run this example, simply copy the appropriate default values file (VI array) and overwrite the default values:
 
@@ -427,7 +427,7 @@ Again, to run this example, simply copy the appropriate default values file (VI 
 
 and [start](#starting-the-software) the software. This should begin analysis of the archive data.
 
-**CHECK - what can we make available here?? and HOW!?**
+<!--**CHECK - what can we make available here?? and HOW!?**-->
 
 ## References
 
