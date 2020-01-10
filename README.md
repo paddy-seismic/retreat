@@ -182,7 +182,7 @@ These parameters define the source and properties of the input data. The fields 
 * **Inventory file** - checkbox to specify if you are supplying an inventory or metadata file (required if Connection type is **not** FDSN or if using archive data)
 * **Inventory filename** - Path and name of inventory file (you can also use the *Browse* button to select)
 * **File format** - Specify format of inventory file. You can use all formats supported by *obspy* (including: STATIONXML, dataless SEED, XSEED or RESP)
-* **Replay mode** - checkbox for for replay or archive data. Leave unchecked for real-time data.
+* **Replay mode** - checkbox for replay or archive data. Leave unchecked for real-time data.
 * **SDS directory** - path to the root of an SDS (Seiscomp Directory Structure)
 * **SDS type** - dropdown box to choose value for the *TYPE* field of the SDS
 * **Data format** - format of the waveform data. You can use all formats supported by *obspy* (including: MSEED, SAC, SEISAN, GCF)
