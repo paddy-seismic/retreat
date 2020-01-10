@@ -301,7 +301,7 @@ The final set of values control the (optional) map of the array, overlain by the
 * **Radius from array** - If array is at the centre of the map, this value defines a radius (in km) to automatically determine the map extent.
 * **Plot dimensions** - size of the map figure (*x* and *y* values) specified in *pixels*.
 
-The *x*- and *y*-axis limits of the map extent can also be manually specified. If the array at centre checkbox is **NOT** checked, these values **MUST** given. Else, if set to *auto* the figure will automatically scale the axes.
+The *x*- and *y*-axis limits of the map extent can also be manually specified. If the array at centre checkbox is **NOT** checked, these values **MUST** be given. Else, if set to *auto* the figure will automatically scale the axes.
 
 * **Latitude limits** - manually specify the latitude axis limits (min, max) in degrees.
 * **Longitude limits**- manually specify the latitude axis limits (min, max) in degrees.
