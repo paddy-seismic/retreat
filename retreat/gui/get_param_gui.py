@@ -151,6 +151,7 @@ def get_param(gui_input):
         usestack=gui_input["usestack"],
         savefig=gui_input["savefig"],
         webfigs=gui_input["webfigs"],
+        logos=gui_input["logos"],
         figpath=gui_input["figpath"],
         timelinefigname=gui_input["timelinefigname"],
         polarfigname=gui_input["polarfigname"],

@@ -15,9 +15,25 @@ from obspy.core import UTCDateTime
 from retreat.plot.rms_rmes import window_rms, window_rmes, tr2rms, tr2rmes
 from retreat.data.get_array_response import get_array_response
 from retreat.tools.processpool import get_nproc
+from retreat.plot.add_logos import add_logos
 
 def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
     """Updates output figures in the figure window based on the latest data"""
+    
+    # Set font sizes:
+    SMALL_SIZE = 13
+    MEDIUM_SIZE = 15
+    BIGGER_SIZE = 18
+
+    plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
+    plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
+    plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
+    plt.rc('xtick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+    plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+    plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
+    plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
+#
+    
     # redirect output to log file:
     sys.stdout = open(logfile, 'a+')
     sys.stderr = sys.stdout
@@ -41,7 +57,7 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
     'rms_ymin', 'rms_ymax', 'seis_ymin', 'seis_ymax', 'savefig', 'figpath', 'webfigs',\
     'map_array_radius', 'bazmap', 'mapx', 'mapy', 'map_array_centre', 'mapfigname', 'lat_min',\
     'lat_max', 'lon_min', 'lon_max', 'nbin_baz', 'nbin_slow', 'timelinefigname', 'polarfigname',\
-    'arrayfigname', 'first')])
+    'arrayfigname', 'logos', 'first')])
 
     print("Number of subplots selected = ", nsubplots)
 
@@ -232,18 +248,22 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
             ax[aindex, 0].set_xlabel(my_xlabel)
 
     fig.tight_layout()
+    
+    # add logo
+    if to_plot["logos"]:
+        add_logos(fig, 20)
+    
+    # add timestamp
+    if to_plot["timestamp"]:
+        spt = ax[0, 0].set_title("Plot last updated: "+UTCDateTime.now().ctime(),\
+        fontsize=BIGGER_SIZE)
 
-    # save figure
-
+    # SAVE FIGURE
     if to_plot["savefig"]:
-
         figname = "{}/{}-{}-{}.png".format(to_plot["figpath"], to_plot["timelinefigname"],\
         st[0].stats.network, st[0].stats.starttime.strftime("%Y%m%d_%H%M%S"))
     else:
         figname = to_plot["figpath"] + to_plot["timelinefigname"] + ".png"
-    if to_plot["timestamp"]:
-        spt = ax[0, 0].set_title("Plot last updated: "+UTCDateTime.now().ctime())
-
     print("Saving figure: ", figname)
     if to_plot["timestamp"]:
         fig.savefig(figname, bbox_extra_artists=[spt], bbox_inches='tight')
@@ -254,6 +274,26 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
     if to_plot["polar"]:
 
         print("Plotting polar plot")
+        
+        # check figure size for fonts:
+        fn = 0
+        if (to_plot["polarx"] < 650):
+            fn = 1.5
+            if (to_plot["polarx"] < 500):
+                fn = 3.5 
+        # Set font sizes:
+        SMALL_SIZE = SMALL_SIZE-fn
+        MEDIUM_SIZE = MEDIUM_SIZE-fn
+        BIGGER_SIZE = BIGGER_SIZE-fn
+
+        plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
+        plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
+        plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
+        plt.rc('xtick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+        plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+        plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
+        plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
+        ##
 
         # choose number of fractions in plot (desirably 360 degree/N is an integer!)
         N = to_plot["nbin_baz"] #72
@@ -304,15 +344,23 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
 
         # set colorbar limits
         cbar = ColorbarBase(cax, cmap=cmap, norm=Normalize(vmin=hist.min(), vmax=hist.max()))
-        cbar.set_label('Relative Power', rotation=270)
+        cbar.set_label('Relative Power', rotation=270, labelpad=15)
 
         # find maximum
         max_xy = np.unravel_index(np.argmax(hist, axis=None), hist.shape)
-        maxstring = 'Maximum: Back azimuth {}$^\circ$, slowness = {} s/km'\
+        maxstring = 'Max: Back azimuth {}$^\circ$, slowness = {} s/km'\
         .format(str(abins[max_xy[0]]), str(sbins[max_xy[1]]))
-        axp.set_title(maxstring, y=-0.125, fontsize=10)
-        plt.figtext(0.25, 0.9, my_time_label)
+        axp.set_title(maxstring, y=-0.125, fontsize=SMALL_SIZE)
+        plt.figtext(0.5, 0.9, my_time_label, fontsize=MEDIUM_SIZE, horizontalalignment='center')
         #fig.tight_layout()
+
+        # add logos
+        if to_plot["logos"]:
+            add_logos(figp)
+
+        # add timestamp
+        if to_plot["timestamp"]:
+            figp.suptitle("Plot last updated: "+UTCDateTime.now().ctime())
 
         ## SAVE FIGURE
         if to_plot["savefig"]:
@@ -322,8 +370,7 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
             figname = to_plot["figpath"] + to_plot["polarfigname"] + ".png"
 
         print("Saving figure: ", figname)
-        if to_plot["timestamp"]:
-            figp.suptitle("Plot last updated: "+UTCDateTime.now().ctime())
+
         figp.savefig(figname)
 
     ### array response function #################################
@@ -356,6 +403,13 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
             fig.tight_layout()
 
             plt.gca().set_aspect('equal', 'datalim')
+            
+            # add logo
+            if to_plot["logos"]:
+                add_logos(figa)
+
+            if to_plot["timestamp"]:
+                figp.suptitle("Plot last updated: "+UTCDateTime.now().ctime())
 
             ## SAVE FIGURE
             if to_plot["savefig"]:
@@ -363,6 +417,7 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
                 st[0].stats.network, st[0].stats.starttime.strftime("%Y%m%d_%H%M%S"))
             else:
                 figname = to_plot["figpath"] + to_plot["arrayfigname"] + ".png"
+                
             print("Saving figure: ", figname)
             figa.savefig(figname)
 
@@ -403,7 +458,8 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
             # check if any NON-auto values:
             if any(to_plot[key] != 'auto' for key in ['lat_min', 'lat_max', 'lon_min', 'lon_max']):
                 print('Warning - you have specified array at centre with manual map extent')
-                if not all(to_plot[key] != 'auto' for key in ['lat_min', 'lat_max', 'lon_min', 'lon_max']):
+                if not all(to_plot[key] != 'auto' for key in ['lat_min', 'lat_max', 'lon_min',\
+                'lon_max']):
                     print('Error! You must specify ALL 4 limits')
                     raise Exception
 #                else:
@@ -430,7 +486,8 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
 #           # check if any AUTO values:
             for key in ['lat_min', 'lat_max', 'lon_min', 'lon_max']:
                 if to_plot[key] == 'auto': 
-                    print('Error! If array NOT at the map centre, all 4 lat/lon limits MUST be specified')
+                    print('Error! If array NOT at the map centre, \
+                    all 4 lat/lon limits MUST be specified')
                     raise Exception
 
                 if to_plot["lat_min"] != 'auto':
@@ -451,10 +508,10 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
             mean_lat = (lat_min+lat_max)/2
             delta_x = 111.11*np.cos(mean_lat*np.pi/180)*delta_lon
             delta_y = 111.11*delta_lat
-            my_radius = ( (delta_x/2)**2 + (delta_y/2)**2 )**(1./2)
+            my_radius = ((delta_x/2)**2 + (delta_y/2)**2)**(1./2)
 
         # GET OpenTopo zoom level:
-        zoom = int(round(7.12*np.exp(-0.0357*my_radius)+6.46)) # WARNING - empirically derived approx formula!
+        zoom = int(round(7.12*np.exp(-0.0357*my_radius)+6.46)) #WARNING-empirically derived formula!
         #print(zoom)
         ### create image - fetch tiles from osm tileserver
         im, bbox = get_image_cluster(lat_min, lon_min, delta_lat, delta_lon, zoom, to_plot)
@@ -493,8 +550,8 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
 
         else: # array NOT at centre
             # Now radius depends on position of array AND shape of map:
-            delta_array_x = np.max(np.abs((x-xmin,x-xmax)))
-            delta_array_y = np.max(np.abs((y-ymin,y-ymax)))
+            delta_array_x = np.max(np.abs((x-xmin, x-xmax)))
+            delta_array_y = np.max(np.abs((y-ymin, y-ymax)))
             line_radius = (delta_array_x**2 + delta_array_x**2)**(1./2)
 
         # create points to join with line- centre of array to edge point
@@ -526,8 +583,16 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
         axm.set_xlim([xmin, xmax])
         axm.set_ylim([ymin, ymax])
 
-        axm.set_title(maxstring, y=-0.05, fontsize=10)
-        plt.figtext(0.25, 0.9, my_time_label)
+        axm.set_title(maxstring, y=-0.05, fontsize=SMALL_SIZE)
+        plt.figtext(0.5, 0.9, my_time_label, fontsize=MEDIUM_SIZE, horizontalalignment='center')
+        
+        # add logo
+        if to_plot["logos"]:
+            add_logos(figm)
+        
+        # add timestamp
+        if to_plot["timestamp"]:
+            figm.suptitle("Plot last updated: "+UTCDateTime.now().ctime())
 
         ## SAVE FIGURE
         if to_plot["savefig"]:
@@ -537,8 +602,7 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
             figname = to_plot["figpath"] + to_plot["mapfigname"] + ".png"
 
         print("Saving figure: ", figname)
-        if to_plot["timestamp"]:
-            figm.suptitle("Plot last updated: "+UTCDateTime.now().ctime())
+
         figm.savefig(figname)
 
 ###########################################################################

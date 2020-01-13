@@ -157,6 +157,11 @@ def start(web):
 
                     global logfile
                     logfile = gui_input["logpath"]+"/"+gui_input["logfile"]
+                                    
+                    # remove any existing log file:
+                    os.remove(logfile)
+                    os.remove(logfile+".offset")
+
 
                     mystdout = sys.stdout  # store this
                     p = Process(target=realtime, name='realtime', args=(gui_input, logfile))

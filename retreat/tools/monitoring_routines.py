@@ -16,8 +16,7 @@ def print_log_to_screen(log_file):
             # start infinite while loop
             while True:
                 if os.path.exists(log_file):
-
-                    for line in Pygtail(log_file):
+                    for line in Pygtail(log_file, paranoid=True, copytruncate=False):
 
                         # print any changes to output window
                         sys.stdout.write(line)
@@ -29,7 +28,7 @@ def print_log_to_screen(log_file):
 
 def update_image_window(image_elem, figwindow, figpath, savefig, timelinefig, polarfig, arrayfig,\
     mapfig, polar, resp, bazmap, ptime):
-    """checks for new and updated figues and updates the gui window"""
+    """checks for new and updated figures and updates the gui window"""
 #print('Thread t2 (images) id: {}'.format(os.getpid()))
 
 #    # redirect output to log file:

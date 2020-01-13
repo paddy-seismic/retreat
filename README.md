@@ -256,6 +256,7 @@ The 6th checkbox, **F-K Polar plot** creates a separate figure with the power fr
 
 * **Save figures** - checkbox to select whether to save each figure. If checked each update will save the figure as a NEW file with a unique filename based on the timestamp. Otherwise, if unchecked, the same image file is overwritten on each update.
 * **Web Figures** - checkbox to select whether to display output figures in a web browser rather than a separate GUI window (**NOTE** this the default if the software is started in Web interface mode and cannot be changed)
+* **Plot logos** - checkbox for whether to add RETREAT and EUROVOLC logos to the output figures (enabled by default)
 
 The next set of parameters define the size of the output figures, as pairs of *x* and *y* values. The sizes are specified in *pixels* (resolution is set to 100 DPI):
 
@@ -307,6 +308,7 @@ The *x*- and *y*-axis limits of the map extent can also be manually specified. I
 * **Longitude limits**- manually specify the latitude axis limits (min, max) in degrees.
 
 If set to *auto* the figure will automatically scale the axes (for array at centre checked)
+
 #### Spectrogram 
 
 A separate section contains the settings for controlling the spectrogram figure (if selected to plot):
@@ -380,7 +382,7 @@ There are 3 simple buttons to control the software:
 
 ### Output window
 
-In both GUI and web mode, the interface displays an output pane that shows the output produced once the **Start** button is pressed. The text displayed on screen is the same as the messages that are written to the log file. This is achieved using the *pygtail* module, which updates the output pane by printing log file lines that have not been read.
+In both GUI and web mode, the interface displays an output pane that shows the output produced once the **Start** button is pressed. The text displayed on screen is the same as the messages that are written to the log file. This is achieved using the *pygtail* module, which updates the output pane by printing log file lines that have not been read. Note that the logfile will be overwritten by default when the software is run, unless a different name is specified in the input parameters.
 
 ![output-pane](doc/screenshots/retreat_WEB_output.jpg)
 
