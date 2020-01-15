@@ -4,7 +4,7 @@ import time
 import math
 import sys
 
-def time_to_wait(start_time, update, end_of_stream, logfile):
+def time_to_wait(start_time, update, end_of_stream, max_realtime_latency, logfile):
     """Calculates how long to wait (if at all) between updates"""
     # redirect output to log file:
     sys.stdout = open(logfile, 'a+')
@@ -19,9 +19,13 @@ def time_to_wait(start_time, update, end_of_stream, logfile):
     print("Difference to real-time: {0:.2f}s".format(delay))
 
     if (diff + fudge) < update:
-        # processing completed within update internal - wait for the remaining seconds:
-        print("Starting next update")
-        time.sleep(math.floor(update - diff - fudge))
+        # processing completed within update internal - if no lag wait for the remaining seconds:
+        if delay > max_realtime_latency:
+            print('Maximum real-time latency exceeded - proceeding immediately')
+            print("Starting next update")
+        else:
+            time.sleep(math.floor(update - diff - fudge))
+            print("Starting next update")
     else:
         # processing of update took longer than the update interval - display warning and proceed
         print("*Warning! Processing of update took longer than update interval ({0:.1f}s)!*"\

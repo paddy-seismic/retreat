@@ -4,27 +4,26 @@ import os
 import time
 import glob
 #import traceback
-from pygtail import Pygtail
+#from pygtail import Pygtail
 
-def print_log_to_screen(log_file):
-    """updates and prints output from log file to gui output window"""
-    print("Starting logging.")
-    #print('Thread t1 (logging) id: {}'.format(os.getpid()))
-    # while loop to try and restart if exeception:
+def follow(thefile):
+    """Approximate pythonic implementation of tail -f"""
     while True:
-        try:
-            # start infinite while loop
-            while True:
-                if os.path.exists(log_file):
-                    for line in Pygtail(log_file, paranoid=True, copytruncate=False):
+        line = thefile.readline()
+        if not line or not line.endswith('\n'):
+            time.sleep(0.2)
+            continue
+        yield line
 
-                        # print any changes to output window
-                        sys.stdout.write(line)
-
-                time.sleep(0.2)
-        except:
-        # restart
-            pass
+def print_log_to_screen(log_file, window):
+    """updates and prints output from log file to gui output window"""
+    while True:
+        if os.path.exists(log_file):
+            logfile = open(log_file, "r")
+            loglines = follow(logfile)
+            for line in loglines:
+                sys.stdout.write(line)
+                window.Refresh()
 
 def update_image_window(image_elem, figwindow, figpath, savefig, timelinefig, polarfig, arrayfig,\
     mapfig, polar, resp, bazmap, ptime):

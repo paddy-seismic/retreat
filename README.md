@@ -112,7 +112,7 @@ These are:
 - scipy (```python3-scipy```)
 - matplotlib (```python3-matplotlib```)
 - numpy (```python3-numpy```)
-- pygtail (```python3-pygtail```)
+<!--- pygtail (```python3-pygtail```)-->
 - obspy (```python3-obspy```)
 - psutil (```python3-psutil```)
 - Pillow (```python3-pil```)
@@ -209,6 +209,7 @@ This set of parameters define the amount of data to be processed, by defining th
 
 * **Start Time** -  specify the start time (UTC). This defaults to the current time (when software is started) when using real-time mode. It also accepts the keyword term '*now*'.
 * **Plot window** - length of the window to be plotted in the output figure timeseries (in seconds)
+* **Max realtime latency** - to account for latency of incoming data and to ensure real-time processing does not lag too much, you can specify the maximum number of seconds to allow for latency. If the delay between the end of the acquired data stream and the current time exceeds this value then processing will proceed immediately without waiting for the update interval. This parameter has no effect for archive data in replay mode.
 * **Window length** - amount of data to fetch on each update (in seconds)
 * **Update interval** - How often to update (fetch new data) - specified in seconds. If the processing for each update step takes longer than this update interval to complete, the software will warn you that realtime processing may lag. NOTE: for non-realtime/archive data this parameter is ignored and the next chunk of data is processed immediately.
 * **Pre-buffer** - amount to pre-buffer (in seconds) before the start time to ensure there are no gaps in the data stream. This is only relevant for real-time mode
@@ -382,7 +383,8 @@ There are 3 simple buttons to control the software:
 
 ### Output window
 
-In both GUI and web mode, the interface displays an output pane that shows the output produced once the **Start** button is pressed. The text displayed on screen is the same as the messages that are written to the log file. This is achieved using the *pygtail* module, which updates the output pane by printing log file lines that have not been read. Note that the logfile will be overwritten by default when the software is run, unless a different name is specified in the input parameters.
+In both GUI and web mode, the interface displays an output pane that shows the output produced once the **Start** button is pressed. The text displayed on screen is the same as the messages that are written to the log file. Note that the logfile will be overwritten by default when the software is run, unless a different name is specified in the input parameters.
+<!--This is achieved using the *pygtail* module, which updates the output pane by printing log file lines that have not been read. -->
 
 ![output-pane](doc/screenshots/retreat_WEB_output.jpg)
 
@@ -417,6 +419,9 @@ To run the example, simply copy the appropriate default values file (NO array) a
 >```cp default_input_values.py.NO default_input_values.py```
 
 and [start](#starting-the-software) the software. This should begin analysis of real-time data, with results similar to those shown [here](#figure-window).
+
+#### Seedink
+Note: this example configuration will also work using the IRIS seedlink server (*rtserve.iris.washington.edu:18000*) rather than the FDSN client as the data source. In this case the **Inventory file** checkbox must be checked as metadata cannot be retrieved automatically. The default for this configuration example is the *NO.xml* file supplied in the *retreat/example_data* directory.
 
 ### 2. *Archive* mode using data from FUTUREVOLC
 

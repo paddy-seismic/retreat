@@ -45,6 +45,8 @@ def get_param(gui_input):
         update_interval=float(gui_input["update_interval"]), #in SECONDS
         fill_on_start=gui_input["fill_on_start"], # backfill entire plot window on startup
         prebuf=prebuf,
+        # maximum real-time latency
+        max_realtime_latency=float(gui_input["max_realtime_latency"]), # in seconds
     )
 
     #### waveform data

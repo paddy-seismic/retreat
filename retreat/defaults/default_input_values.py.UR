@@ -41,6 +41,7 @@ def my_defaults(cwd):
         plot_window=3600,
         window_length=600,
         update_interval=30,
+        max_realtime_latency=180,
         tstart=UTCDateTime('2014-09-03-06:00').isoformat(),
         prebuf=30,
         fill_on_start=True,
@@ -77,6 +78,7 @@ def my_defaults(cwd):
         usestack=True,
         savefig=False,
         webfigs=False,
+        logos=True,
         # PLOT DIMENSIONS
         timelinex=1600,
         timeliney=1200,

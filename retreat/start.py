@@ -159,9 +159,10 @@ def start(web):
                     logfile = gui_input["logpath"]+"/"+gui_input["logfile"]
                                     
                     # remove any existing log file:
-                    os.remove(logfile)
-                    os.remove(logfile+".offset")
-
+                    if os.path.isfile(logfile):
+                        os.remove(logfile)
+#                    if os.path.isfile(logfile+".offset"):
+#                        os.remove(logfile+".offset")
 
                     mystdout = sys.stdout  # store this
                     p = Process(target=realtime, name='realtime', args=(gui_input, logfile))
@@ -179,7 +180,7 @@ def start(web):
                     # 1. monitor log file and print output to screen:
 
                     if 't1' not in locals() or 't1' not in globals():
-                        t1 = KThread(target=print_log_to_screen, args=(logfile,), daemon=True)
+                        t1 = KThread(target=print_log_to_screen, args=(logfile, window), daemon=True)
                     if not t1.is_alive() and not T1_LOCK:
                         t1.start()
                         T1_LOCK = True

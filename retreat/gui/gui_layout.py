@@ -19,7 +19,7 @@ def gui_layout(web, window_size, cwd):
         font_med = 12
         font_smaller = 10
         font_small = 9
-        output_size = [int(window_size[0]*0.48/9.5), int(window_size[1]/21)] # DEFAULT conversion
+        output_size = [int(window_size[0]*0.48/9.5), int(window_size[1]/22.5)] # DEFAULT conversion
         line_chars = int(window_size[0]*0.52/8.7)
         nchars = 200
         # factors from: https://pysimplegui.readthedocs.io/en/latest/#common-element-parameters
@@ -97,7 +97,9 @@ def gui_layout(web, window_size, cwd):
                [sg.Text('Start Time [UTC]', size=(14, 1), font=('Helvetica', font_smaller)),
                 sg.In(default_text=defaults["tstart"], size=(25, 1), key='tstart', font=('Helvetica', font_small)),
                 sg.Text('Plot Window [s]', size=(15, 1), font=('Helvetica', font_smaller)),
-                sg.In(default_text=defaults["plot_window"], size=(10, 1), key='plot_window', font=('Helvetica', font_small))],
+                sg.In(default_text=defaults["plot_window"], size=(10, 1), key='plot_window', font=('Helvetica', font_small)),
+                sg.Text('Max realtime latency [s]', size=(21, 1), font=('Helvetica', font_smaller)),
+                sg.In(default_text=defaults["max_realtime_latency"], size=(5, 1), key='max_realtime_latency', font=('Helvetica', font_small))],
                [sg.Text('Window Length [s]', size=(15, 1), font=('Helvetica', font_smaller)),
                 sg.In(default_text=defaults["window_length"], size=(10, 1), font=('Helvetica', font_small), key='window_length'),
                 sg.Text('Update Interval [s]', size=(15, 1), font=('Helvetica', font_smaller)),

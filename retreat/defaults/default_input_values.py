@@ -24,7 +24,7 @@ def my_defaults(cwd):
         # METADATA
         inv_type=['STATIONXML', 'SEED', 'XSEED', 'RESP'],
         inv_supply=False,
-        inv_file=cwd+"/retreat/example_data/dataless.seed.UR",
+        inv_file=cwd+"/retreat/example_data/NO.xml",
         # PRE-PROCESSING
         decimate=True,
         newfreq=20.0,
@@ -42,7 +42,8 @@ def my_defaults(cwd):
         plot_window=3600,
         window_length=120,
         update_interval=60,
-        tstart=UTCDateTime().isoformat(),
+        max_realtime_latency=180,
+        tstart="now",
         prebuf=30,
         fill_on_start=True,
         # ARRAY PROCESSING

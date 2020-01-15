@@ -53,8 +53,11 @@ def realtime(gui_input, logfile):
             del gc.garbage[:]
             gc.collect()
 #            scheduler.run_pending()
+            # pause to allow figure updates to print:
+            time.sleep(2)
             print("Waiting for next update")
-            time_to_wait(last_start_time, timing["update_interval"], st_end, logfile)
+            time_to_wait(last_start_time, timing["update_interval"], st_end, \
+            timing["max_realtime_latency"], logfile)
             last_start_time = time.time()
             st_end = update(timing, mydata, preproc, kwargs, to_plot, spectro, array_resp, logfile)
 
