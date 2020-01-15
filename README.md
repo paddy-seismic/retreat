@@ -112,7 +112,6 @@ These are:
 - scipy (```python3-scipy```)
 - matplotlib (```python3-matplotlib```)
 - numpy (```python3-numpy```)
-<!--- pygtail (```python3-pygtail```)-->
 - obspy (```python3-obspy```)
 - psutil (```python3-psutil```)
 - Pillow (```python3-pil```)
