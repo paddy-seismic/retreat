@@ -1,7 +1,6 @@
 scipy
 matplotlib
 numpy
-pygtail
 obspy
 psutil
 Pillow
