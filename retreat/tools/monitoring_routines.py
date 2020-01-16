@@ -98,7 +98,7 @@ def update_image_window(image_elem, figwindow, figpath, savefig, timelinefig, po
 #                                        print(moddate1)
 #                                        print(moddate2)
                                         # image changed - reload !
-                                        print('Adding ' + image_filename + ' to figure window')
+                                        #print('Adding ' + image_filename + ' to figure window')
                                         image_elem[j].Update(filename=image_filename)
                                         figwindow.Refresh()
 
@@ -121,7 +121,7 @@ def update_image_window(image_elem, figwindow, figpath, savefig, timelinefig, po
                                             #print(moddate1)
                                             #print(moddate2)
                                             # image changed - reload !
-                                            print('Adding ' + image_filename + ' to figure window')
+                                            #print('Adding ' + image_filename + ' to figure window')
                                             image_elem[j].Update(filename=image_filename)
                                             figwindow.Refresh()
 
@@ -133,7 +133,7 @@ def update_image_window(image_elem, figwindow, figpath, savefig, timelinefig, po
                                         # so just compare to ptime
                                         if moddate2[j] > ptime and not array_plotted:
                                             # image changed - reload !
-                                            print('Updating image: ' + image_filename)
+                                            #print('Updating image: ' + image_filename)
                                             image_elem[j].Update(filename=image_filename)
                                             figwindow.Refresh()
 
@@ -174,7 +174,7 @@ def update_image_window(image_elem, figwindow, figpath, savefig, timelinefig, po
 
                             if j < 2:  # i.e. figure is NOT array plot
                                 if moddate[j] > ptime and image_filename != myalreadyplottedfig[j]:
-                                    print("Adding " + image_filename + " to figure window")
+                                    #print("Adding " + image_filename + " to figure window\n")
                                     image_elem[j].Update(filename=image_filename)
                                     myalreadyplottedfig[j] = image_filename
                                     figwindow.Refresh()
@@ -183,7 +183,7 @@ def update_image_window(image_elem, figwindow, figpath, savefig, timelinefig, po
                                 if bazmap:
                                     if moddate[j] > ptime and \
                                     image_filename != myalreadyplottedfig[j]:
-                                        print("Adding " + image_filename + " to figure window")
+                                        #print("Adding " + image_filename + " to figure window\n")
                                         image_elem[j].Update(filename=image_filename)
                                         myalreadyplottedfig[j] = image_filename
                                         figwindow.Refresh()
@@ -192,7 +192,7 @@ def update_image_window(image_elem, figwindow, figpath, savefig, timelinefig, po
 
                                  # array plot - only updated ONCE at start
                                     if moddate[j] > ptime and not array_plotted:
-                                        print('Adding ' + image_filename + ' to figure window')
+                                        #print('Adding ' + image_filename + ' to figure window\n')
                                         image_elem[j].Update(filename=image_filename)
                                         figwindow.Refresh()
                                         array_plotted = True

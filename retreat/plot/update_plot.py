@@ -12,6 +12,7 @@ from matplotlib.colorbar import ColorbarBase
 from matplotlib.colors import Normalize
 from obspy.imaging.cm import obspy_sequential
 from obspy.core import UTCDateTime
+from obspy.core import Stream
 from retreat.plot.rms_rmes import window_rms, window_rmes, tr2rms, tr2rmes
 from retreat.data.get_array_response import get_array_response
 from retreat.tools.processpool import get_nproc
@@ -130,14 +131,23 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
             ax[aindex, 0].set_xlabel(my_xlabel)
         aindex = aindex + 1
 
-        #rmes_average = False # not yet implemented...
-
     if to_plot["usestack"]: # calculate stack to plot
         from retreat.data.stack import stack
+        # try to remove any bad traces first:
+        prestack = Stream()
+        for tr in st:
+#            print(tr.stats.station, tr.stats.starttime,'-',tr.stats.endtime)
+            if not np.any(np.isnan(tr.data)):
+                prestack.append(tr)
         # use simple linear stack for now
         try:
         # allow 30 seconds difference in trace length (realtime lag)
-            mystack = stack(st, npts_tol=30*st[0].stats.sampling_rate)
+            mystack = stack(prestack, npts_tol=30*prestack[0].stats.sampling_rate,time_tol=1.0)
+            # check for bad data/NaN:
+            if np.any(np.isnan(mystack[0].data)):
+                print('Warning, bad data in stack - reverting to first station in array')
+                mystack[0] = st[0]
+#            print('stack', mystack[0].stats.starttime,'-',tr.stats.endtime)
         except ValueError:
             to_plot["usestack"] = False
 

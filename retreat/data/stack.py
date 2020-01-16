@@ -1,4 +1,4 @@
-def stack(self, group='all', type='linear', npts_tol=0):
+def stack(self, group='all', type='linear', npts_tol=0, time_tol=0):
     """
     Return stream with traces stacked by the same selected metadata.
 
@@ -36,6 +36,7 @@ def stack(self, group='all', type='linear', npts_tol=0):
     """
     import collections
     import numpy as np
+    from obspy.core.util.attribdict import AttribDict
 
     if group == 'id':
         group = '{network}.{station}.{location}.{channel}'
@@ -45,9 +46,18 @@ def stack(self, group='all', type='linear', npts_tol=0):
     stacks = []
     for groupid, traces in groups.items():
         header = {k: v for k, v in traces[0].stats.items()
-                  if all(tr.stats.get(k) == v for tr in traces)}
-        header['stack'] = groupid
-        header['stack_count'] = len(traces)
+                  if all(np.all(tr.stats.get(k) == v) for tr in traces)}
+        header.pop('endtime', None)
+        if 'sampling_rate' not in header:
+            msg = 'Sampling rate of traces to stack is different'
+            raise ValueError(msg)
+        if 'starttime' not in header and time_tol > 0:
+            times = [tr.stats.starttime for tr in traces]
+            if np.ptp(times) <= time_tol:
+                # use high median as starttime
+                header['starttime'] = sorted(times)[len(times) // 2]
+        header['stack'] = AttribDict(group=groupid, count=len(traces),
+                                     type=type)
         npts_all = [len(tr) for tr in traces]
         npts_dif = np.ptp(npts_all)
         npts = min(npts_all)
