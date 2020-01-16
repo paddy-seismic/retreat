@@ -32,11 +32,13 @@ retreat
 ├── doc
 │   ├── DIAS_logo.jpg
 │   ├── Eurovolc-header-1.jpg
+│   ├── EUROVOLC-logo-32.png
 │   ├── EUROVOLC-logo.jpg
 │   ├── IRIS-NORSAR1.jpg
 │   ├── IRIS-NORSAR2.jpg
 │   ├── retreat_trans128.png
 │   ├── retreat_trans192.png
+│   ├── retreat_trans48.png
 │   ├── retreat_trans96.png
 │   ├── screenshots
 │   │   ├── retreat-buttons.jpg
@@ -67,10 +69,11 @@ retreat
     ├── defaults
     │   ├── default_input_values.py
     │   ├── default_input_values.py.NO
-    │   ├── default_input_values.py.VI
+    │   ├── default_input_values.py.UR
     │   └── __init__.py
     ├── example_data
-    │   ├── dataless.seed.VI
+    │   ├── dataless.seed.UR
+    │   ├── NO.xml
     │   ├── VI.URA..HHZ.2014.246.00.00.mseed
     │   ├── VI.URB..HHZ.2014.246.00.00.mseed
     │   ├── VI.URD..HHZ.2014.246.00.00.mseed
@@ -86,6 +89,7 @@ retreat
     ├── __init__.py
     ├── __main__.py
     ├── plot
+    │   ├── add_logos.py
     │   ├── __init__.py
     │   ├── mapping.py
     │   ├── rms_rmes.py
