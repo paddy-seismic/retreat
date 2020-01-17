@@ -43,7 +43,6 @@ def my_defaults(cwd):
         window_length=120,
         update_interval=60,
         max_realtime_latency=180,
-        #tstart=UTCDateTime().isoformat(),
         tstart="now",
         prebuf=30,
         fill_on_start=True,

@@ -17,24 +17,11 @@ from retreat.plot.rms_rmes import window_rms, window_rmes, tr2rms, tr2rmes
 from retreat.data.get_array_response import get_array_response
 from retreat.tools.processpool import get_nproc
 from retreat.plot.add_logos import add_logos
+from retreat.plot.set_font_sizes import set_font_sizes
 
 def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
     """Updates output figures in the figure window based on the latest data"""
-    
-    # Set font sizes:
-    SMALL_SIZE = 13
-    MEDIUM_SIZE = 15
-    BIGGER_SIZE = 18
 
-    plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
-    plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
-    plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
-    plt.rc('xtick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
-    plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
-    plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
-    plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
-#
-    
     # redirect output to log file:
     sys.stdout = open(logfile, 'a+')
     sys.stderr = sys.stdout
@@ -77,6 +64,17 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
     figsize=(to_plot["timelinex"]/my_dpi, to_plot["timeliney"]/my_dpi), squeeze=False, dpi=my_dpi)
 
     xlocator = mdates.AutoDateLocator()
+
+    # set font sizes:
+    SMALL_SIZE, MEDIUM_SIZE, BIGGER_SIZE = set_font_sizes(to_plot["timelinex"], "timeline")
+    print(SMALL_SIZE, MEDIUM_SIZE, BIGGER_SIZE)
+    plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
+    plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
+    plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
+    plt.rc('xtick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+    plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+    plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
+    plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
 
     # initialise/reset subplot index
     aindex = 0
@@ -142,7 +140,7 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
         # use simple linear stack for now
         try:
         # allow 30 seconds difference in trace length (realtime lag)
-            mystack = stack(prestack, npts_tol=30*prestack[0].stats.sampling_rate,time_tol=1.0)
+            mystack = stack(prestack, npts_tol=30*prestack[0].stats.sampling_rate, time_tol=1.0)
             # check for bad data/NaN:
             if np.any(np.isnan(mystack[0].data)):
                 print('Warning, bad data in stack - reverting to first station in array')
@@ -258,11 +256,11 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
             ax[aindex, 0].set_xlabel(my_xlabel)
 
     fig.tight_layout()
-    
+
     # add logo
     if to_plot["logos"]:
         add_logos(fig, 20)
-    
+
     # add timestamp
     if to_plot["timestamp"]:
         spt = ax[0, 0].set_title("Plot last updated: "+UTCDateTime.now().ctime(),\
@@ -284,18 +282,9 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
     if to_plot["polar"]:
 
         print("Plotting polar plot")
-        
-        # check figure size for fonts:
-        fn = 0
-        if (to_plot["polarx"] < 650):
-            fn = 1.5
-            if (to_plot["polarx"] < 500):
-                fn = 3.5 
-        # Set font sizes:
-        SMALL_SIZE = SMALL_SIZE-fn
-        MEDIUM_SIZE = MEDIUM_SIZE-fn
-        BIGGER_SIZE = BIGGER_SIZE-fn
 
+        # set font sizes:
+        SMALL_SIZE, MEDIUM_SIZE, BIGGER_SIZE = set_font_sizes(to_plot["polarx"], "fkpolar")
         plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
         plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
         plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
@@ -303,7 +292,6 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
         plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
         plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
         plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
-        ##
 
         # choose number of fractions in plot (desirably 360 degree/N is an integer!)
         N = to_plot["nbin_baz"] #72
@@ -360,7 +348,9 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
         max_xy = np.unravel_index(np.argmax(hist, axis=None), hist.shape)
         maxstring = 'Max: Back azimuth {}$^\circ$, slowness = {} s/km'\
         .format(str(abins[max_xy[0]]), str(sbins[max_xy[1]]))
-        axp.set_title(maxstring, y=-0.125, fontsize=SMALL_SIZE)
+        maxstring2 = 'Max: Back azimuth {}$^\circ$\n slowness = {} s/km'\
+        .format(str(abins[max_xy[0]]), str(sbins[max_xy[1]]))
+        axp.set_title(maxstring2, y=-0.135, fontsize=SMALL_SIZE)
         plt.figtext(0.5, 0.9, my_time_label, fontsize=MEDIUM_SIZE, horizontalalignment='center')
         #fig.tight_layout()
 
@@ -397,6 +387,16 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
 
             axa = plt.axes
 
+            # set font sizes:
+            SMALL_SIZE, MEDIUM_SIZE, BIGGER_SIZE = set_font_sizes(to_plot["arrayx"], "resp")
+            plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
+            plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
+            plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
+            plt.rc('xtick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+            plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+            plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
+            plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
+
             # get response function:
             transff, kxmin, kxmax, kymin, kymax, kstep = get_array_response(st, inv, array_resp)
 
@@ -413,7 +413,7 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
             fig.tight_layout()
 
             plt.gca().set_aspect('equal', 'datalim')
-            
+
             # add logo
             if to_plot["logos"]:
                 add_logos(figa)
@@ -427,7 +427,7 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
                 st[0].stats.network, st[0].stats.starttime.strftime("%Y%m%d_%H%M%S"))
             else:
                 figname = to_plot["figpath"] + to_plot["arrayfigname"] + ".png"
-                
+
             print("Saving figure: ", figname)
             figa.savefig(figname)
 
@@ -444,6 +444,16 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
         #global figm, axm
         figm = plt.figure(figsize=(to_plot["mapx"]/my_dpi, to_plot["mapy"]/my_dpi), dpi=my_dpi)
         axm = plt.axes()
+
+        # set font sizes:
+        SMALL_SIZE, MEDIUM_SIZE, BIGGER_SIZE = set_font_sizes(to_plot["mapx"], "map")
+        plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
+        plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
+        plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
+        plt.rc('xtick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+        plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+        plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
+        plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
 
         # use get_geometry to find centre of array:
         geom = get_geometry(st, coordsys='lonlat', return_center=True)
@@ -484,7 +494,7 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
                     lon_min = float(to_plot["lon_min"])
                 if to_plot["lon_max"] != 'auto':
                     lon_max = float(to_plot["lon_max"])
-                    
+
                 # get differences/extent of map:
                 delta_lat = lat_max-lat_min
                 delta_lon = lon_max-lon_min
@@ -495,7 +505,7 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
             print('Manually defined extent')
 #           # check if any AUTO values:
             for key in ['lat_min', 'lat_max', 'lon_min', 'lon_max']:
-                if to_plot[key] == 'auto': 
+                if to_plot[key] == 'auto':
                     print('Error! If array NOT at the map centre, \
                     all 4 lat/lon limits MUST be specified')
                     raise Exception
@@ -593,13 +603,13 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
         axm.set_xlim([xmin, xmax])
         axm.set_ylim([ymin, ymax])
 
-        axm.set_title(maxstring, y=-0.05, fontsize=SMALL_SIZE)
+        axm.set_title(maxstring, y=-0.065, fontsize=SMALL_SIZE)
         plt.figtext(0.5, 0.9, my_time_label, fontsize=MEDIUM_SIZE, horizontalalignment='center')
-        
+
         # add logo
         if to_plot["logos"]:
             add_logos(figm)
-        
+
         # add timestamp
         if to_plot["timestamp"]:
             figm.suptitle("Plot last updated: "+UTCDateTime.now().ctime())
