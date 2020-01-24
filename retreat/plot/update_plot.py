@@ -67,7 +67,7 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
 
     # set font sizes:
     SMALL_SIZE, MEDIUM_SIZE, BIGGER_SIZE = set_font_sizes(to_plot["timelinex"], "timeline")
-    print(SMALL_SIZE, MEDIUM_SIZE, BIGGER_SIZE)
+    #print(SMALL_SIZE, MEDIUM_SIZE, BIGGER_SIZE)
     plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
     plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
     plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
