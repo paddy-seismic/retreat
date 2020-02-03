@@ -463,7 +463,7 @@ Paddy Smith – psmith@cp.dias.ie
 
 ![](doc/DIAS_logo.jpg)
 
-Distributed under the XYZ license. See ``LICENSE`` for more information.
+Licensed under the EUPL-1.2-or-later. See ``LICENSE.txt`` for more information. Copyright (c) 2018, Minty Team and all persons listed in ``CONTRIBUTORS``
 
 [https://git.dias.ie/paddy/retreat](https://git.dias.ie/paddy/retreat)
 
