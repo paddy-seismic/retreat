@@ -463,7 +463,7 @@ Patrick Smith – psmith@cp.dias.ie
 
 ![](doc/DIAS_logo.jpg)
 
-Copyright (c) 2020, Patrick Smith and all persons listed in [CONTRIBUTORS.md](https://git.dias.ie/paddy/retreat/blob/master/CONTRIBUTORS.md). This project is licensed under the EUPL, v1.2. See the see [LICENSE.txt](https://git.dias.ie/paddy/retreat/blob/master/CONTRIBUTORS.md) for more information.
+Copyright (c) 2020, Patrick Smith and all persons listed in [CONTRIBUTORS.md](https://git.dias.ie/paddy/retreat/blob/master/CONTRIBUTORS.md). This project is licensed under the EUPL, v1.2. See the see [LICENSE.txt](https://git.dias.ie/paddy/retreat/blob/master/LICENCE.txt) for more information.
 
 [https://git.dias.ie/paddy/retreat](https://git.dias.ie/paddy/retreat)
 
