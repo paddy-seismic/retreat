@@ -458,12 +458,12 @@ Eibl, E. P. S., Bean, C. J., Jónsdóttir, I., Höskuldsson, A., Thordarson, T.,
 
 ## Meta
 
-Paddy Smith – psmith@cp.dias.ie
+Patrick Smith – psmith@cp.dias.ie
 <!-- [@YourTwitter](https://twitter.com/dbader_org)-->
 
 ![](doc/DIAS_logo.jpg)
 
-Licensed under the EUPL-1.2-or-later. See ``LICENSE.txt`` for more information. Copyright (c) 2018, Minty Team and all persons listed in ``CONTRIBUTORS``
+Copyright (c) 2020, Patrick Smith and all persons listed in [CONTRIBUTORS.md](https://git.dias.ie/paddy/retreat/blob/master/CONTRIBUTORS.md). This project is licensed under the EUPL, v1.2. See the see [LICENSE.txt](https://git.dias.ie/paddy/retreat/blob/master/CONTRIBUTORS.md) for more information.
 
 [https://git.dias.ie/paddy/retreat](https://git.dias.ie/paddy/retreat)
 
