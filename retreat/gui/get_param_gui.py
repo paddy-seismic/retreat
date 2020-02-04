@@ -159,6 +159,8 @@ def get_param(gui_input):
         polarfigname=gui_input["polarfigname"],
         arrayfigname=gui_input["arrayfigname"],
         mapfigname=gui_input["mapfigname"],
+        savedata=gui_input["savedata"],
+        datafile=gui_input["datafile"],
         first=True, # do NOT adjust this!
     )
 

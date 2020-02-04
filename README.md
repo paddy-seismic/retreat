@@ -29,6 +29,7 @@ After you have cloned or downloaded the software, navigate to the repository dir
 
 ```
 retreat
+├── CONTRIBUTORS.md
 ├── doc
 │   ├── DIAS_logo.jpg
 │   ├── Eurovolc-header-1.jpg
@@ -51,9 +52,8 @@ retreat
 │   │   ├── retreat_WEB_output.jpg
 │   │   └── retreat_WEB_top.jpg
 │   └── UR-array-map.png
-├── LICENSE.md
+├── LICENSE.txt
 ├── README.md
-├── README.md.bak
 ├── requirements.txt
 └── retreat
     ├── data
@@ -338,6 +338,8 @@ These settings control where the output produced by the software is placed on yo
 * **Figure output path** - full path to where to store output figures and plots. (default is: *retreat/output/*). The next 4 boxes are the **filenames** for the different output figures: *MainTimeline*, *fkpolar*, *arrayresp*, and *map* (in order). Note that if the **Save Figures** checkbox is selected (see above) then these names will be appended by a unique string based on the timestamp.
 
 * **Log file path** - full path to where to store the logfile. The accompanying box specifies the log file **filename**.
+
+* **Save data** - checkbox to select whether raw data from each update of the array processing is saved to disk. If checked then on each update an ASCII text file is written containing 3 columns: 1) *time* (in matplotlib date format - see [here](https://matplotlib.org/api/dates_api.html#matplotlib-date-format)), 2) *backazimuth* (in degrees) and 3) *slowness* (in  s/km)). The name of the output text files is specified by the **filename**, appended by a unique string based on the network and timestamp. Note that the files are saved in the same directory as specified by **Figure output path**.
 
 ### Default values
 

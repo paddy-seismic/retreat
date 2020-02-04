@@ -45,7 +45,7 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
     'rms_ymin', 'rms_ymax', 'seis_ymin', 'seis_ymax', 'savefig', 'figpath', 'webfigs',\
     'map_array_radius', 'bazmap', 'mapx', 'mapy', 'map_array_centre', 'mapfigname', 'lat_min',\
     'lat_max', 'lon_min', 'lon_max', 'nbin_baz', 'nbin_slow', 'timelinefigname', 'polarfigname',\
-    'arrayfigname', 'logos', 'first')])
+    'arrayfigname', 'logos', 'savedata', 'datafile', 'first')])
 
     print("Number of subplots selected = ", nsubplots)
 
@@ -277,6 +277,13 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
         fig.savefig(figname, bbox_extra_artists=[spt], bbox_inches='tight')
     else:
         fig.savefig(figname, bbox_inches='tight')
+
+    # SAVE RAW DATA
+    if to_plot["savedata"]:
+        datafile = "{}/{}-{}-{}.txt".format(to_plot["figpath"], to_plot["datafile"],\
+        st[0].stats.network, st[0].stats.starttime.strftime("%Y%m%d_%H%M%S"))
+        with open(datafile, "wb+") as fid:
+            np.savetxt(fid, np.array([time, baz, slow]).T)
 
     ### polar plot of f-k space ##############################
     if to_plot["polar"]:

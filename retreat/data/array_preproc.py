@@ -8,8 +8,8 @@ import sys
 #from obspy.core import UTCDateTime
 #from obspy import read, read_inventory, Stream
 #from obspy.io.xseed import Parser
-#import concurrent.futures
-#from processpool import get_nproc
+import concurrent.futures
+from retreat.tools.processpool import get_nproc
 
 def array_preproc(st, inv, preproc, logfile):
     """Performs pre-processing on a stream object and returns processed data"""
@@ -43,14 +43,14 @@ def array_preproc(st, inv, preproc, logfile):
 
             print(tr.id)
 
-            tr.remove_response(output="VEL", inventory=inv, pre_filt=pre_filt,\
-            zero_mean=False, taper=False)
+#            tr.remove_response(output="VEL", inventory=inv, pre_filt=pre_filt,\
+#            zero_mean=False, taper=False)
 
-#            with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc()) as executor:
+            with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc()) as executor:
 #                #tr = executor.submit(tr.remove_response,output="VEL", inventory=inv,\
 #                pre_filt=pre_filt, zero_mean=False, taper=False).result()
-#                executor.submit(tr.remove_response,output="VEL", inventory=inv, pre_filt=pre_filt,\
-#                zero_mean=False, taper=False)
+                executor.submit(tr.remove_response,output="VEL", inventory=inv, pre_filt=pre_filt,\
+                zero_mean=False, taper=False)
 
         print("...complete")
 

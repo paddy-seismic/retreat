@@ -224,9 +224,13 @@ def gui_layout(web, window_size, cwd):
                 sg.In(default_text=defaults["arrayfigname"], size=(11, 1), key='arrayfigname', font=('Helvetica', font_small)),
                 sg.In(default_text=defaults["mapfigname"], size=(6, 1), key='mapfigname', font=('Helvetica', font_small))],
                [sg.Text('Log file path', size=(10, 1), font=('Helvetica', font_smaller)),
-                sg.In(default_text=defaults["logpath"], size=(49, 1), key='logpath', font=('Helvetica', font_small)),
+                sg.In(default_text=defaults["logpath"], size=(45, 1), key='logpath', font=('Helvetica', font_small)),
                 sg.Text('Log file name', size=(12, 1), font=('Helvetica', font_smaller)),
-                sg.In(default_text=defaults["logfile"], size=(15, 1), key='logfile', font=('Helvetica', font_small))]
+                sg.In(default_text=defaults["logfile"], size=(15, 1), key='logfile', font=('Helvetica', font_small)),
+                sg.Checkbox('Save data?', size=(11,1), default=defaults["savedata"], key='savedata', font=('Helvetica', font_smaller)),
+                sg.Text('filename:', size=(9, 1), font=('Helvetica', font_smaller)),
+                sg.In(default_text=defaults["datafile"], size=(11, 1), key='datafile', font=('Helvetica', font_small)),
+                ]
               ]# close myinput
 
     ######## SUBMIT BUTTON ############
