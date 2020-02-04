@@ -240,7 +240,7 @@ Other parameters:
 * **Velocity threshold** - Threshold for velocity for f-k analysis
 * **Semblance threshold** - Threshold for semblance for f-k analysis
 
-Note on **coordinates**: although the *obspy* array_processing module accepts coordinates as either Cartesian (*xy*) or latitude and longitude (*lonlat*), for convenience in plotting the array response function and map of the array, please note that latitude and longitude (*lonlat*) format is assumed. Therefore, please ensure your station coordinates are specified as latitude and longitude in your station metadata/inventory file.
+Note on **coordinates**: although the *obspy* array_processing module accepts coordinates as either Cartesian (*xy*) or latitude and longitude (*lonlat*), for convenience in plotting the array response function and map of the array, please note that latitude and longitude (*lonlat*) format is assumed. Therefore, *please ensure your station coordinates are specified as latitude and longitude* in your station metadata/inventory file.
  
 ### Results and Plots
 
