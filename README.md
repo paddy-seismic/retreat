@@ -460,11 +460,12 @@ Eibl, E. P. S., Bean, C. J., Jónsdóttir, I., Höskuldsson, A., Thordarson, T.,
 
 Copyright (c) 2020, Patrick Smith and all persons listed in [CONTRIBUTORS.md](https://git.dias.ie/paddy/retreat/blob/master/CONTRIBUTORS.md). This project is licensed under the EUPL, v1.2. See the see [LICENSE.txt](https://git.dias.ie/paddy/retreat/blob/master/LICENSE.txt) for more information.
 
-## Meta 
+## Meta
  Patrick Smith – psmith@cp.dias.ie
 <!-- [@YourTwitter](https://twitter.com/dbader_org)-->
 
 ![](doc/DIAS_logo.jpg)
+
 
 [https://git.dias.ie/paddy/retreat](https://git.dias.ie/paddy/retreat)
 
@@ -472,7 +473,8 @@ This software was developed and made available as part of the **EUROVOLC** proje
 
 For more information see [https://eurovolc.cp.dias.ie/index.php](https://eurovolc.cp.dias.ie/index.php/Open_software)
 
-![](doc/EUROVOLC-logo.jpg)
+<!--![](doc/EUROVOLC-logo.jpg)-->
+[![EUROVOLC_LOGO](doc/EUROVOLC-logo.jpg)](https://eurovolc.eu)
 
 <!--## Contributing-->
 
