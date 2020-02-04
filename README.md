@@ -460,7 +460,7 @@ Eibl, E. P. S., Bean, C. J., Jónsdóttir, I., Höskuldsson, A., Thordarson, T.,
 
 ## Licensing
 
-Copyright (c) 2020, Patrick Smith and all persons listed in [CONTRIBUTORS.md](https://git.dias.ie/paddy/retreat/blob/master/CONTRIBUTORS.md). This project is licensed under the EUPL, v1.2. See the see [LICENSE.txt](https://git.dias.ie/paddy/retreat/blob/master/LICENSE.txt) for more information.
+Copyright (c) 2020, Patrick Smith and all persons listed in [CONTRIBUTORS.md](https://git.dias.ie/paddy/retreat/blob/master/CONTRIBUTORS.md). This project is licensed under the EUPL, v1.2. See [LICENSE.txt](https://git.dias.ie/paddy/retreat/blob/master/LICENSE.txt) for more information.
 
 ## Meta
  Patrick Smith – psmith@cp.dias.ie
