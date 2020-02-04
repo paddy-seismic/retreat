@@ -123,6 +123,8 @@ def my_defaults(cwd):
         polarfigname="fkpolar",
         arrayfigname="arrayresp",
         mapfigname="map",
+        savedata=False,
+        datafile="array_output",
         ########################
     )
     return defaults
