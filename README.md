@@ -464,8 +464,8 @@ Copyright (c) 2020, Patrick Smith and all persons listed in [CONTRIBUTORS.md](ht
  Patrick Smith – psmith@cp.dias.ie
 <!-- [@YourTwitter](https://twitter.com/dbader_org)-->
 
-![](doc/DIAS_logo.jpg)
-
+<!--![](doc/DIAS_logo.jpg)-->
+[![DIAS_LOGO](doc/DIAS_logo.jpg)](https://www.dias.ie/)
 
 [https://git.dias.ie/paddy/retreat](https://git.dias.ie/paddy/retreat)
 
