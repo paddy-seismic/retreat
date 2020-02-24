@@ -182,7 +182,7 @@ These parameters define the source and properties of the input data. The fields 
 
 * **Connection type** - Used for realtime data only. Can currently use the dropbox to choose from an FDSN or seedlink client.
 * **Client/Server** - Details of the server for the chosen connection type. For FDSN this is simply the name, e.g. *IRIS*, and for Seedlink this is the server URL:port, e.g. *rtserve.iris.washington.edu:18000*
-* **SCNL** - These specify the data Station, Channel, Network and Location codes for the input data (wildcard ? can be used)
+* **SCNL** - These specify the data Station, Channel, Network and Location codes for the input data (wildcard "*" can be used)
 * **Inventory file** - checkbox to specify if you are supplying an inventory or metadata file (required if Connection type is **not** FDSN or if using archive data)
 * **Inventory filename** - Path and name of inventory file (you can also use the *Browse* button to select)
 * **File format** - Specify format of inventory file. You can use all formats supported by *obspy* (including: STATIONXML, dataless SEED, XSEED or RESP)
