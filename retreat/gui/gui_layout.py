@@ -234,7 +234,7 @@ def gui_layout(web, window_size, cwd):
               ]# close myinput
 
     ######## SUBMIT BUTTON ############
-    mybuttons = [sg.Submit('Start', tooltip='Press to start realt-time monitoring updates', font=('Helvetica', font_large)),
+    mybuttons = [sg.Submit('Start', tooltip='Press to start real-time monitoring updates', font=('Helvetica', font_large)),
                  sg.Cancel('Stop', tooltip='Press to Stop or Cancel the execution', font=('Helvetica', font_large)),
                  sg.Exit(tooltip='Exit the program', font=('Helvetica', font_large))
                 ]
