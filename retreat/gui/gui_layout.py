@@ -58,9 +58,10 @@ def gui_layout(web, window_size, cwd):
                 sg.Text('File format:', font=('Helvetica', font_smaller)),
                 sg.InputCombo(defaults["inv_type"], key='inv_type', font=('Helvetica', font_small), size=(11, 1))],
                ### FILES/REPLAY MODE
-               [sg.Checkbox('Replay mode', size=(13, 1), default=defaults["replay"], key='replay', font=('Helvetica', font_smaller)),
+               [sg.Checkbox('Replay mode', size=(12, 1), default=defaults["replay"], key='replay', font=('Helvetica', font_smaller)),
                 sg.Text('SDS directory', size=(11, 1), font=('Helvetica', font_smaller)),
-                sg.Input(defaults["sds_root"], key='sds_root', size=(35, 1), font=('Helvetica', font_small)),
+                sg.Input(defaults["sds_root"], key='sds_root', size=(29, 1), font=('Helvetica', font_small)),
+                sg.FolderBrowse(font=('Helvetica', font_small)),
                 sg.Text('SDS type', size=(8, 1), font=('Helvetica', font_smaller)),
                 sg.InputCombo(defaults["sds_type"], key='sds_type', size=(1, 1), font=('Helvetica', font_small)),
                 sg.Text('Data format', size=(10, 1), font=('Helvetica', font_smaller)),
