@@ -187,10 +187,10 @@ These parameters define the source and properties of the input data. The fields 
 * **Inventory filename** - Path and name of inventory file (you can also use the *Browse* button to select)
 * **File format** - Specify format of inventory file. You can use all formats supported by *obspy* (including: STATIONXML, dataless SEED, XSEED or RESP)
 * **Replay mode** - checkbox for replay or archive data. Leave unchecked for real-time data.
-* **SDS directory** - path to the root of an SDS (Seiscomp Directory Structure)
+* **SDS directory** - path to the root of an SDS (Seiscomp Directory Structure - you can also use the *Browse* button to select)
 * **SDS type** - dropdown box to choose value for the *TYPE* field of the SDS
 * **Data format** - format of the waveform data. You can use all formats supported by *obspy* (including: MSEED, SAC, SEISAN, GCF)
-* **Custom Format** - checkbox to specify if you are using a non-standard SDS structure. If so, fill in your format in the box. Can be specified as {year}/{network}/{station}/{channel}/ etc. See the *obspy* [source code](https://docs.obspy.org/_modules/obspy/clients/filesystem/sds.html) for more details.
+* **Custom Format** - checkbox to specify if you are using a non-standard SDS structure. If so, fill in your format in the box. Can be specified as {year}/{network}/{station}/{channel}/ etc. See the *obspy* [source code](https://docs.obspy.org/_modules/obspy/clients/filesystem/sds.html) for more details and examples.
 
 ### Pre-processing
 
