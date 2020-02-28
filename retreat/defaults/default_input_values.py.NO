@@ -22,7 +22,7 @@ def my_defaults(cwd):
         N="NO",
         L="00",
         # METADATA
-        inv_type=['STATIONXML', 'SEED', 'XSEED', 'RESP'],
+        inv_type=['STATIONXML', 'SEED', 'XSEED', 'ASCII'],
         inv_supply=False,
         inv_file=cwd+"/retreat/example_data/NO.xml",
         # PRE-PROCESSING

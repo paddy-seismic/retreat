@@ -185,7 +185,13 @@ These parameters define the source and properties of the input data. The fields 
 * **SCNL** - These specify the data Station, Channel, Network and Location codes for the input data (wildcard "*" can be used)
 * **Inventory file** - checkbox to specify if you are supplying an inventory or metadata file (required if Connection type is **not** FDSN or if using archive data)
 * **Inventory filename** - Path and name of inventory file (you can also use the *Browse* button to select)
-* **File format** - Specify format of inventory file. You can use all formats supported by *obspy* (including: STATIONXML, dataless SEED, XSEED or RESP)
+* **File format** - Specify format of inventory file. You can use all formats supported by *obspy* (including: STATIONXML, dataless SEED, XSEED). RESP format is NOT supported as RESP files do not contain station coordinates. While a proper full inventory file is preferred, the only essential metadata required is the station locations. If you do not have an inventory for your network you can supply the station coordinates in a plain text file (choose ASCII format), with the following 4 columns: SEED_id (i.e. N.S.L.C), longitude, latitude, elevation. e.g.
+>```
+>NO.SPA0.00.HHZ 16.36998 78.177711 323.0
+>```
+
+>Note that if ASCII format is selected then you are unable select the pre-processing option to remove the [instrument response](#remove_resp) (as no response information was supplied in the inventory). See also [this note](#coords) on coordinate specification.
+
 * **Replay mode** - checkbox for replay or archive data. Leave unchecked for real-time data.
 * **SDS directory** - path to the root of an SDS (Seiscomp Directory Structure - you can also use the *Browse* button to select)
 * **SDS type** - dropdown box to choose value for the *TYPE* field of the SDS
@@ -199,6 +205,7 @@ These parameters define any pre-processing applied to the data before the array 
 * **Use Z-components only** - checkbox to select only vertical (Z) components from the stream (checked by default)
 * **Demean** - checkbox to select whether to subtract the mean from each trace
 * **Linear detrend** - checkbox to select whether to remove a linear trend from the data
+<a name="remove_resp"></a>
 * **Remove instrument response** - checkbox to select whether to remove the instrument response (output is velocity)
 * **Taper** -  checkbox to select whether to apply a taper to the data
 * **Taper fraction** - length of taper to apply (as a fraction of the window length)
@@ -240,6 +247,7 @@ Other parameters:
 * **Velocity threshold** - Threshold for velocity for f-k analysis
 * **Semblance threshold** - Threshold for semblance for f-k analysis
 
+<a name="coords"></a> 
 Note on **coordinates**: although the *obspy* array_processing module accepts coordinates as either Cartesian (*xy*) or latitude and longitude (*lonlat*), for convenience in plotting the array response function and map of the array, please note that latitude and longitude (*lonlat*) format is assumed. Therefore, *please ensure your station coordinates are specified as latitude and longitude* in your station metadata/inventory file.
  
 ### Results and Plots
