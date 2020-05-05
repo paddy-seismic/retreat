@@ -100,7 +100,9 @@ def get_param(gui_input):
         sll_y=float(gui_input["sll_x"]), slm_y=float(gui_input["slm_y"]),\
         sl_s=float(gui_input["sl_s"]),
         # sliding window properties
-        win_len=float(gui_input["win_len"]), win_frac=float(gui_input["win_frac"]),
+        win_len=float(gui_input["win_len"]), 
+        win_frac=1.0-float(gui_input["win_frac"]), #NB obspy array_processing uses.. 
+        # ..fraction for STEP not overlap
         # frequency properties
         frqlow=float(gui_input["frqlow"]), frqhigh=float(gui_input["frqhigh"]),\
         prewhiten=int(gui_input["prewhiten"]),
