@@ -344,7 +344,7 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
             bottom=dh * np.arange(N2), color=cmap(row / hist.max()))
 
         # set slowness limits
-        axp.set_ylim(0, 1)
+        axp.set_ylim(0, 1.5)
         [i.set_color('grey') for i in axp.get_yticklabels()]
 
         # set colorbar limits
@@ -568,8 +568,15 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
             ########
 
         # plot back azimuth line
-        baz = abins[max_xy[0]]
-        baz_err = 3.0 # e.g.
+        baz = abins[max_xy[0]] # this just returns the lower EDGE of the cell
+        dw_deg = dw*180/np.pi
+        baz = baz + dw_deg/2 # add half the step to get midpoint of cell
+
+        # ERRORS - NB still need to come up with a satisfactory way of dealing with this
+        # in a rigorous and representative way. 
+        #For now, use the following illustrative error:
+        baz_err = 2*(dw*180)/(2*np.pi) # i.e. n*the resolution of the angle step in...
+        #...histogram (in degrees).
 
         # calculate the length of the line
         if to_plot["map_array_centre"]: # array at centre
