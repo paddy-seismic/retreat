@@ -2,6 +2,7 @@
 |||
 |---|---|
 |**RETREAT** is a **RE**al-time **TRE**mor **A**nalysis **T**ool written in python, making use of the [*obspy*](https://www.obspy.org/) framework. It performs frequency-wavenumber (f-k) analysis on realtime (or optionally archive) seismic array data to calculate the back azimuth and slowness values in a given time window, with the aim of aiding in the location of volcanic tremor signals.|<img src="doc/retreat_trans96.png" alt="logo" width="300"/>|
+[![DOI](https://zenodo.org/badge/263127922.svg)](https://zenodo.org/badge/latestdoi/263127922)
 
 ## Background 
 
@@ -485,6 +486,11 @@ For more information see [https://eurovolc.cp.dias.ie/index.php](https://eurovol
 
 <!--![](doc/EUROVOLC-logo.jpg)-->
 [![EUROVOLC_LOGO](doc/EUROVOLC-logo.jpg)](https://eurovolc.eu)
+
+## Cite this code
+[![DOI](https://zenodo.org/badge/263127922.svg)](https://zenodo.org/badge/latestdoi/263127922)
+
+Patrick Smith. (2020, May 11). RETREAT - a REal-time TREmor Analysis Tool (Version v1.0). Zenodo. http://doi.org/10.5281/zenodo.3820867
 
 <!--## Contributing-->
 
