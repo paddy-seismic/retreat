@@ -197,8 +197,8 @@ def get_param(gui_input):
 
         # window length
         if window_length > timing["plot_window"]:
-            print("Error: prebuffer should be LESS than window_length")
-            sys.exit("Error: prebuffer should be LESS than window_length")
+            print("Error:window_length should be LESS than plot_window")
+            sys.exit("Error: window_length should be LESS than plot_window")
         # prebuffer
         if prebuf > window_length:
             print("Error: prebuffer should be LESS than window_length")

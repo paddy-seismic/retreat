@@ -204,7 +204,7 @@ def update(timing, mydata, preproc, kwargs, to_plot, spectro, array_resp, logfil
     ###################### update plot
     print("Updating plots")
 
-    update_plot(st_loop, array_results, to_plot, spectro, inv, array_resp, logfile)
+    update_plot(st_loop, array_results, kwargs, to_plot, spectro, inv, array_resp, logfile)
 
     # cleanup
     del st_loop, st_in, array_resp

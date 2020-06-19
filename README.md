@@ -289,8 +289,8 @@ You can also define the resolution for the histogram in the polar representation
 
 Other options include:
 
-* **Plot timestamp**  - if checked this will print the timestamp onto each figure (*current* time if in real-time mode OR stream start time if in archive mode)
-* **Use stack for plots**  - if checked a *stack* of the traces in the array will be used as the *seismogram* plot. Otherwise the first station in the stream is used.
+* **Plot timestamp** - if checked this will print the timestamp onto each figure (*current* time if in real-time mode OR stream start time if in archive mode)
+* **Use stack for plots** - if checked a *stack* of the traces in the array will be used as the *seismogram* plot. Otherwise the first station in the stream is used. The stack used is the beam corresponding to the slowness and backazimuth values derived from the maximum relative power.
 * **RMeS limits** - minimum and maximum velocity values for the RMeS panel *y*-axis (in m/s). If set to *auto* the figure will automatically scale the axes
 * **Seismogram amplitude limits** - minimum and maximum velocity values for the *y*-axis (in m/s). Again, if set to *auto* the figure will automatically scale the axes
 

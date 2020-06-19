@@ -19,7 +19,7 @@ from retreat.tools.processpool import get_nproc
 from retreat.plot.add_logos import add_logos
 from retreat.plot.set_font_sizes import set_font_sizes
 
-def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
+def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfile):
     """Updates output figures in the figure window based on the latest data"""
 
     # redirect output to log file:
@@ -131,13 +131,80 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
 
     if to_plot["usestack"]: # calculate stack to plot
         from retreat.data.stack import stack
+        from obspy.signal.array_analysis import get_geometry, get_timeshift
+        
         # try to remove any bad traces first:
         prestack = Stream()
         for tr in st:
 #            print(tr.stats.station, tr.stats.starttime,'-',tr.stats.endtime)
             if not np.any(np.isnan(tr.data)):
                 prestack.append(tr)
-        # use simple linear stack for now
+
+        # Use the best "beam" as the stack (i.e. time shifts corresponding to max power)
+        
+        # choose number of fractions in plot (desirably 360 degree/N is an integer!)
+        N = to_plot["nbin_baz"]
+        N2 = to_plot["nbin_slow"] 
+        
+        # create the azimuth and slowness bins
+        abins = np.arange(N + 1) * 360. / N
+        sbins = np.linspace(0, 3, N2 + 1)
+
+        # create the histogram NOW:
+        with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc()) as executor:
+            hist, baz_edges, sl_edges = executor.submit(np.histogram2d,\
+            baz, slow, bins=[abins, sbins], weights=relpow).result()
+        
+        # find the coordinates of maximum relative power:
+        max_xy = np.unravel_index(np.argmax(hist, axis=None), hist.shape)
+        max_baz =  abins[max_xy[0]]
+        max_slow = sbins[max_xy[1]]
+        
+        # map baz, slow to Sx, Sy
+        Sx = max_slow * np.cos((90-max_baz)*np.pi/180.)
+        Sy = max_slow * np.sin((90-max_baz)*np.pi/180.)
+        
+        # use GUI parameters to make the slowness grid
+        slm_x = array_params["slm_x"]
+        slm_y = array_params["slm_y"]
+        sll_x = array_params["sll_x"]
+        sll_y = array_params["sll_y"]
+        sl_s  = array_params["sl_s"]
+        grdpts_x = int(((slm_x - sll_x) / sl_s + 0.5) + 1)
+        grdpts_y = int(((slm_y - sll_y) / sl_s + 0.5) + 1)
+        
+        # create horizontal slowness vectors
+        sx = []
+        sy = []
+        for k in range(grdpts_x):
+            sxx = sll_x + k * sl_s
+            sx = np.append(sx,sxx)
+        for l in range(grdpts_y):
+            syy = sll_y + l * sl_s
+            sy = np.append(sy,syy)
+        
+        # Map the maxium power in slowness/azimuth coords to -> slx, sly coords:
+        idx = (np.abs(sx-Sx)).argmin()
+        if not np.isscalar(idx):
+            idx=idx[0]
+        idy = (np.abs(sy-Sy)).argmin()
+        if not np.isscalar(idy):
+            idy=idy[0] 
+            
+        # get geometry from stream
+        geometry = get_geometry(prestack, coordsys=array_resp["coordsys"], verbose=False)
+        
+        # now use this to get time shifts:
+        time_shift_table = get_timeshift(geometry, sll_x, sll_y, sl_s, grdpts_x, grdpts_y)
+        
+        # extract station time shifts corresponding to the maximum from the table:
+        shifts = time_shift_table[:,idx,idy];
+        
+        # Finally, apply the time shifts:
+        for tr, j in zip(prestack, range(len(prestack))):
+            tr.data = np.roll(tr.data, int(tr.stats.sampling_rate*shifts[j]))
+        
+        # Now stack linearly (already shifted to get "beam")
         try:
         # allow 30 seconds difference in trace length (realtime lag)
             mystack = stack(prestack, npts_tol=30*prestack[0].stats.sampling_rate, time_tol=1.0)
@@ -300,10 +367,6 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
         plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
         plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
 
-        # choose number of fractions in plot (desirably 360 degree/N is an integer!)
-        N = to_plot["nbin_baz"] #72
-        N2 = to_plot["nbin_slow"] #50
-
 #        global figp, axp, cax
 #        global cmap, abins, sbins
 
@@ -319,13 +382,19 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
         axp.set_xticks(np.linspace(0, 2 * np.pi, 4, endpoint=False))
         axp.set_xticklabels(['N', 'E', 'S', 'W'])
 
-        # create the azimuth and slowness bins
-        abins = np.arange(N + 1) * 360. / N
-        sbins = np.linspace(0, 3, N2 + 1)
+        if not to_plot["usestack"]:
+            
+            # choose number of fractions in plot (desirably 360 degree/N is an integer!)
+            N = to_plot["nbin_baz"] #72
+            N2 = to_plot["nbin_slow"] #50
+            
+            # create the azimuth and slowness bins
+            abins = np.arange(N + 1) * 360. / N
+            sbins = np.linspace(0, 3, N2 + 1)
 
-        with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc()) as executor:
-            hist, baz_edges, sl_edges = executor.submit(np.histogram2d,\
-            baz, slow, bins=[abins, sbins], weights=relpow).result()
+            with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc()) as executor:
+                hist, baz_edges, sl_edges = executor.submit(np.histogram2d,\
+                baz, slow, bins=[abins, sbins], weights=relpow).result()
 
         # transform to radian
         baz_edges = np.radians(baz_edges)
@@ -337,7 +406,6 @@ def update_plot(st, data, to_plot, spectro, inv, array_resp, logfile):
         cmap = obspy_sequential
 
         # circle through backazimuth
-        #axp.cla()
 
         for i, row in enumerate(hist):
             bars = axp.bar(x=(i * dw) * np.ones(N2), height=dh * np.ones(N2), width=dw,\
