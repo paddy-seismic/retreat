@@ -279,7 +279,7 @@ The next set of parameters define the size of the output figures, as pairs of *x
 
 Fixed *y*-axis limits for the various figures can also be set. If set to *auto* the figure will automatically scale the axes:
 
-* **Slowness plot axis limits** - minimum and maximum slowness values for the *y*-axis (in s/km)
+* **Slowness plot(s) axis limits** - minimum and maximum slowness values for the *y*-axis of the timeline AND radial axis of power plot (in s/km)
 * **Back-azimuth plot axis limits** - minimum and maximum azimuth values for the *y*-axis (in degrees)
 
 You can also define the resolution for the histogram in the polar representation of the results:

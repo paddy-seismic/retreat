@@ -33,7 +33,7 @@ def array_preproc(st, inv, preproc, logfile):
 
     # remove instrument response
     if preproc["removeresponse"]:
-        if type(inv).__name__ is not "Inventory":
+        if type(inv).__name__ != "Inventory":
             print("Error. No response information specified in inventory")
             raise StopIteration
 
@@ -84,7 +84,7 @@ def array_preproc(st, inv, preproc, logfile):
         for tr in st:
             # get lat and lon from inventory:
             seedid = tr.get_id()
-            if type(inv).__name__ is "Inventory":
+            if type(inv).__name__ == "Inventory":
                 tr.stats.coordinates = inv.get_coordinates(seedid)
             else:
                  tr.stats.coordinates = dict(

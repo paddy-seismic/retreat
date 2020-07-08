@@ -27,7 +27,7 @@ def update(timing, mydata, preproc, kwargs, to_plot, spectro, array_resp, logfil
         print("Fetching new data")
     global st, t_in, inv
 
-    #### FIRST TIME THROUGH
+    ### FIRST TIME THROUGH
     if to_plot["first"]:
 
         if mydata["replay"]: ## REPLAY MODE (LOCAL FILES DATA SOURCE)

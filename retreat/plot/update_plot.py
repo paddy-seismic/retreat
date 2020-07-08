@@ -36,6 +36,14 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
     # make output human readable, adjust backazimuth to values between 0 and 360
     baz[baz < 0.0] += 360
 
+    # get GUI slowness parameters for later use
+    slm_x = array_params["slm_x"]
+    slm_y = array_params["slm_y"]
+    sll_x = array_params["sll_x"]
+    sll_y = array_params["sll_y"]
+    sl_s  = array_params["sl_s"]
+
+
     ### MAIN TIMELINE ######################################
 
     # process "to_plot" arg to get what to plot
@@ -86,7 +94,7 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
     st[0].stats.endtime.strftime('%d-%b-%Y %H:%M:%S%Z')
 
     my_xlabel = 'Time [UTC] ' + st[0].stats.starttime.strftime('%d-%b-%Y')
-
+    
 #    fig.clf()
 
     if to_plot["baz"]:
@@ -148,7 +156,9 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
         
         # create the azimuth and slowness bins
         abins = np.arange(N + 1) * 360. / N
-        sbins = np.linspace(0, 3, N2 + 1)
+        max_slow_hist = np.ceil(1.5*2* np.max(np.abs([sll_x,sll_y,slm_x,slm_y])))/2 # 1.5x max abs value in grid, ...
+        # ... then rounded up to nearest 0.5
+        sbins = np.linspace(0, max_slow_hist, N2 + 1)
 
         # create the histogram NOW:
         with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc()) as executor:
@@ -165,11 +175,6 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
         Sy = max_slow * np.sin((90-max_baz)*np.pi/180.)
         
         # use GUI parameters to make the slowness grid
-        slm_x = array_params["slm_x"]
-        slm_y = array_params["slm_y"]
-        sll_x = array_params["sll_x"]
-        sll_y = array_params["sll_y"]
-        sl_s  = array_params["sl_s"]
         grdpts_x = int(((slm_x - sll_x) / sl_s + 0.5) + 1)
         grdpts_y = int(((slm_y - sll_y) / sl_s + 0.5) + 1)
         
@@ -390,7 +395,8 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
             
             # create the azimuth and slowness bins
             abins = np.arange(N + 1) * 360. / N
-            sbins = np.linspace(0, 3, N2 + 1)
+            max_slow_hist = np.ceil(1.5*2* np.max(np.abs([sll_x,sll_y,slm_x,slm_y])))/2 # 1.5x max abs value in grid, rounded up to nearest 0.5
+            sbins = np.linspace(0, max_slow_hist, N2 + 1)
 
             with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc()) as executor:
                 hist, baz_edges, sl_edges = executor.submit(np.histogram2d,\
@@ -412,7 +418,13 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
             bottom=dh * np.arange(N2), color=cmap(row / hist.max()))
 
         # set slowness limits
-        axp.set_ylim(0, 1.5)
+        if (to_plot["slow_ymin"] != 'auto') or (to_plot["slow_ymax"] != 'auto'):
+            slow_ymin = float(to_plot["slow_ymin"])
+            slow_ymax = float(to_plot["slow_ymax"])
+            axp.set_ylim(slow_ymin, slow_ymax)
+        else:
+            axp.set_ylim(0, max_slow_hist)
+
         [i.set_color('grey') for i in axp.get_yticklabels()]
 
         # set colorbar limits
