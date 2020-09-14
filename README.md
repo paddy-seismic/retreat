@@ -121,6 +121,7 @@ These are:
 - obspy (```python3-obspy```)
 - psutil (```python3-psutil```)
 - Pillow (```python3-pil```)
+- Cartopy (```python3-cartopy```)
 - PySimpleGUI
 - PySimpleGUIWeb
 

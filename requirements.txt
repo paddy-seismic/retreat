@@ -4,5 +4,6 @@ numpy
 obspy
 psutil
 Pillow
+Cartopy
 PySimpleGUI
 PySimpleGUIWeb
