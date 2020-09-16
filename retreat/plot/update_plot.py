@@ -96,7 +96,7 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
     # trace starttime and the first time value from the array processing to check for any epoch mismatch:
     if ((time[0] - pstart) >= 719163.0):
         time = time + mdates.date2num(np.datetime64('0000-12-31'))
-    
+
     my_time_label = st[0].stats.starttime.strftime('%d-%b-%Y %H:%M:%S%Z') + ' to ' +\
     st[0].stats.endtime.strftime('%d-%b-%Y %H:%M:%S%Z')
 
@@ -250,7 +250,18 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
 
         ax[aindex, 0].xaxis.set_major_locator(xlocator)
         ax[aindex, 0].xaxis.set_major_formatter(mdates.AutoDateFormatter(xlocator))
-        ax[aindex, 0].set_ylabel('RMeS Velocity [ms$^{-1}$]')
+
+        # check if using infrasound data - for axis label(s):
+        infra=False
+        for tr in st:
+            if tr.stats.channel.endswith('F'):
+                infra=True
+                break
+        if not infra:
+            ax[aindex, 0].set_ylabel('RMeS Velocity [ms$^{-1}$]')
+        else:
+            ax[aindex, 0].set_ylabel('RMeS Pressure')
+
         #ax[aindex,0].ticklabel_format(axis='y', style='sci')
         ax[aindex, 0].yaxis.set_major_formatter(mtick.FormatStrFormatter('%.1e'))
         if (aindex+1) == nsubplots:
@@ -276,7 +287,11 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
 
         ax[aindex, 0].xaxis.set_major_locator(xlocator)
         ax[aindex, 0].xaxis.set_major_formatter(mdates.AutoDateFormatter(xlocator))
-        ax[aindex, 0].set_ylabel('Velocity [ms$^{-1}$]')
+        
+        if not infra:
+            ax[aindex, 0].set_ylabel('Velocity [ms$^{-1}$]')
+        else:
+            ax[aindex, 0].set_ylabel('Pressure')
 
         ax[aindex, 0].yaxis.set_major_formatter(mtick.FormatStrFormatter('%.1e'))
         #
