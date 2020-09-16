@@ -89,6 +89,14 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
     pstart = st[0].stats.starttime.matplotlib_date
     pend = st[0].stats.endtime.matplotlib_date
 
+    # **NB** For matplotlib >= 3.3.0 the epoch for date format has changed from 0000-12-31T00:00:00 to 
+    # UNIX default of 1970-01-01T00:00:00 to allow greater resolution. The array_analysis routine still
+    # returns dates relative to the old epoch. However we cannot assume this will ALWAYS be true, as it
+    # may change/be fixed in future versions. Hence, we explicitly check the difference between the 
+    # trace starttime and the first time value from the array processing to check for any epoch mismatch:
+    if ((time[0] - pstart) >= 719163.0):
+        time = time + mdates.date2num(np.datetime64('0000-12-31'))
+    
     my_time_label = st[0].stats.starttime.strftime('%d-%b-%Y %H:%M:%S%Z') + ' to ' +\
     st[0].stats.endtime.strftime('%d-%b-%Y %H:%M:%S%Z')
 
