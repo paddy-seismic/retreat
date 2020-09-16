@@ -42,6 +42,13 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
     sll_x = array_params["sll_x"]
     sll_y = array_params["sll_y"]
     sl_s = array_params["sl_s"]
+    
+    # check if using infrasound data - for axis label(s):
+    infra=False
+    for tr in st:
+        if tr.stats.channel.endswith('F'):
+            infra=True
+            break
 
     ### MAIN TIMELINE ######################################
 
@@ -251,12 +258,6 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
         ax[aindex, 0].xaxis.set_major_locator(xlocator)
         ax[aindex, 0].xaxis.set_major_formatter(mdates.AutoDateFormatter(xlocator))
 
-        # check if using infrasound data - for axis label(s):
-        infra=False
-        for tr in st:
-            if tr.stats.channel.endswith('F'):
-                infra=True
-                break
         if not infra:
             ax[aindex, 0].set_ylabel('RMeS Velocity [ms$^{-1}$]')
         else:
