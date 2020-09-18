@@ -112,7 +112,7 @@ def get_param(gui_input):
         etime=None,
         store=None,
         verbose=False,
-        method=0, # 0 = beamforming, 1 = capon
+        method=0, # 0 = beamforming, 1 = capon (for f-k)
     )
 
     #### plotting parameters
@@ -185,6 +185,7 @@ def get_param(gui_input):
         elev_in_m=gui_input["elev_in_m"],
         scnl=mydata["scnl"],
         myclient=mydata["myclient"],
+        lsq=gui_input["lsq"], # Use Least-Squares inversion/beamforming instead of f-k
     )
 
     #### SANITY CHECKS:

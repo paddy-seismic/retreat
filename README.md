@@ -249,6 +249,12 @@ Other parameters:
 * **Velocity threshold** - Threshold for velocity for f-k analysis
 * **Semblance threshold** - Threshold for semblance for f-k analysis
 
+Finally, there is also an option to use a Least-Squares beamforming method as an alternative to f-k (e.g. for infrasound data). Low velocity/high slowness values for infrasonic data mean a large slowness grid is required which can impact the computation time. This method is described in [De Angelis et al. (2020)](https://doi.org/10.3389/feart.2020.00169), and allows forsignificantly faster computation. The python routine implementing the method in this software were adapted from the matlab code available [here](https://github.com/silvioda/Infrasound-Array-Processing-Matlab).
+
+* **LSQ beamforming** - checkbox to select whether to use Least-squares beamforming instead of standard f-k. Note that if checked, most of the array parameters redundant, although the **Window length** and **Overlap fraction** still apply. Note that histogram output for any polar [plot](#results-and-plots) is now a simple frequency histogram, rather than being weighted by the power as in the f-k case.
+
+---
+
 <a name="coords"></a> 
 Note on **coordinates**: although the *obspy* array_processing module accepts coordinates as either Cartesian (*xy*) or latitude and longitude (*lonlat*), for convenience in plotting the array response function and map of the array, please note that latitude and longitude (*lonlat*) format is assumed. Therefore, *please ensure your station coordinates are specified as latitude and longitude* in your station metadata/inventory file.
  
@@ -459,6 +465,8 @@ and [start](#starting-the-software) the software. This should begin analysis of 
 <!--**CHECK - what can we make available here?? and HOW!?**-->
 
 ## References
+
+De Angelis S, Haney MM, Lyons JJ, Wech A, Fee D, Diaz-Moreno A and Zuccarello L (2020). Uncertainty in Detection of Volcanic Activity Using Infrasound Arrays: Examples From Mt. Etna, Italy. Front. Earth Sci. 8:169. doi:[10.3389/feart.2020.00169](https://doi.org/10.3389/feart.2020.00169)
 
 Eibl, Eva P. S., Bean, C.J., Vogfjörd, K.S., Ying, Y., Lokmer, I., Möllhoff, M., O’Brien, G.S., & Pálsson, F.  (2017a). Tremor-rich shallow dyke formation followed by silent magma flow at Bárðarbunga in Iceland. Nature Geoscience volume 10, pages 299–304, doi:[10.1038/ngeo2906](https://doi.org/10.1038/ngeo2906).
 

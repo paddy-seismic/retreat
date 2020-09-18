@@ -28,8 +28,13 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
 
     # split data matrix
     time = data[:, 0]
-    relpow = data[:, 1]
-    abspow = data[:, 2]
+    if array_resp["lsq"]:
+        err_vel = data[:, 1]
+        err_baz = data[:, 2]
+        vel = data[:, 5]
+    else:
+        relpow = data[:, 1]
+        abspow = data[:, 2]
     baz = data[:, 3]
     slow = data[:, 4]
 
@@ -173,9 +178,14 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
         sbins = np.linspace(0, max_slow_hist, N2 + 1)
 
         # create the histogram NOW:
-        with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc()) as executor:
-            hist, baz_edges, sl_edges = executor.submit(np.histogram2d,\
-            baz, slow, bins=[abins, sbins], weights=relpow).result()
+        if array_resp["lsq"]: # simple frequency histogram
+            with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc()) as executor:
+                hist, baz_edges, sl_edges = executor.submit(np.histogram2d,\
+                baz, slow, bins=[abins, sbins]).result()       
+        else: # weight by relative power
+            with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc()) as executor:
+                hist, baz_edges, sl_edges = executor.submit(np.histogram2d,\
+                baz, slow, bins=[abins, sbins], weights=relpow).result()
 
         # find the coordinates of maximum relative power:
         max_xy = np.unravel_index(np.argmax(hist, axis=None), hist.shape)
@@ -420,9 +430,14 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
             # max abs value in grid, rounded up to nearest 0.5
             sbins = np.linspace(0, max_slow_hist, N2 + 1)
 
-            with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc()) as executor:
-                hist, baz_edges, sl_edges = executor.submit(np.histogram2d,\
-                baz, slow, bins=[abins, sbins], weights=relpow).result()
+            if array_resp["lsq"]: # simple frequency histogram
+                with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc()) as executor:
+                    hist, baz_edges, sl_edges = executor.submit(np.histogram2d,\
+                    baz, slow, bins=[abins, sbins]).result()       
+            else: # weight by relative power
+                with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc()) as executor:
+                    hist, baz_edges, sl_edges = executor.submit(np.histogram2d,\
+                    baz, slow, bins=[abins, sbins], weights=relpow).result()
 
         # transform to radian
         baz_edges = np.radians(baz_edges)
@@ -451,7 +466,10 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
 
         # set colorbar limits
         cbar = ColorbarBase(cax, cmap=cmap, norm=Normalize(vmin=hist.min(), vmax=hist.max()))
-        cbar.set_label('Relative Power', rotation=270, labelpad=15)
+        if array_resp["lsq"]:
+            cbar.set_label('Frequency (count)', rotation=270, labelpad=15)
+        else:
+            cbar.set_label('Relative Power', rotation=270, labelpad=15)
 
         # find maximum
         max_xy = np.unravel_index(np.argmax(hist, axis=None), hist.shape)

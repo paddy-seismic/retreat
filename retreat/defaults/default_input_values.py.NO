@@ -61,6 +61,7 @@ def my_defaults(cwd):
         vel_thresh='-1e9',
         nbin_baz=72, # 360/72=5 deg bins
         nbin_slow=50,
+	lsq=False,
         # PLOTTING
         baz=True,
         slow=True,

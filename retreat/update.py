@@ -4,6 +4,7 @@ import sys
 import gc
 import concurrent.futures
 from obspy.signal.array_analysis import array_processing
+from retreat.data.beamforming_lsqr import do_inversion, xcorr
 from retreat.data.fdsn2st3 import fdsn2st
 from retreat.data.slink2st3 import slink2st
 from retreat.data.sds2st3 import sds2st
@@ -198,8 +199,13 @@ def update(timing, mydata, preproc, kwargs, to_plot, spectro, array_resp, logfil
 
     global array_results
 
-    with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc()) as executor:
-        array_results = executor.submit(array_processing, st_loop, **kwargs).result()
+    if array_resp["lsq"]: # Use least-squares inversion/beamforming (infrasound)
+        print("Using Least-Square inversion for beamforming instead of f-k")
+        with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc()) as executor:
+            array_results = executor.submit(do_inversion, st_loop, **kwargs).result()
+    else: # standard obspy f-k (DEFAULT)
+        with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc()) as executor:
+            array_results = executor.submit(array_processing, st_loop, **kwargs).result()
 
     ###################### update plot
     print("Updating plots")
