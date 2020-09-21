@@ -252,7 +252,7 @@ Other parameters:
 
 Finally, there is also an option to use a Least-Squares beamforming method as an alternative to f-k (e.g. for infrasound data). Low velocity/high slowness values for infrasonic data mean a large slowness grid is required which can impact the computation time. This method is described in [De Angelis et al. (2020)](https://doi.org/10.3389/feart.2020.00169), and allows forsignificantly faster computation. The python routine implementing the method in this software were adapted from the matlab code available [here](https://github.com/silvioda/Infrasound-Array-Processing-Matlab).
 
-* **LSQ beamforming** - checkbox to select whether to use Least-squares beamforming instead of standard f-k. Note that if checked, most of the array parameters redundant, although the **Window length** and **Overlap fraction** still apply. Note that histogram output for any polar [plot](#results-and-plots) is now a simple frequency histogram, rather than being weighted by the power as in the f-k case.
+* **LSQ beamforming** - checkbox to select whether to use Least-Squares beamforming instead of standard f-k analysis. Note that if checked, most of the array parameters are redundant, and only the **Window length** and **Overlap fraction** values still apply. Note that histogram output for any polar [plot](#results-and-plots) is now a simple frequency histogram, rather than being weighted by the power as in the f-k case. This method also returns timeseries of the errors in (apparent) velocity and back-azimuth - and the azimuth errors are used for the error cone in the optional map plot in this case.
 
 ---
 
