@@ -29,8 +29,8 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
     # split data matrix
     time = data[:, 0]
     if array_resp["lsq"]:
-        err_vel = data[:, 1]
-        err_baz = data[:, 2]
+        err_vel = np.sqrt(data[:, 1]) # convert from variance to std [km/s]
+        err_baz = np.sqrt(np.rad2deg(data[:, 2])) # radians to degrees and variance to std
         vel = data[:, 5]
     else:
         relpow = data[:, 1]
@@ -701,9 +701,15 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
 
         # ERRORS - NB still need to come up with a satisfactory way of dealing with this
         # in a rigorous and representative way.
-        #For now, use the following illustrative error:
-        baz_err = 2*(dw*180)/(2*np.pi) # i.e. n*the resolution of the angle step in...
-        #...histogram (in degrees).
+
+        if array_resp["lsq"]: # use mean of azimuth errors from LSQ beamforming
+            baz_err = np.mean(err_baz)
+            # This average across the WHOLE timeseries is likely, conservatively, 
+            # to be larger than the error for any well/better constrained transients
+        else:
+            #For now, use the following illustrative error:
+            baz_err = 2*(dw*180)/(2*np.pi) # i.e. n*the resolution of the angle step in...
+            #...histogram (in degrees).
 
         # calculate the length of the line
         if to_plot["map_array_centre"]: # array at centre
@@ -726,7 +732,7 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
         y+line_radius*np.cos((baz+baz_err)*np.pi/180)]
 
         # plot error cone
-        mycone = axm.fill(xerr, yerr, c='white', alpha=0.5)
+        mycone = axm.fill(xerr, yerr, c='lightgrey', alpha=0.5)
 
         # plot line
         myline = axm.plot(xx, yy, 'g-')
