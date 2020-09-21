@@ -29,8 +29,8 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
     # split data matrix
     time = data[:, 0]
     if array_resp["lsq"]:
-        err_vel = np.sqrt(data[:, 1]) # convert from variance to std [km/s]
-        err_baz = np.sqrt(np.rad2deg(data[:, 2])) # radians to degrees and variance to std
+        err_vel = np.sqrt(data[:, 1]) # convert from variance to std
+        err_baz = np.rad2deg(np.sqrt(data[:, 2])) # variance to std and then radians to degrees
         vel = data[:, 5]
     else:
         relpow = data[:, 1]
