@@ -66,6 +66,8 @@ def my_defaults(cwd):
         slow=True,
         polar=True,
         rmes=True,
+        relpow=False,
+        norm=False,
         rmes_wind=300.0,
         rmes_ovlp=0.90,
         seis=True,
@@ -98,6 +100,8 @@ def my_defaults(cwd):
         rms_ymax="auto",
         seis_ymin="auto",
         seis_ymax="auto",
+        relpow_ymin="auto",
+        relpow_ymax="auto",
         # SPECTROGRAM
         fmin=0.5,
         fmax=2.5,

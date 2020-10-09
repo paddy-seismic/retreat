@@ -53,7 +53,6 @@ def get_param(gui_input):
 
     mydata = dict(
         t=tstart - (window_length + prebuf),
-        # (Norweigan/Spitsbergen array as realtime test source)
         scnl=dict(S=gui_input["S"], C=gui_input["C"], N=gui_input["N"], L=gui_input["L"]),
         ## realtime source
         myclient=gui_input["myclient"],
@@ -119,6 +118,7 @@ def get_param(gui_input):
     to_plot = dict(
         baz=gui_input["baz"],
         slow=gui_input["slow"],
+        relpow=gui_input["relpow"],
         seis=gui_input["seis"],
         spec=gui_input["spec"],
         rmes=gui_input["rmes"],
@@ -137,6 +137,9 @@ def get_param(gui_input):
         rms_ymax=gui_input["rms_ymax"],
         seis_ymin=gui_input["seis_ymin"],
         seis_ymax=gui_input["seis_ymax"],
+        relpow_ymin=gui_input["relpow_ymin"],
+        relpow_ymax=gui_input["relpow_ymax"],  
+        norm=gui_input["norm"],
         polarx=int(gui_input["polarx"]),
         polary=int(gui_input["polary"]),
         arrayx=int(gui_input["arrayx"]),

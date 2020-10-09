@@ -134,6 +134,9 @@ def do_inversion(st, **kwargs):
 
                 cmax = np.append(cmax, np.max(cc))
                 lags = np.append(lags, ll[np.argmax(cc)])
+                
+        # store mean as MCCM
+        mccm=np.mean(cmax)
 
         # Convert time lags to seconds
         dt = lags/fs
@@ -174,7 +177,7 @@ def do_inversion(st, **kwargs):
         sig2th = sig2sx*sv[1]**2*v**4 + sig2sy*sv[0]**2*(v**4) - 2*covsxsy*sv[0]*sv[1]*v**4
 
         ### Append results to output array
-        res.append(np.array([newstart.timestamp, sig2vl, sig2th, srcaz, slow, v]))
+        res.append(np.array([newstart.timestamp, sig2vl, sig2th, srcaz, slow, v, mccm]))
 
         if verbose:
             print(newstart, (newstart + (nsamp / fs)), res[-1][1:])

@@ -18,6 +18,7 @@ from retreat.data.get_array_response import get_array_response
 from retreat.tools.processpool import get_nproc
 from retreat.plot.add_logos import add_logos
 from retreat.plot.set_font_sizes import set_font_sizes
+from retreat.plot.shiftedColorMap import shiftedColorMap
 
 def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfile):
     """Updates output figures in the figure window based on the latest data"""
@@ -32,6 +33,8 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
         err_vel = np.sqrt(data[:, 1]) # convert from variance to std
         err_baz = np.rad2deg(np.sqrt(data[:, 2])) # variance to std and then radians to degrees
         vel = data[:, 5]
+        relpow = data[:, 6] # this is actually MCCM but label as relpow for convenience
+        # so as to avoid repetiton of code
     else:
         relpow = data[:, 1]
         abspow = data[:, 2]
@@ -61,10 +64,10 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
     nsubplots = sum([value for key, value in to_plot.items() if key not in\
     ('polar', 'rmes_ovlp', 'rmes_wind', 'resp', 'timelinex', 'timeliney', 'arrayx', 'timestamp',\
     'arrayy', 'polarx', 'polary', 'slow_ymin', 'slow_ymax', 'baz_ymin', 'baz_ymax', 'usestack',\
-    'rms_ymin', 'rms_ymax', 'seis_ymin', 'seis_ymax', 'savefig', 'figpath', 'webfigs',\
-    'map_array_radius', 'bazmap', 'mapx', 'mapy', 'map_array_centre', 'mapfigname', 'lat_min',\
-    'lat_max', 'lon_min', 'lon_max', 'nbin_baz', 'nbin_slow', 'timelinefigname', 'polarfigname',\
-    'arrayfigname', 'logos', 'savedata', 'datafile', 'first')])
+    'rms_ymin', 'rms_ymax', 'seis_ymin', 'seis_ymax', 'relpow_ymin', 'relpow_ymax', 'savefig',\
+    'figpath', 'webfigs', 'map_array_radius', 'bazmap', 'mapx', 'mapy', 'map_array_centre',\
+    'mapfigname', 'lat_min', 'lat_max', 'lon_min', 'lon_max', 'nbin_baz', 'nbin_slow', 'norm',\
+    'timelinefigname', 'polarfigname', 'arrayfigname', 'logos', 'savedata', 'datafile', 'first')])
 
     print("Number of subplots selected = ", nsubplots)
 
@@ -153,6 +156,32 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
         if (aindex+1) == nsubplots:
             ax[aindex, 0].set_xlabel(my_xlabel)
         aindex = aindex + 1
+        
+    if to_plot["relpow"]:
+            # plot relative power (or MCCM for LSQ)
+        if not array_resp["lsq"]:    
+            print("Plotting relative power")
+        else:
+            print("Plotting MCCM")
+        ax[aindex, 0].cla()
+        ax[aindex, 0].scatter(time, relpow)
+        ax[aindex, 0].set_xlim(pstart, pend)
+
+        if (to_plot["relpow_ymin"] != 'auto') or (to_plot["relpow_ymax"] != 'auto'):
+            slow_ymin = float(to_plot["relpow_ymin"])
+            slow_ymax = float(to_plot["relpow_ymax"])
+            ax[aindex, 0].set_ylim(relpow_ymin, relpow_ymax)
+
+
+        ax[aindex, 0].xaxis.set_major_locator(xlocator)
+        ax[aindex, 0].xaxis.set_major_formatter(mdates.AutoDateFormatter(xlocator))
+        if not array_resp["lsq"]:  
+            ax[aindex, 0].set_ylabel('Relative power')
+        else:
+            ax[aindex, 0].set_ylabel('MCCM')
+        if (aindex+1) == nsubplots:
+            ax[aindex, 0].set_xlabel(my_xlabel)
+        aindex = aindex + 1    
 
     if to_plot["usestack"]: # calculate stack to plot
         from retreat.data.stack import stack
@@ -178,14 +207,13 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
         sbins = np.linspace(0, max_slow_hist, N2 + 1)
 
         # create the histogram NOW:
-        if array_resp["lsq"]: # simple frequency histogram
-            with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc()) as executor:
-                hist, baz_edges, sl_edges = executor.submit(np.histogram2d,\
-                baz, slow, bins=[abins, sbins]).result()       
-        else: # weight by relative power
-            with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc()) as executor:
+        # get histogram, and weight by relative power (or MCCM for LSQ)
+        with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc()) as executor:
                 hist, baz_edges, sl_edges = executor.submit(np.histogram2d,\
                 baz, slow, bins=[abins, sbins], weights=relpow).result()
+                
+        if to_plot["norm"]:
+            hist = hist/len(data)
 
         # find the coordinates of maximum relative power:
         max_xy = np.unravel_index(np.argmax(hist, axis=None), hist.shape)
@@ -210,7 +238,7 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
             syy = sll_y + l * sl_s
             sy = np.append(sy, syy)
 
-        # Map the maxium power in slowness/azimuth coords to -> slx, sly coords:
+        # Map the maximum power in slowness/azimuth coords to -> slx, sly coords:
         idx = (np.abs(sx-Sx)).argmin()
         if not np.isscalar(idx):
             idx = idx[0]
@@ -430,14 +458,13 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
             # max abs value in grid, rounded up to nearest 0.5
             sbins = np.linspace(0, max_slow_hist, N2 + 1)
 
-            if array_resp["lsq"]: # simple frequency histogram
-                with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc()) as executor:
-                    hist, baz_edges, sl_edges = executor.submit(np.histogram2d,\
-                    baz, slow, bins=[abins, sbins]).result()       
-            else: # weight by relative power
-                with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc()) as executor:
+            # get histogram, and weight by relative power (or MCCM for LSQ)
+            with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc()) as executor:
                     hist, baz_edges, sl_edges = executor.submit(np.histogram2d,\
                     baz, slow, bins=[abins, sbins], weights=relpow).result()
+                    
+            if to_plot["norm"]:
+                hist = hist/len(data)
 
         # transform to radian
         baz_edges = np.radians(baz_edges)
@@ -446,13 +473,21 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
         dw = abs(baz_edges[1] - baz_edges[0])
 
         # choose colourmap
-        cmap = obspy_sequential
+        cmap_in = obspy_sequential
+        if to_plot["norm"]:
+            cmap = shiftedColorMap(cmap_in, 0.0, 0.15, 1.0, linear=False)
+        else:
+            cmap = cmap_in
 
         # circle through backazimuth
 
         for i, row in enumerate(hist):
-            bars = axp.bar(x=(i * dw) * np.ones(N2), height=dh * np.ones(N2), width=dw,\
-            bottom=dh * np.arange(N2), color=cmap(row / hist.max()))
+            if not to_plot["norm"]:
+                bars = axp.bar(x=(i * dw) * np.ones(N2), height=dh * np.ones(N2), width=dw,\
+                bottom=dh * np.arange(N2), color=cmap(row / hist.max()))
+            else:
+                bars = axp.bar(x=(i * dw) * np.ones(N2), height=dh * np.ones(N2), width=dw,\
+                bottom=dh * np.arange(N2), color=cmap(row))
 
         # set slowness limits
         if (to_plot["slow_ymin"] != 'auto') or (to_plot["slow_ymax"] != 'auto'):
@@ -465,11 +500,17 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
         [i.set_color('grey') for i in axp.get_yticklabels()]
 
         # set colorbar limits
-        cbar = ColorbarBase(cax, cmap=cmap, norm=Normalize(vmin=hist.min(), vmax=hist.max()))
-        if array_resp["lsq"]:
-            cbar.set_label('Frequency (count)', rotation=270, labelpad=15)
+        if not to_plot["norm"]:
+            cbar = ColorbarBase(cax, cmap=cmap, norm=Normalize(vmin=hist.min(), vmax=hist.max()))
+            normstr=''
         else:
-            cbar.set_label('Relative Power', rotation=270, labelpad=15)
+            cbar = ColorbarBase(cax, cmap=cmap, norm=Normalize(vmin=0, vmax=1))
+            normstr='Normalized '
+            
+        if array_resp["lsq"]:
+            cbar.set_label(normstr+'Frequency (count)', rotation=270, labelpad=15)
+        else:
+            cbar.set_label(normstr+'Relative Power', rotation=270, labelpad=15)
 
         # find maximum
         max_xy = np.unravel_index(np.argmax(hist, axis=None), hist.shape)

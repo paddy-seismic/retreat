@@ -60,12 +60,14 @@ def my_defaults(cwd):
         vel_thresh='-1e9',
         nbin_baz=72, # 360/72=5 deg bins
         nbin_slow=50,
-        lsq=False,
+	lsq=False,
         # PLOTTING
         baz=True,
         slow=True,
         polar=True,
         rmes=True,
+        relpow=False,
+        norm=False,
         rmes_wind=300.0,
         rmes_ovlp=0.90,
         seis=True,
@@ -98,6 +100,8 @@ def my_defaults(cwd):
         rms_ymax="auto",
         seis_ymin="auto",
         seis_ymax="auto",
+        relpow_ymin="auto",
+        relpow_ymax="auto",
         # SPECTROGRAM
         fmin=0.5,
         fmax=2.5,
