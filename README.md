@@ -96,6 +96,7 @@ retreat
     │   ├── mapping.py
     │   ├── rms_rmes.py
     │   ├── set_font_sizes.py
+    │   ├── shiftedColorMap.py
     │   └── update_plot.py
     ├── realtime.py
     ├── start.py
@@ -265,6 +266,7 @@ The parameters in this section define what you wish to plot as the output of the
 
 * **Back azimuth** - checkbox to select to plot a timeseries of the calculated back azimuths (in degrees)
 * **Slowness** - checkbox to select to plot a timeseries of the calculated slowness (in s/km)
+* **Power/MCCM** - checkbox to select to plot a timeseries of the relative power [f-k] or MCCM (mean maximum correlation) [Least-squares]
 * **Seismogram** - checkbox to select to plot the (filtered) seismogram
 * **Spectrogram** - checkbox to select to plot a spectrogram of the data
 * **RMeS** - checkbox to select to plot the RMeS envelope (Root-Median-Square)
@@ -274,7 +276,7 @@ RMeS is the envelope of the seismogram calculated using a Root-Median-Square sli
 * **RMeS Window** - length of the window to calculate RMeS in seconds
 * **Overlap fraction** - defines the amount to overlap each window [0,1] (a higher value will increase the time resolution and hence processing time)
 
-The 6th checkbox, **F-K Polar plot** creates a separate figure with the power from the f-k analysis represented in *Polar* form, with the *Back azimuth* on the *angular* axis, and the *slowness* on the *radial* axis.
+The checkbox **Polar plot** creates a separate figure with the power from the beamforming analysis represented in *Polar* form as a histogram, with the *Back azimuth* on the *angular* axis, and the *slowness* on the *radial* axis. Note for Least-squares beamforming this is weighted by the MCCM rather than relative power.
 
 * **Save figures** - checkbox to select whether to save each figure. If checked each update will save the figure as a NEW file with a unique filename based on the timestamp. Otherwise, if unchecked, the same image file is overwritten on each update.
 * **Web Figures** - checkbox to select whether to display output figures in a web browser rather than a separate GUI window (**NOTE** this the default if the software is started in Web interface mode and cannot be changed)
@@ -283,7 +285,7 @@ The 6th checkbox, **F-K Polar plot** creates a separate figure with the power fr
 The next set of parameters define the size of the output figures, as pairs of *x* and *y* values. The sizes are specified in *pixels* (resolution is set to 100 DPI):
 
 * **Timeline plot dimensions** - size of main timeline figure (with up to 5 panels)
-* **Polar plot dimensions** -  size of f-k polar form figure 
+* **Polar plot dimensions** - size of f-k polar form figure 
 
 Fixed *y*-axis limits for the various figures can also be set. If set to *auto* the figure will automatically scale the axes:
 
@@ -299,8 +301,10 @@ Other options include:
 
 * **Plot timestamp** - if checked this will print the timestamp onto each figure (*current* time if in real-time mode OR stream start time if in archive mode)
 * **Use stack for plots** - if checked a *stack* of the traces in the array will be used as the *seismogram* plot. Otherwise the first station in the stream is used. The stack used is the beam corresponding to the slowness and backazimuth values derived from the maximum relative power.
+* **Normalized histogram** - if checked normalizes the power or MCCM in the histogram for the Polar plot, based on the maximum possible value (i.e. if there was perfect correlation/coherence for every value in the timeseries)
 * **RMeS limits** - minimum and maximum velocity values for the RMeS panel *y*-axis (in m/s). If set to *auto* the figure will automatically scale the axes
 * **Seismogram amplitude limits** - minimum and maximum velocity values for the *y*-axis (in m/s). Again, if set to *auto* the figure will automatically scale the axes
+* **Power/MCCM limits** - minimum and maximum velocity values for the *y*-axis. Again, if set to *auto* the figure will automatically scale the axes.
 
 The next set of values control the (optional) plot of the array response function:
 
