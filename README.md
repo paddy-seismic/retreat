@@ -264,7 +264,7 @@ Note on **coordinates**: although the *obspy* array_processing module accepts co
  
 ### Results and Plots
 
-The parameters in this section define what you wish to plot as the output of the analysis as well as various settings for these figures. For more details and examples see the [Figures](#figures-and-output) section. The main timeseries figure can have up to 5 panels, with the desired output selected by the 5 checkboxes:
+The parameters in this section define what you wish to plot as the output of the analysis as well as various settings for these figures. For more details and examples see the [Figures](#figures-and-output) section. The main timeseries figure can have up to 6 panels, with the desired output selected by the 6 checkboxes:
 
 * **Back azimuth** - checkbox to select to plot a timeseries of the calculated back azimuths (in degrees)
 * **Slowness** - checkbox to select to plot a timeseries of the calculated slowness (in s/km)
