@@ -3,7 +3,8 @@
 # Purpose: Functions for performing Least-Squares beamforming
 # Author: Paddy Smith, DIAS. 2020
 # Adapted for python from: https://github.com/silvioda/Infrasound-Array-Processing-Matlab
-# which was written for Matlab by Silvio De Angelis. See https://doi.org/10.3389/feart.2020.00169
+# which was written for Matlab by Silvio De Angelis. 
+# See https://doi.org/10.3389/feart.2020.00169
 # Email: psmith@cp.dias.ie
 # --------------------------------------------------------------------
 """
@@ -70,6 +71,7 @@ def do_inversion(st, **kwargs):
 
     # Sampling frequency (must be the same for all channels)
     # so check that sampling rates do not vary
+
     fs = st[0].stats.sampling_rate
     if len(st) != len(st.select(sampling_rate=fs)):
         msg = 'Sampling rates of traces in stream are not equal'
@@ -134,7 +136,7 @@ def do_inversion(st, **kwargs):
 
                 cmax = np.append(cmax, np.max(cc))
                 lags = np.append(lags, ll[np.argmax(cc)])
-                
+
         # store mean as MCCM
         mccm=np.mean(cmax)
 
@@ -204,12 +206,13 @@ def do_inversion(st, **kwargs):
     return np.array(res)
 
 def xcorr(x, y, normed=True, detrend=False, maxlags=None):
+    """
     # Cross correlation of two signals of equal length
     # Returns the coefficients when normed=True
     # Returns inner products when normed=False
     # Usage: lags, c = xcorr(x,y,maxlags=len(x)-1)
     # Optional detrending e.g. mlab.detrend_mean
-
+    """
     Nx = len(x)
     if Nx != len(y):
         raise ValueError('x and y must be equal length')
@@ -232,6 +235,6 @@ def xcorr(x, y, normed=True, detrend=False, maxlags=None):
         raise ValueError('maglags must be None or strictly '
                          'positive < %d' % Nx)
 
-    lags = np.arange(-maxlags, maxlags + 1)
+    lags = np.arange(-1*maxlags, maxlags + 1)
     c = c[Nx - 1 - maxlags:Nx + maxlags]
     return lags, c

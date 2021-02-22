@@ -7,7 +7,7 @@ def my_defaults(cwd):
         #########################
         # DATA SOURCES - REALTIME
         myclient="IRIS",
-        connection=['FDSN', 'seedlink'],
+        connection=['FDSN', 'seedlink','earthworm'],
         # DATA SOURCES - REPLAY
         replay=True,
         customfmt=True,
@@ -21,10 +21,14 @@ def my_defaults(cwd):
         N="VI",
         L="",
         # METADATA
-        inv_type=['SEED','STATIONXML', 'XSEED', 'ASCII'],
+        inv_type=['SEED','STATIONXML', 'XSEED', 'RESP'],
         inv_supply=True,
         inv_file=cwd+"/retreat/example_data/dataless.seed.UR",
         # PRE-PROCESSING
+        check_gaps=True,
+        min_nchan=3,
+        max_gap_size=10,
+        max_gap_ends=60,
         decimate=True,
         newfreq=20.0,
         demean=True,
@@ -43,6 +47,7 @@ def my_defaults(cwd):
         update_interval=30,
         max_realtime_latency=180,
         tstart=UTCDateTime('2014-09-03-06:00').isoformat(),
+        tstop=UTCDateTime('2014-09-03-08:01').isoformat(),
         prebuf=30,
         fill_on_start=True,
         # ARRAY PROCESSING
@@ -60,7 +65,7 @@ def my_defaults(cwd):
         vel_thresh='-1e9',
         nbin_baz=72, # 360/72=5 deg bins
         nbin_slow=50,
-	lsq=False,
+        lsq=False,
         # PLOTTING
         baz=True,
         slow=True,
@@ -68,7 +73,7 @@ def my_defaults(cwd):
         rmes=True,
         relpow=False,
         norm=False,
-        rmes_wind=300.0,
+        rmes_wind=30.0,
         rmes_ovlp=0.90,
         seis=True,
         spec=True,

@@ -7,7 +7,7 @@ def my_defaults(cwd):
         #########################
         # DATA SOURCES - REALTIME
         myclient="IRIS",
-        connection=['FDSN', 'seedlink'],
+        connection=['FDSN', 'seedlink','earthworm'],
         # DATA SOURCES - REPLAY
         replay=False,
         customfmt=False,
@@ -26,6 +26,10 @@ def my_defaults(cwd):
         inv_supply=False,
         inv_file=cwd+"/retreat/example_data/NO.xml",
         # PRE-PROCESSING
+        check_gaps=True,
+        min_nchan=3,
+        max_gap_size=5,
+        max_gap_ends=30,
         decimate=True,
         newfreq=20.0,
         demean=True,
@@ -44,6 +48,7 @@ def my_defaults(cwd):
         update_interval=60,
         max_realtime_latency=180,
         tstart="now",
+        tstop='',
         prebuf=30,
         fill_on_start=True,
         # ARRAY PROCESSING
@@ -69,7 +74,7 @@ def my_defaults(cwd):
         rmes=True,
         relpow=False,
         norm=False,
-        rmes_wind=300.0,
+        rmes_wind=120.0,
         rmes_ovlp=0.90,
         seis=True,
         spec=True,

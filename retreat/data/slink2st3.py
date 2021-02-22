@@ -1,5 +1,4 @@
 """slink2st3"""
-import logging
 import time
 import sys
 from obspy.clients.seedlink.basic_client import Client
@@ -19,7 +18,6 @@ def slink2st(scnl, myclient, t, length, logfile):
         server, port = myclient.split(":")
     except ValueError:
         print("Error: Invalid seedlink server format. Please enter as SERVER:PORT")
-        logging.exception("Error: Invalid seedlink server format. Please enter as SERVER:PORT")
 
     port = int(port)
     client = Client(server, port)#,debug=True)
@@ -29,21 +27,20 @@ def slink2st(scnl, myclient, t, length, logfile):
         try:
         # ... do stuff ...
             print("Connecting to server...")
-
+            sys.stdout.flush()
             # fetch data
             st = client.get_waveforms(scnl["N"], scnl["S"], scnl["L"], scnl["C"], t, t + length)
         except Exception as e:
             # ... log it, sleep, etc. ...
             print('Connection error: '+ str(e))
-            logging.error('Connection error: '+ str(e))
             print("Will retry in ", str(nsleep), "s")
+            sys.stdout.flush()
             time.sleep(nsleep)
-
             continue
         else:
             break
     else:
-        print("Can't connect to server. Giving up")
-        raise SystemExit("Can't connect to server. Giving up")
+        st=None
+        print("Can't connect to server. Giving up for now.")
 
     return st

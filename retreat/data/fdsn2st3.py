@@ -29,23 +29,20 @@ def fdsn2st(scnl, myclient, t, length, logfile):
     for _ in range(max_retries):
 
         try:
-                # ... do stuff ...
+            # grab the data
             print("Connecting to server...")
+            sys.stdout.flush()
             st = client.get_waveforms(scnl["N"], scnl["S"], scnl["L"], scnl["C"], t, t + length)
         except Exception as e:
-            # ... log it, sleep, etc. ...
             print('Connection error: '+ str(e))
-            #logging.error('Connection error: '+ str(e))
             print("Will retry in ", str(nsleep), "s")
-            #logging.info("Will retry in %ss", nsleep)
+            sys.stdout.flush()
             time.sleep(nsleep)
             continue
         else:
             break
     else:
-        print("Can't connect to server. Giving up")
-        raise SystemExit("Can't connect to server. Giving up")
-
-#	st = client.get_waveforms(scnl["N"], scnl["S"], scnl["L"], scnl["C"], t, t + length)
+        st=None
+        print("Can't connect to server. Giving up for now.")
 
     return st

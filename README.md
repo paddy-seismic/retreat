@@ -122,6 +122,7 @@ These are:
 - scipy (```python3-scipy```)
 - matplotlib (```python3-matplotlib```)
 - numpy (```python3-numpy```)
+- regex (```python3-regex```)
 - obspy (```python3-obspy```)
 - psutil (```python3-psutil```)
 - Pillow (```python3-pil```)
@@ -186,8 +187,8 @@ Figures will appear *below the Output Pane*.
 
 These parameters define the source and properties of the input data. The fields are:
 
-* **Connection type** - Used for realtime data only. Can currently use the dropbox to choose from an FDSN or seedlink client.
-* **Client/Server** - Details of the server for the chosen connection type. For FDSN this is simply the name, e.g. *IRIS*, and for Seedlink this is the server URL:port, e.g. *rtserve.iris.washington.edu:18000*
+* **Connection type** - Used for realtime data only. Can currently use the dropbox to choose from an FDSN, seedlink or earthworm/winston client.
+* **Client/Server** - Details of the server for the chosen connection type. For FDSN this is simply the name, e.g. *IRIS*, and for Seedlink or earthworm/winston servers this is the server URL:port, e.g. *rtserve.iris.washington.edu:18000* or *pubavo1.wr.usgs.gov:16022*
 * **SCNL** - These specify the data Station, Channel, Network and Location codes for the input data (wildcard "*" can be used)
 * **Inventory file** - checkbox to specify if you are supplying an inventory or metadata file (required if Connection type is **not** FDSN or if using archive data)
 * **Inventory filename** - Path and name of inventory file (you can also use the *Browse* button to select)
@@ -219,18 +220,23 @@ These parameters define any pre-processing applied to the data before the array 
 * **New sampling frequency** - specify the new sampling frequency to downsample to if the *Decimate* box is checked
 * **Pre-filter**- checkbox to select whether to Pre-filter the data
 * **Bandpass** - checkbox to select whether to Bandpass filter the data. The next 2 boxes specify the upper and lower frequency limits (in Hz) for the filter
+* **Check for gaps** - checkbox to select whether to check for and attempt to fill gaps in the input data stream. This function is designed to ensure RETREAT continues to run if small gaps or dropouts occur in the data. Gaps are currently filled with the trace mean or zero (if demean option selected).
+* **Minimum number of channels** - the minimum number of good (gap-free or suitably filled) channels required to proceed with the array analysis.
+* **Maximum fillable gap size** - the size of the maximum gap that should be filled (in seconds)
+* **Max. gap to fill at start/end** - the size of the maximum gap (in seconds) to be filled at the start or end of each trace, e.g. for channels that start late or finish early within the window
 
 ### Timing
 
 This set of parameters define the amount of data to be processed, by defining the length of the window and how often it is updated (real-time mode). The parameters are:
 
-* **Start Time** -  specify the start time (UTC). This defaults to the current time (when software is started) when using real-time mode. It also accepts the keyword term '*now*'.
+* **Start Time** - specify the start time (UTC). This defaults to the current time (when software is started) when using real-time mode. It also accepts the keyword term '*now*'.
 * **Plot window** - length of the window to be plotted in the output figure timeseries (in seconds)
 * **Max realtime latency** - to account for latency of incoming data and to ensure real-time processing does not lag too much, you can specify the maximum number of seconds to allow for latency. If the delay between the end of the acquired data stream and the current time exceeds this value then processing will proceed immediately without waiting for the update interval. This parameter has no effect for archive data in replay mode.
 * **Window length** - amount of data to fetch on each update (in seconds)
 * **Update interval** - How often to update (fetch new data) - specified in seconds. If the processing for each update step takes longer than this update interval to complete, the software will warn you that realtime processing may lag. NOTE: for non-realtime/archive data this parameter is ignored and the next chunk of data is processed immediately.
 * **Pre-buffer** - amount to pre-buffer (in seconds) before the start time to ensure there are no gaps in the data stream. This is only relevant for real-time mode
 * **Fill window on start** - if this box is checked the software will fetch enough data to fill the entire window (specified by the *Plot window*) on the first update. Otherwise, it will fetch only *Window length* seconds and the window will grow with each update until it reaches the length of the *Plot Window*
+* **End time** - optionally specify the end time (UTC), Default=None. Note that this only applies for replay mode. RETREAT will attempt to continue beyond the end of the dataset (in case of large gaps/outages in all or multiple channels), and will continue to search forward for more data  indefinitely unless an end time is explicitly specified. Note that for real-time mode, the analysis continues indefinitely until stopped, and RETREAT will attempt to reconnect to the server/data source if the connection is lost.
 
 ### Array Processing parameters
 
@@ -264,7 +270,7 @@ Note on **coordinates**: although the *obspy* array_processing module accepts co
  
 ### Results and Plots
 
-The parameters in this section define what you wish to plot as the output of the analysis as well as various settings for these figures. For more details and examples see the [Figures](#figures-and-output) section. The main timeseries figure can have up to 6 panels, with the desired output selected by the 6 checkboxes:
+The parameters in this section define what you wish to plot as the output of the analysis as well as various settings for these figures. For more details and examples see the [Figures](#figures-and-output) section. The main timeseries figure can have up to 7 panels, with the desired output selected by the 7 checkboxes:
 
 * **Back azimuth** - checkbox to select to plot a timeseries of the calculated back azimuths (in degrees)
 * **Slowness** - checkbox to select to plot a timeseries of the calculated slowness (in s/km)

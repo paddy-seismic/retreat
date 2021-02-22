@@ -50,7 +50,7 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
     sll_x = array_params["sll_x"]
     sll_y = array_params["sll_y"]
     sl_s = array_params["sl_s"]
-    
+
     # check if using infrasound data - for axis label(s):
     infra=False
     for tr in st:
@@ -104,12 +104,13 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
     pstart = st[0].stats.starttime.matplotlib_date
     pend = st[0].stats.endtime.matplotlib_date
 
-    # **NB** For matplotlib >= 3.3.0 the epoch for date format has changed from 0000-12-31T00:00:00 to 
-    # UNIX default of 1970-01-01T00:00:00 to allow greater resolution. The array_analysis routine still
-    # returns dates relative to the old epoch. However we cannot assume this will ALWAYS be true, as it
-    # may change/be fixed in future versions. Hence, we explicitly check the difference between the 
-    # trace starttime and the first time value from the array processing to check for any epoch mismatch:
-    if ((time[0] - pstart) >= 719163.0):
+    # **NB** For matplotlib >= 3.3.0 the epoch for date format has changed from 0000-12-31T00:00:00
+    # to UNIX default of 1970-01-01T00:00:00 to allow greater resolution. The array_analysis routine
+    # still returns dates relative to the old epoch. However we cannot assume this will ALWAYS be
+    # true, as it may change/be fixed in future versions. Hence, we explicitly check the difference
+    # between the trace starttime and the first time value from the array processing to check for
+    # any epoch mismatch:
+    if (time[0] - pstart) >= 719163.0:
         time = time + mdates.date2num(np.datetime64('0000-12-31'))
 
     my_time_label = st[0].stats.starttime.strftime('%d-%b-%Y %H:%M:%S%Z') + ' to ' +\
@@ -156,10 +157,10 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
         if (aindex+1) == nsubplots:
             ax[aindex, 0].set_xlabel(my_xlabel)
         aindex = aindex + 1
-        
+
     if to_plot["relpow"]:
             # plot relative power (or MCCM for LSQ)
-        if not array_resp["lsq"]:    
+        if not array_resp["lsq"]:
             print("Plotting relative power")
         else:
             print("Plotting MCCM")
@@ -172,16 +173,17 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
             slow_ymax = float(to_plot["relpow_ymax"])
             ax[aindex, 0].set_ylim(relpow_ymin, relpow_ymax)
 
-
         ax[aindex, 0].xaxis.set_major_locator(xlocator)
         ax[aindex, 0].xaxis.set_major_formatter(mdates.AutoDateFormatter(xlocator))
-        if not array_resp["lsq"]:  
+        if not array_resp["lsq"]:
             ax[aindex, 0].set_ylabel('Relative power')
         else:
             ax[aindex, 0].set_ylabel('MCCM')
         if (aindex+1) == nsubplots:
             ax[aindex, 0].set_xlabel(my_xlabel)
-        aindex = aindex + 1    
+        aindex = aindex + 1
+
+    sys.stdout.flush()
 
     if to_plot["usestack"]: # calculate stack to plot
         from retreat.data.stack import stack
@@ -196,6 +198,13 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
 
         # Use the best "beam" as the stack (i.e. time shifts corresponding to max power)
 
+        # try to remove any NaNs in relpow before weighting. First find non-NaN values
+        non_nan_mask = ~np.isnan(relpow)
+        # if all are NOT true, then we have some NaNs
+        if not np.all(non_nan_mask):
+            print("Replacing NaNs in relpow")
+            relpow=np.nan_to_num(relpow, copy=True, nan=1.0)
+
         # choose number of fractions in plot (desirably 360 degree/N is an integer!)
         N = to_plot["nbin_baz"]
         N2 = to_plot["nbin_slow"]
@@ -204,14 +213,16 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
         abins = np.arange(N + 1) * 360. / N
         max_slow_hist = np.ceil(1.5*2* np.max(np.abs([sll_x, sll_y, slm_x, slm_y])))/2 # 1.5x max \
         # abs value in grid, ... then rounded up to nearest 0.5
+        if max_slow_hist < np.max(slow): # check values are not actually outside this range!
+            max_slow_hist = np.ceil(np.max(slow))
         sbins = np.linspace(0, max_slow_hist, N2 + 1)
 
         # create the histogram NOW:
         # get histogram, and weight by relative power (or MCCM for LSQ)
         with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc()) as executor:
-                hist, baz_edges, sl_edges = executor.submit(np.histogram2d,\
+            hist, baz_edges, sl_edges = executor.submit(np.histogram2d,\
                 baz, slow, bins=[abins, sbins], weights=relpow).result()
-                
+
         if to_plot["norm"]:
             hist = hist/len(data)
 
@@ -269,6 +280,7 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
                 mystack[0] = st[0]
 #            print('stack', mystack[0].stats.starttime,'-',tr.stats.endtime)
         except ValueError:
+            print('Warning, bad data in stack - reverting to first station in array')
             to_plot["usestack"] = False
 
     if to_plot["rmes"]:
@@ -307,6 +319,8 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
             ax[aindex, 0].set_xlabel(my_xlabel)
         aindex = aindex + 1
 
+    sys.stdout.flush()
+
     if to_plot["seis"]:
         # plot seismogram
         print("Plotting waveform")
@@ -339,6 +353,8 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
 
         aindex = aindex + 1
 
+    sys.stdout.flush()
+
     if to_plot["spec"]:
         # plot spectrogram
         print("Plotting spectrogram")
@@ -346,9 +362,17 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
         if to_plot["first"]:
             sfmin = spectro["fmin"]
             sfmax = spectro["fmax"]
-
             del spectro["fmin"]
             del spectro["fmax"]
+        else: # double-check again, in case there was a problem with
+              # the data the first time round the loop, and hence no
+              # spectrogram was plotted. Check for/remove fmin/fmax
+            if "fmin" in spectro:
+                sfmin = spectro["fmin"]
+                del spectro["fmin"]
+            if "fmax" in spectro:
+                sfmax = spectro["fmax"]
+                del spectro["fmax"]
 
         ax[aindex, 0].cla()
         spectro["axes"] = ax[aindex, 0]
@@ -402,7 +426,7 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
         figname = "{}/{}-{}-{}.png".format(to_plot["figpath"], to_plot["timelinefigname"],\
         st[0].stats.network, st[0].stats.starttime.strftime("%Y%m%d_%H%M%S"))
     else:
-        figname = to_plot["figpath"] + to_plot["timelinefigname"] + ".png"
+        figname = "{}/{}.png".format(to_plot["figpath"], to_plot["timelinefigname"])
     print("Saving figure: ", figname)
     if to_plot["timestamp"]:
         fig.savefig(figname, bbox_extra_artists=[spt], bbox_inches='tight')
@@ -415,6 +439,8 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
         st[0].stats.network, st[0].stats.starttime.strftime("%Y%m%d_%H%M%S"))
         with open(datafile, "wb+") as fid:
             np.savetxt(fid, np.array([time, baz, slow]).T)
+
+    sys.stdout.flush()
 
     ### polar plot of f-k space ##############################
     if to_plot["polar"]:
@@ -448,6 +474,13 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
 
         if not to_plot["usestack"]:
 
+            # try to remove any NaNs in relpow. First find non-NaN values
+            non_nan_mask = ~np.isnan(relpow)
+            # if all are NOT true, then we have some NaNs
+            if not np.all(non_nan_mask):
+                print("Replacing NaNs in relpow")
+                relpow=np.nan_to_num(relpow, copy=True, nan=1.0)
+
             # choose number of fractions in plot (desirably 360 degree/N is an integer!)
             N = to_plot["nbin_baz"] #72
             N2 = to_plot["nbin_slow"] #50
@@ -455,16 +488,27 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
             # create the azimuth and slowness bins
             abins = np.arange(N + 1) * 360. / N
             max_slow_hist = np.ceil(1.5*2* np.max(np.abs([sll_x, sll_y, slm_x, slm_y])))/2 # 1.5x \
+            if max_slow_hist < np.max(slow): # check values are not actually outside this range!
+                max_slow_hist = np.ceil(np.max(slow))
             # max abs value in grid, rounded up to nearest 0.5
             sbins = np.linspace(0, max_slow_hist, N2 + 1)
 
             # get histogram, and weight by relative power (or MCCM for LSQ)
             with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc()) as executor:
-                    hist, baz_edges, sl_edges = executor.submit(np.histogram2d,\
+                hist, baz_edges, sl_edges = executor.submit(np.histogram2d,\
                     baz, slow, bins=[abins, sbins], weights=relpow).result()
-                    
+
             if to_plot["norm"]:
                 hist = hist/len(data)
+
+        sys.stdout.flush()
+
+        # Final check for any NaNs in hist before plotting
+        non_nan_mask = ~np.isnan(hist)
+        # if all are NOT true, then we have some NaNs
+        if not np.all(non_nan_mask):
+            print("Replacing NaNs with 0")
+            hist=np.nan_to_num(hist, copy=True, nan=0.0)
 
         # transform to radian
         baz_edges = np.radians(baz_edges)
@@ -506,7 +550,7 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
         else:
             cbar = ColorbarBase(cax, cmap=cmap, norm=Normalize(vmin=0, vmax=1))
             normstr='Normalized '
-            
+
         if array_resp["lsq"]:
             cbar.set_label(normstr+'Frequency (count)', rotation=270, labelpad=15)
         else:
@@ -535,13 +579,15 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
             figname = "{}/{}-{}-{}.png".format(to_plot["figpath"], to_plot["polarfigname"],\
             st[0].stats.network, st[0].stats.starttime.strftime("%Y%m%d_%H%M%S"))
         else:
-            figname = to_plot["figpath"] + to_plot["polarfigname"] + ".png"
+            figname = "{}/{}.png".format(to_plot["figpath"], to_plot["polarfigname"])
 
         print("Saving figure: ", figname)
 
         figp.savefig(figname)
 
     ### array response function #################################
+
+    sys.stdout.flush()
 
     if to_plot["resp"]:
 
@@ -594,12 +640,13 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
                 figname = "{}/{}-{}-{}.png".format(to_plot["figpath"], to_plot["arrayfigname"],\
                 st[0].stats.network, st[0].stats.starttime.strftime("%Y%m%d_%H%M%S"))
             else:
-                figname = to_plot["figpath"] + to_plot["arrayfigname"] + ".png"
-
+                figname = "{}/{}.png".format(to_plot["figpath"], to_plot["arrayfigname"])
             print("Saving figure: ", figname)
             figa.savefig(figname)
 
     ### map showing projection of back azimuth
+
+    sys.stdout.flush()
 
     if to_plot["bazmap"]:
 
@@ -652,8 +699,7 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
                 print('Warning - you have specified array at centre with manual map extent')
                 if not all(to_plot[key] != 'auto' for key in ['lat_min', 'lat_max', 'lon_min',\
                 'lon_max']):
-                    print('Error! You must specify ALL 4 limits')
-                    raise Exception
+                    raise Exception('Error! You must specify ALL 4 limits')
 #                else:
 #                    print('OK')
 
@@ -678,9 +724,8 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
 #           # check if any AUTO values:
             for key in ['lat_min', 'lat_max', 'lon_min', 'lon_max']:
                 if to_plot[key] == 'auto':
-                    print('Error! If array NOT at the map centre, \
+                    raise Exception('Error! If array NOT at the map centre, \
                     all 4 lat/lon limits MUST be specified')
-                    raise Exception
 
                 if to_plot["lat_min"] != 'auto':
                     lat_min = float(to_plot["lat_min"])
@@ -730,10 +775,11 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
 
         if to_plot["first"]:
             ###### save as basemap for future cycles
-            figname = to_plot["figpath"] + "basemap.png"
+            figname = "{}/{}.png".format(to_plot["figpath"], "basemap")
             print("Saving basemap: ", figname)
             im.save(figname)
             ########
+        sys.stdout.flush()
 
         # plot back azimuth line
         baz = abins[max_xy[0]] # this just returns the lower EDGE of the cell
@@ -745,7 +791,7 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
 
         if array_resp["lsq"]: # use mean of azimuth errors from LSQ beamforming
             baz_err = np.mean(err_baz)
-            # This average across the WHOLE timeseries is likely, conservatively, 
+            # This average across the WHOLE timeseries is likely, conservatively,
             # to be larger than the error for any well/better constrained transients
         else:
             #For now, use the following illustrative error:
@@ -754,7 +800,7 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
 
         # calculate the length of the line
         if to_plot["map_array_centre"]: # array at centre
-            line_radius = (xmax-xmin)/np.sqrt(2) # as we already know it's a square in Cartesian..
+            line_radius = (xmax-xmin)/np.sqrt(2) # as we already know it's a square in Cartesian.
 
         else: # array NOT at centre
             # Now radius depends on position of array AND shape of map:
@@ -816,5 +862,6 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
     gc.collect()
     del gc.garbage[:]
     gc.collect()
+    sys.stdout.flush()
     # end function
     return

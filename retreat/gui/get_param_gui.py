@@ -1,8 +1,8 @@
 """get_param"""
+from obspy.core import UTCDateTime
+
 def get_param(gui_input):
     """Reads and returns input parameters from the GUI window"""
-    import sys
-    from obspy.core import UTCDateTime
 
     #### timing options
     # need to define some dependent variables outside dictionary
@@ -12,10 +12,11 @@ def get_param(gui_input):
     ###################### REAL TIME ###########################
 #    tstart = UTCDateTime()
 
-    ### SPECIFIC date/time for TESTING ############################
+    ### SPECIFIC date/time for TESTING #####
 #    tstart = UTCDateTime("2019-06-24T03:50:00")
 
-    #### FROM GUI
+    #####  FROM GUI
+    # first check the start time
     if not gui_input["tstart"] or gui_input["tstart"].casefold() == "now":
         print('NOW or no start time specified. Using current time')
         tstart = UTCDateTime() # use current time
@@ -24,23 +25,32 @@ def get_param(gui_input):
             tstart = UTCDateTime(gui_input["tstart"])
         except Exception as e:
             print(e)
-            print('Invalid time format. Using current time.')
+            print('Invalid Start time format. Using current time.')
             tstart = UTCDateTime()
+    # now check the end time
+    if gui_input["tstop"]:
+        try:
+            tstop = UTCDateTime(gui_input["tstop"])
+            if tstop <= tstart:
+                raise Exception('Error. End time must be later than start time')
+        except Exception as e:
+            raise Exception('Invalid End time format:',e) from e
 
     if type(tstart).__name__ != 'UTCDateTime':
-        print('Invalid time format. Using current time.')
+        print('Invalid Start time format. Using current time.')
         tstart = UTCDateTime()
 
-    ##################### TIMING
+    ##### # TIMING
     timing = dict(
         # OVERALL length of time window to display on plots
         plot_window=float(gui_input["plot_window"]), # in seconds
         ### round down to nearest n minutes for tidiness
         # nmin = mins_to_round_to,
         tstart=tstart,
+        tstop=gui_input["tstop"],
         # length of time window to grab and process each update
         window_length=window_length, # in SECONDS
-        ################################ = ASSUME FOR NOW THIS IS THE SAME AS THE WINDOW LENGTH
+        ##### ASSUME FOR NOW THIS IS THE SAME AS THE WINDOW LENGTH
         # update interval
         update_interval=float(gui_input["update_interval"]), #in SECONDS
         fill_on_start=gui_input["fill_on_start"], # backfill entire plot window on startup
@@ -49,7 +59,7 @@ def get_param(gui_input):
         max_realtime_latency=float(gui_input["max_realtime_latency"]), # in seconds
     )
 
-    #### waveform data
+    #####  waveform data
 
     mydata = dict(
         t=tstart - (window_length + prebuf),
@@ -70,9 +80,14 @@ def get_param(gui_input):
         inv_type=gui_input["inv_type"],
     )
 
-    #### pre-processing parameters
+    #####  pre-processing parameters
 
     preproc = dict(
+        # gaps
+        check_gaps=gui_input["check_gaps"],
+        min_nchan=int(gui_input["min_nchan"]),
+        max_gap_size=float(gui_input["max_gap_size"]),
+        max_gap_ends=float(gui_input["max_gap_ends"]),
         # detrending options
         zcomps=gui_input["zcomps"],
         demean=gui_input["demean"],
@@ -87,11 +102,13 @@ def get_param(gui_input):
         # decimation
         decimate=gui_input["decimate"],
         newfreq=float(gui_input["newfreq"]),
+        # response
         removeresponse=gui_input["removeresponse"],
+        # filtering
         bandpass=gui_input["bandpass"],
     )
 
-    #### array processing parameters
+    #####  array processing parameters
 
     kwargs = dict(
         # slowness grid: X min, X max, Y min, Y max, Slow Step
@@ -99,8 +116,8 @@ def get_param(gui_input):
         sll_y=float(gui_input["sll_x"]), slm_y=float(gui_input["slm_y"]),\
         sl_s=float(gui_input["sl_s"]),
         # sliding window properties
-        win_len=float(gui_input["win_len"]), 
-        win_frac=1.0-float(gui_input["win_frac"]), #NB obspy array_processing uses.. 
+        win_len=float(gui_input["win_len"]),
+        win_frac=1.0-float(gui_input["win_frac"]), #NB obspy array_processing uses..
         # ..fraction for STEP not overlap
         # frequency properties
         frqlow=float(gui_input["frqlow"]), frqhigh=float(gui_input["frqhigh"]),\
@@ -114,7 +131,7 @@ def get_param(gui_input):
         method=0, # 0 = beamforming, 1 = capon (for f-k)
     )
 
-    #### plotting parameters
+    #####  plotting parameters
     to_plot = dict(
         baz=gui_input["baz"],
         slow=gui_input["slow"],
@@ -138,7 +155,7 @@ def get_param(gui_input):
         seis_ymin=gui_input["seis_ymin"],
         seis_ymax=gui_input["seis_ymax"],
         relpow_ymin=gui_input["relpow_ymin"],
-        relpow_ymax=gui_input["relpow_ymax"],  
+        relpow_ymax=gui_input["relpow_ymax"],
         norm=gui_input["norm"],
         polarx=int(gui_input["polarx"]),
         polary=int(gui_input["polary"]),
@@ -194,26 +211,23 @@ def get_param(gui_input):
     #### SANITY CHECKS:
 
     if to_plot["resp"] and to_plot["bazmap"]:
-        raise Exception("Error: Too many figures selected.\
-        Please choose either array response OR map view to plot")
+        raise Exception("Error: Too many figures selected. \
+            Please choose either array response OR map view to plot")
 
     if not mydata["replay"]:
 
         # window length
         if window_length > timing["plot_window"]:
-            print("Error:window_length should be LESS than plot_window")
-            sys.exit("Error: window_length should be LESS than plot_window")
+            raise Exception('Error: window_length should be LESS than plot_window')
+
         # prebuffer
         if prebuf > window_length:
-            print("Error: prebuffer should be LESS than window_length")
-            sys.exit("Warning: prebuffer should be LESS than window_length")
-            
+            raise Exception('Error: prebuffer should be LESS than window_length')
+
     if not to_plot["map_array_centre"]: # array NOT at centre
         for key in ['lat_min', 'lat_max', 'lon_min', 'lon_max']:
-            if to_plot[key] == 'auto': 
-                print('Error! If array NOT at the map centre, all 4 lat/lon limits MUST be specified')
-                sys.exit('Error! If array NOT at the map centre, all 4 lat/lon limits MUST be specified')
+            if to_plot[key] == 'auto':
+                raise Exception('Error! If array NOT at the map centre, all 4 lat/lon \
+                    limits MUST be specified')
 
     return timing, mydata, preproc, kwargs, to_plot, spectro, array_resp
-    
-    

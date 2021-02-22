@@ -1,6 +1,7 @@
 scipy
 matplotlib
 numpy
+regex
 obspy
 psutil
 Pillow

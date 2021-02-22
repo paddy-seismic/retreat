@@ -1,14 +1,15 @@
 """realtime"""
+# import necessary functions
+import time
+import sys
+import gc
+from retreat.tools.time_to_wait import time_to_wait
+from retreat.gui.get_param_gui import get_param
+from retreat.update import update
+
 def realtime(gui_input, logfile):
     """Performs an update based on input from the GUI.
     Fetches data, performs processing and updates output."""
-    # import necessary functions
-    import time
-    import sys
-    import gc
-    from retreat.tools.time_to_wait import time_to_wait
-    from retreat.gui.get_param_gui import get_param
-    from retreat.update import update
 
     # redirect output to log file:
     sys.stdout = open(logfile, 'a+')
@@ -23,6 +24,10 @@ def realtime(gui_input, logfile):
 
     timing, mydata, preproc, kwargs, to_plot, spectro, array_resp = get_param(gui_input)
 
+    true_realtime=True
+    if (time.time() - timing["tstart"].timestamp) > 10: # arbitrary 10 seconds value
+        true_realtime=False
+
     print("Target plot window length = {0:.2f}s".format(timing["plot_window"]))
     print("Amount of data to fetch each update = {0:.2f}s".format(timing["window_length"]))
     if not mydata["replay"]:
@@ -30,7 +35,8 @@ def realtime(gui_input, logfile):
 
     ################ run once - to set up various things
     last_start_time = time.time()
-    st_end = update(timing, mydata, preproc, kwargs, to_plot, spectro, array_resp, logfile)
+    st_end = []
+    st_end = update(timing, mydata, preproc, kwargs, to_plot, spectro, array_resp, logfile, st_end)
     gc.collect()
     del gc.garbage[:]
     gc.collect()
@@ -46,9 +52,19 @@ def realtime(gui_input, logfile):
             gc.collect()
             del gc.garbage[:]
             gc.collect()
-            st_end = update(timing, mydata, preproc, kwargs, to_plot, spectro, array_resp, logfile)
+            st_end = update(timing, mydata, preproc, kwargs, to_plot, spectro, array_resp, logfile,\
+                    st_end)
 
-        else: # realtime mode, so schedule recurring updates
+        elif not mydata["replay"] and not true_realtime: # realtime mode, but using a start time \
+            # in the past - perhaps using a server but looking at older data or something.
+            # No need to wait here either
+            gc.collect()
+            del gc.garbage[:]
+            gc.collect()
+            st_end = update(timing, mydata, preproc, kwargs, to_plot, spectro, array_resp, logfile,\
+                    st_end)
+
+        else: # assuming normal realtime mode, so need to schedule recurring updates
             gc.collect()
             del gc.garbage[:]
             gc.collect()
@@ -59,10 +75,9 @@ def realtime(gui_input, logfile):
             time_to_wait(last_start_time, timing["update_interval"], st_end, \
             timing["max_realtime_latency"], logfile)
             last_start_time = time.time()
-            st_end = update(timing, mydata, preproc, kwargs, to_plot, spectro, array_resp, logfile)
+            st_end = update(timing, mydata, preproc, kwargs, to_plot, spectro, array_resp, logfile,\
+                    st_end)
 
         gc.collect()
         del gc.garbage[:]
         gc.collect()
-
-    return

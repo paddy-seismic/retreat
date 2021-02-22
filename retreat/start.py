@@ -254,7 +254,7 @@ def start(web):
 
                 except Exception as e:
 
-                    print('Exception occurred')
+                    print('Exception occurred:',e)
 
                     # stop process and threads
 
