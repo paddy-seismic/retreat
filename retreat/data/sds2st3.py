@@ -2,9 +2,10 @@
 import os
 import sys
 from obspy.clients.filesystem.sds import Client
+from obspy import Stream
 from retreat.data.check_for_gaps import merge_checks
 
-def sds2st(scnl, sds_root, sds_type, customfmt, myfmtstr, t, length, logfile):
+def sds2st(scnl, scnl_supply, sds_root, sds_type, customfmt, myfmtstr, t, length, logfile):
     """Fetches stream object from local storage using SDS directory structure"""
     # redirect output to log file:s
     sys.stdout = open(logfile, 'a+')
@@ -32,9 +33,19 @@ def sds2st(scnl, sds_root, sds_type, customfmt, myfmtstr, t, length, logfile):
 #        print(t)
 #        print(length)
 ###
-    # fetch data
-    st = client.get_waveforms(scnl["N"], scnl["S"], scnl["L"], scnl["C"], t, t+length, merge=1)
-
+    if not scnl_supply: # simple SCNL list that can be constructed using wildcards
+        # fetch data
+        st = client.get_waveforms(scnl["N"], scnl["S"], scnl["L"], scnl["C"], t, t+length, merge=1)
+    else: # something more complicated that requires a list read from a file
+        
+        # Simply loop over the supplied SEED ids 
+        # multiple connections to server not an issue as offline read - may be slightly slower
+        # but not running in real-time so speed is not as critical
+        st = Stream()
+        for id in scnl:
+            st_id = client.get_waveforms(id[0], id[1], id[2], id[3], t, t+length, merge=1)
+            st += st_id
+        
     # check for empty stream:
     if not st or len(st) < 1:
         print("Error: Stream empty - please check your data source")

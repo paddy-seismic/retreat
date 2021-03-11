@@ -11,6 +11,7 @@ from retreat.data.sds2st3 import sds2st
 from retreat.data.ew2st import ew2st
 from retreat.data.fix_times import fix_times
 from retreat.data.get_meta import get_meta
+from retreat.data.get_meta import read_ascii_scnl
 from retreat.data.array_preproc import array_preproc
 from retreat.data.check_for_gaps import merge_checks
 from retreat.plot.update_plot import update_plot
@@ -27,6 +28,11 @@ def update(timing, mydata, preproc, kwargs, to_plot, spectro, array_resp, logfil
     print("\n--------------------------\n")
     if to_plot["first"]:
         print("Fetching initial data")
+        
+        # replace SCNL if reading from a file:
+        if mydata["scnl_supply"]:
+            mydata["scnl"] = read_ascii_scnl(mydata["scnl_file"], logfile)
+        
     else:
         print("Fetching new data")
     global st, t_in, inv
@@ -45,8 +51,8 @@ def update(timing, mydata, preproc, kwargs, to_plot, spectro, array_resp, logfil
 #            # grab the data
 
             with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc()) as executor:
-                st_in = executor.submit(sds2st, mydata["scnl"], mydata["sds_root"],\
-                mydata["sds_type"], mydata["customfmt"], mydata["myFMTSTR"],\
+                st_in = executor.submit(sds2st, mydata["scnl"], mydata["scnl_supply"],\
+                mydata["sds_root"], mydata["sds_type"], mydata["customfmt"], mydata["myFMTSTR"],\
                 tt_in, timing["plot_window"], logfile).result()
             try:
                 st_end = min([st_in[i].stats.endtime for i in range(st_in.count())])
@@ -69,22 +75,22 @@ def update(timing, mydata, preproc, kwargs, to_plot, spectro, array_resp, logfil
 
                     with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc())\
                     as executor:
-                        st_in = executor.submit(fdsn2st, mydata["scnl"], mydata["myclient"],\
-                        tt_in, timing["plot_window"], logfile).result()
+                        st_in = executor.submit(fdsn2st, mydata["scnl"], mydata["scnl_supply"],\
+                        mydata["myclient"], tt_in, timing["plot_window"], logfile).result()
 
                 elif mydata["connection"] == "seedlink":
 
                     with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc())\
                     as executor:
-                        st_in = executor.submit(slink2st, mydata["scnl"], mydata["myclient"],\
-                        tt_in, timing["plot_window"], logfile).result()
+                        st_in = executor.submit(slink2st, mydata["scnl"], mydata["scnl_supply"],\
+                            mydata["myclient"], tt_in, timing["plot_window"], logfile).result()
 
                 elif mydata["connection"] == "earthworm":
 
                     with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc())\
                     as executor:
-                        st_in = executor.submit(ew2st, mydata["scnl"], mydata["myclient"],\
-                        tt_in, timing["plot_window"], logfile).result()
+                        st_in = executor.submit(ew2st, mydata["scnl"], mydata["scnl_supply"],\
+                            mydata["myclient"], tt_in, timing["plot_window"], logfile).result()
 
                 else:
                     raise Exception("Invalid datasource specified")
@@ -98,20 +104,20 @@ def update(timing, mydata, preproc, kwargs, to_plot, spectro, array_resp, logfil
                 if mydata["connection"] == "FDSN":
                     with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc())\
                     as executor:
-                        st_in = executor.submit(fdsn2st, mydata["scnl"], mydata["myclient"],\
-                        t_in, timing["window_length"], logfile).result()
+                        st_in = executor.submit(fdsn2st, mydata["scnl"], mydata["scnl_supply"],\
+                        mydata["myclient"], t_in, timing["window_length"], logfile).result()
 
                 elif mydata["connection"] == "seedlink":
                     with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc())\
                     as executor:
-                        st_in = executor.submit(slink2st, mydata["scnl"], mydata["myclient"],\
-                        t_in, timing["window_length"], logfile).result()
+                        st_in = executor.submit(slink2st, mydata["scnl"], mydata["scnl_supply"],\
+                            mydata["myclient"], t_in, timing["window_length"], logfile).result()
 
                 elif mydata["connection"] == "earthworm":
                     with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc())\
                     as executor:
-                        st_in = executor.submit(ew2st, mydata["scnl"], mydata["myclient"],\
-                        t_in, timing["window_length"], logfile).result()
+                        st_in = executor.submit(ew2st, mydata["scnl"], mydata["scnl_supply"],\
+                            mydata["myclient"], t_in, timing["window_length"], logfile).result()
                 else:
                     raise Exception("Invalid datasource specified")
 
@@ -130,8 +136,9 @@ def update(timing, mydata, preproc, kwargs, to_plot, spectro, array_resp, logfil
 
             t_in = st_end
 
-            st_in = sds2st(mydata["scnl"], mydata["sds_root"], mydata["sds_type"],\
-            mydata["customfmt"], mydata["myFMTSTR"], t_in, timing["window_length"], logfile)
+            st_in = sds2st(mydata["scnl"], mydata["scnl_supply"], mydata["sds_root"],\
+                mydata["sds_type"], mydata["customfmt"], mydata["myFMTSTR"], \
+                t_in, timing["window_length"], logfile)
 
             if not st_in:
                 print("No data found")
@@ -170,14 +177,16 @@ def update(timing, mydata, preproc, kwargs, to_plot, spectro, array_resp, logfil
                     t_in = st_end - (timing["window_length"] + timing["prebuf"])
 
                 if mydata["connection"] == "FDSN":
-                    st_in = fdsn2st(mydata["scnl"], mydata["myclient"],\
-                    t_in, timing["window_length"], logfile)
+                    st_in = fdsn2st(mydata["scnl"], mydata["scnl_supply"],\
+                    mydata["myclient"],t_in, timing["window_length"], logfile)
+                    
                 elif mydata["connection"] == "seedlink":
-                    st_in = slink2st(mydata["scnl"], mydata["myclient"],\
-                    t_in, timing["window_length"], logfile)
+                    st_in = slink2st(mydata["scnl"], mydata["scnl_supply"],\
+                    mydata["myclient"],t_in, timing["window_length"], logfile)
+                    
                 elif mydata["connection"] == "earthworm":
-                    st_in = ew2st(mydata["scnl"], mydata["myclient"],\
-                    t_in, timing["window_length"], logfile)
+                    st_in = ew2st(mydata["scnl"], mydata["scnl_supply"],\
+                    mydata["myclient"],t_in, timing["window_length"], logfile)
 
                 else:
 
@@ -193,14 +202,14 @@ def update(timing, mydata, preproc, kwargs, to_plot, spectro, array_resp, logfil
                     t_in = st_end - (timing["window_length"] + timing["prebuf"])
 
                 if mydata["connection"] == "FDSN":
-                    st_in = fdsn2st(mydata["scnl"], mydata["myclient"], t_in,\
-                    timing["window_length"], logfile)
+                    st_in = fdsn2st(mydata["scnl"], mydata["scnl_supply"],\
+		    mydata["myclient"], t_in, timing["window_length"], logfile)
                 elif mydata["connection"] == "seedlink":
-                    st_in = slink2st(mydata["scnl"], mydata["myclient"], t_in,\
-                    timing["window_length"], logfile)
+                    st_in = slink2st(mydata["scnl"], mydata["scnl_supply"],\
+                    mydata["myclient"], t_in, timing["window_length"], logfile)
                 elif mydata["connection"] == "earthworm":
-                    st_in = ew2st(mydata["scnl"], mydata["myclient"], t_in,\
-                    timing["window_length"], logfile)
+                    st_in = ew2st(mydata["scnl"], mydata["scnl_supply"],\
+                    mydata["myclient"], t_in, timing["window_length"], logfile)
 
                 else:
                     raise Exception("Invalid datasource specified")

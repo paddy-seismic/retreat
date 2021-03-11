@@ -21,6 +21,8 @@ def my_defaults(cwd):
         C="HHZ",
         N="NO",
         L="00",
+        scnl_supply=False,
+        scnl_file=cwd+"/retreat/example_data/NO.scnl",
         # METADATA
         inv_type=['STATIONXML', 'SEED', 'XSEED', 'ASCII'],
         inv_supply=False,

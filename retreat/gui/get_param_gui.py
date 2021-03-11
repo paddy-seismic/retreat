@@ -63,7 +63,10 @@ def get_param(gui_input):
 
     mydata = dict(
         t=tstart - (window_length + prebuf),
+        # SCNL
         scnl=dict(S=gui_input["S"], C=gui_input["C"], N=gui_input["N"], L=gui_input["L"]),
+        scnl_supply=gui_input["scnl_supply"],
+        scnl_file=gui_input["scnl_file"],
         ## realtime source
         myclient=gui_input["myclient"],
         connection=gui_input["connection"],

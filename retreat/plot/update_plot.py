@@ -340,7 +340,7 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
 
         ax[aindex, 0].xaxis.set_major_locator(xlocator)
         ax[aindex, 0].xaxis.set_major_formatter(mdates.AutoDateFormatter(xlocator))
-        
+
         if not infra:
             ax[aindex, 0].set_ylabel('Velocity [ms$^{-1}$]')
         else:

@@ -7,7 +7,7 @@ from obspy.clients.earthworm import Client
 from obspy.clients.earthworm.waveserver import get_menu
 from obspy import Stream
 
-def ew2st(scnl_in, myclient, t, length, logfile):
+def ew2st(scnl_in, scnl_supply, myclient, t, length, logfile):
     """fetches stream object from server using Earthworm/Winston client"""
 
     # redirect output to log file:
@@ -52,25 +52,31 @@ def ew2st(scnl_in, myclient, t, length, logfile):
 
     # condense to scnl only
     chans = chans[:,1:5]
-
-    # check scnl for wildcards and create list of matching channels
     shrunk=chans
-    pos=[2,0,3,1]
-    order_to_process = ("N","S","L","C")
+    
+    if not scnl_supply: # simple SCNL or can create list using wildcards:
+        # check scnl for wildcards and create list of matching channels
+        pos=[2,0,3,1]
+        order_to_process = ("N","S","L","C")
 
-    for ii, key in enumerate(order_to_process):
-        if '*' in scnl_in[key] or '?' in scnl_in[key]:
-            # replace wildcards with python regex values
-            val = re.sub('\*','.+',scnl_in[key])
-            val = re.sub('\?','.',val)
-            reg = re.compile(val)
-        else:
-            reg = re.compile(scnl_in[key])
-            try:
-                shrunk = shrunk[np.array([bool(re.match(reg, mystr)) for mystr \
-                    in shrunk[:,pos[ii]]])]
-            except Exception as e:
-                print('Channel error: '+ str(e))
+        for ii, key in enumerate(order_to_process):
+            if '*' in scnl_in[key] or '?' in scnl_in[key]:
+                # replace wildcards with python regex values
+                val = re.sub('\*','.+',scnl_in[key])
+                val = re.sub('\?','.',val)
+                reg = re.compile(val)
+            else:
+                reg = re.compile(scnl_in[key])
+                try:
+                    shrunk = shrunk[np.array([bool(re.match(reg, mystr)) for mystr \
+                        in shrunk[:,pos[ii]]])]
+                except Exception as e:
+                    print('Channel error: '+ str(e))
+    else: # more complicated SCNL list - requiring read from file
+        # reorder columns:
+        scnl_in = scnl_in[:, [1, 3, 0, 2]]
+        # find overlap/intersection between the two arrays using sets:
+        shrunk = np.array(list(set((tuple(i) for i in scnl_in)).intersection(set((tuple(i) for i in shrunk)))))
 
     if len(shrunk) < 1:
         raise Exception('Error: channels missing on server, check input')

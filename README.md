@@ -77,7 +77,9 @@ retreat
     │   └── __init__.py
     ├── example_data
     │   ├── dataless.seed.UR
+    │   ├── UR.scnl
     │   ├── NO.xml
+    │   ├── NO.scnl
     │   ├── VI.URA..HHZ.2014.246.00.00.mseed
     │   ├── VI.URB..HHZ.2014.246.00.00.mseed
     │   ├── VI.URD..HHZ.2014.246.00.00.mseed
@@ -190,6 +192,8 @@ These parameters define the source and properties of the input data. The fields 
 * **Connection type** - Used for realtime data only. Can currently use the dropbox to choose from an FDSN, seedlink or earthworm/winston client.
 * **Client/Server** - Details of the server for the chosen connection type. For FDSN this is simply the name, e.g. *IRIS*, and for Seedlink or earthworm/winston servers this is the server URL:port, e.g. *rtserve.iris.washington.edu:18000* or *pubavo1.wr.usgs.gov:16022*
 * **SCNL** - These specify the data Station, Channel, Network and Location codes for the input data (wildcard "*" can be used)
+* **SCNL file** - checkbox to specify if you are supplying a text file containing a list of SCNL/SEED ids (i.e. if the station/channel list can't be expressed using wildcards). Input is a plain text file with one id per line, in ObsPy SEED\_id format N.S.L.C, e.g. *NO.SPA0.00.HHZ* or *VI.URA..HHZ* (see example files in the example_data directory).
+* **SCNL filename** - Path and name of SCNL file (you can also use the *Browse* button to select)
 * **Inventory file** - checkbox to specify if you are supplying an inventory or metadata file (required if Connection type is **not** FDSN or if using archive data)
 * **Inventory filename** - Path and name of inventory file (you can also use the *Browse* button to select)
 * **File format** - Specify format of inventory file. You can use all formats supported by *obspy* (including: STATIONXML, dataless SEED, XSEED). RESP format is NOT supported as RESP files do not contain station coordinates. While a proper full inventory file is preferred, the only essential metadata required is the station locations. If you do not have an inventory for your network you can supply the station coordinates in a plain text file (choose ASCII format), with the following 4 columns: SEED_id (i.e. N.S.L.C), longitude, latitude, elevation. e.g.
