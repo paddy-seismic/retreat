@@ -67,7 +67,7 @@ def slink2st(scnl, scnl_supply, myclient, t, length, logfile):
                     if not id[2]:
                         id[2] = "  "
                     new_entry = id[0]+"_"+id[1]+":"+id[2]+id[3]
-                    if i>1:
+                    if i>0:
                         new_entry = ","+new_entry
                     multiselect += new_entry 
                 st = multiselect_request(client, multiselect, t, t+length)
