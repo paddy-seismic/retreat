@@ -18,6 +18,11 @@ def start(web):
     from retreat.realtime import realtime
     from retreat.tools.monitoring_routines import print_log_to_screen, update_image_window
 
+    #### CHECK DISPLAY
+    if os.environ.get('DISPLAY','') == '':
+        print('no display found. Using :0.0')
+        os.environ.__setitem__('DISPLAY', ':0.0')
+
     #### GET SCREEN AND WINDOW SIZES ####
     from retreat.gui.gui_sizes import get_screen_size, get_window_size
     screenx, screeny, aspect = get_screen_size()
