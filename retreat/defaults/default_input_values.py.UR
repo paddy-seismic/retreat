@@ -23,7 +23,7 @@ def my_defaults(cwd):
         scnl_supply=False,
         scnl_file=cwd+"/retreat/example_data/UR.scnl",
         # METADATA
-        inv_type=['STATIONXML', 'SEED', 'XSEED', 'ASCII'],
+        inv_type=['SEED', 'STATIONXML', 'XSEED', 'ASCII'],
         inv_supply=True,
         inv_file=cwd+"/retreat/example_data/dataless.seed.UR",
         # PRE-PROCESSING
