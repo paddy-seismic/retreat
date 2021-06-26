@@ -5,7 +5,8 @@ import gc
 import concurrent.futures
 from obspy.signal.array_analysis import array_processing
 from retreat.data.beamforming_lsqr import do_inversion
-from retreat.data.fdsn2st3 import fdsn2st
+#from retreat.data.fdsn2st3 import fdsn2st
+from retreat.data.fdsn2st import fdsn2st
 from retreat.data.slink2st3 import slink2st
 from retreat.data.sds2st3 import sds2st
 from retreat.data.ew2st import ew2st
@@ -28,11 +29,11 @@ def update(timing, mydata, preproc, kwargs, to_plot, spectro, array_resp, logfil
     print("\n--------------------------\n")
     if to_plot["first"]:
         print("Fetching initial data")
-        
+
         # replace SCNL if reading from a file:
         if mydata["scnl_supply"]:
             mydata["scnl"] = read_ascii_scnl(mydata["scnl_file"], logfile)
-        
+
     else:
         print("Fetching new data")
     global st, t_in, inv
@@ -179,11 +180,11 @@ def update(timing, mydata, preproc, kwargs, to_plot, spectro, array_resp, logfil
                 if mydata["connection"] == "FDSN":
                     st_in = fdsn2st(mydata["scnl"], mydata["scnl_supply"],\
                     mydata["myclient"],t_in, timing["window_length"], logfile)
-                    
+
                 elif mydata["connection"] == "seedlink":
                     st_in = slink2st(mydata["scnl"], mydata["scnl_supply"],\
                     mydata["myclient"],t_in, timing["window_length"], logfile)
-                    
+
                 elif mydata["connection"] == "earthworm":
                     st_in = ew2st(mydata["scnl"], mydata["scnl_supply"],\
                     mydata["myclient"],t_in, timing["window_length"], logfile)

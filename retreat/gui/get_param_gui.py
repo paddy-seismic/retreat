@@ -234,3 +234,36 @@ def get_param(gui_input):
                     limits MUST be specified')
 
     return timing, mydata, preproc, kwargs, to_plot, spectro, array_resp
+
+
+def get_param_cmd(cmd_input):
+    """Reads default input values and returns cmd_input for command-line mode"""
+    
+    # fix drop-down menus (assume first item in list)
+    for key in ('connection', 'inv_type', 'sds_type', 'dataformat'):
+        if type(cmd_input[key]) is list and len(cmd_input[key])>1:
+            print('Warning:',key,'is a list. First item selected')
+            cmd_input[key] = cmd_input[key][0]
+
+    # check for "auto" sized figures and set to default size:
+    counter=0
+    for key in ('timelinex', 'timeliney', 'polarx', 'polary', 'arrayx', 'arrayy', 'mapx', 'mapy'):
+        if cmd_input[key] == 'auto':
+            if counter < 1:
+                from retreat.gui.gui_sizes import default_cmd_figure_dims
+                fig_dims = default_cmd_figure_dims()
+                print('Warning: figure size cannot be set to "auto" in command line mode')
+                print('Setting to default size. Change in defaults file if other size is desired')
+            #  set new value
+            cmd_input[key] = fig_dims[key]
+            counter = counter + 1
+    
+    # warn if overwriting figures
+    if not cmd_input['savefig']:
+        print('Warning: output figures will be overwritten (and NOT displayed in the GUI)')
+        print('Please set "savefig" to "True" in defaults file to change this')
+
+    # grab full path to logfile:
+    logfile = cmd_input["logpath"]+"/"+cmd_input["logfile"]
+
+    return cmd_input, logfile

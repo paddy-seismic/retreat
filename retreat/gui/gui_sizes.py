@@ -67,3 +67,16 @@ def get_figure_dims(x, y, myratio):
     dims["mapy"] = int(y/2.)
 
     return dims, quot
+
+def default_cmd_figure_dims():
+    cmd_fig_dims = dict(
+        timelinex = 1600, 
+        timeliney = 1200,
+        polarx=800,
+        polary=600,
+        arrayx=650,
+        arrayy=600,
+        mapx=650,
+        mapy=650,
+        )
+    return cmd_fig_dims

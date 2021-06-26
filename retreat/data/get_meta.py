@@ -1,7 +1,8 @@
 """get_meta"""
 import sys
 import os
-from obspy.clients.fdsn import Client
+#from obspy.clients.fdsn import Client
+from obspy.clients.fdsn import RoutingClient
 from obspy import read_inventory
 import numpy as np
 
@@ -55,7 +56,17 @@ def get_meta(mydata, logfile):
     else:
 
         if mydata["connection"] == "FDSN":
-            client = Client(mydata["myclient"])
+
+            myclient = mydata["myclient"]
+
+            # test/check myclient
+            if myclient == "IRIS":
+                client = RoutingClient("iris-federator")
+            elif myclient == "EIDA":
+                client = RoutingClient("eida-routing")
+            else:
+                print('Error: FDSN client must be "IRIS" or "EIDA"')
+                raise Exception("Stopping")
 
             if not mydata["scnl_supply"]:
                 inv = client.get_stations(network=mydata["scnl"]["N"], \
@@ -69,19 +80,19 @@ def get_meta(mydata, logfile):
                     myN = ','.join(np.unique(scnl[:,0]).astype(str))
                 else:
                     myN=myN[0]
-                
+
                 myS = np.unique(scnl[:,1])
                 if len(myS) > 1:
                     myS = ','.join(np.unique(scnl[:,1]).astype(str))
                 else:
                     myS=myS[0]
-                
+
                 myL = np.unique(scnl[:,2])
                 if len(myL) > 1:
                     myL = ','.join(np.unique(scnl[:,2]).astype(str))
                 else:
                     myL=myL[0]
-                    
+
                 myC = np.unique(scnl[:,3])
                 if len(myC) > 1:
                     myC = ','.join(np.unique(scnl[:,3]).astype(str))
@@ -94,4 +105,4 @@ def get_meta(mydata, logfile):
             print("No valid inventory specified.")
             raise Exception("Stopping")
 
-    return  inv
+    return inv

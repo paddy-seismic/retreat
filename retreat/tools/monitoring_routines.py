@@ -23,7 +23,8 @@ def print_log_to_screen(log_file, window):
             loglines = follow(logfile)
             for line in loglines:
                 sys.stdout.write(line)
-                window.Refresh()
+                if window is not None:
+                    window.Refresh()
 
 def update_image_window(image_elem, figwindow, figpath, savefig, timelinefig, polarfig, arrayfig,\
     mapfig, polar, resp, bazmap, ptime):
