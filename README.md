@@ -62,7 +62,7 @@ retreat
     ├── data
     │   ├── array_preproc.py
     │   ├── beamforming_lsqr.py
-    │   ├── fdsn2st3.py
+    │   ├── fdsn2st.py
     │   ├── fix_times.py
     │   ├── get_array_response.py
     │   ├── get_meta.py
@@ -148,7 +148,7 @@ Finally, to start the software follow the instructions below.
 
 ## Starting the software
 
-The **RETREAT** package can be run in 2 modes:
+The **RETREAT** package can be run in 3 modes:
 
 1. With a GUI interface, running in its own window
 2. With a web interface, where the input and output is displayed in a browser
@@ -183,6 +183,16 @@ with the Input Parameters listed at the top of the page,
 and the Control Buttons and Output Pane visible below if you scroll down the page.
 Figures will appear *below the Output Pane*.
 
+### Command-line interface (optional/advanced)
+
+Although **specifically designed as a GUI tool**, a command-line mode allowing RETREAT to run from a shell without either a GUI or web interface, has now been implemented. This may be useful in certain circumstances, such as analysis of existing archive data. 
+
+Input options will be read from the **default_input_values.py** file in the *retreat/defaults* directory (see [default values section](#default-values)). Output messages in the log file will be displayed in the terminal window, and saved output figures will NOT be displayed in the GUI.
+
+To run the software in command-line mode, do the same as above, but give the ``-c`` argument, i.e. :
+
+>```python3 -m retreat -c```
+
 ## Description of Input Parameters
 
 ### Input Data
@@ -190,7 +200,7 @@ Figures will appear *below the Output Pane*.
 These parameters define the source and properties of the input data. The fields are:
 
 * **Connection type** - Used for realtime data only. Can currently use the dropbox to choose from an FDSN, seedlink or earthworm/winston client.
-* **Client/Server** - Details of the server for the chosen connection type. For FDSN this is simply the name, e.g. *IRIS*, and for Seedlink or earthworm/winston servers this is the server URL:port, e.g. *rtserve.iris.washington.edu:18000* or *pubavo1.wr.usgs.gov:16022*
+* **Client/Server** - Details of the server for the chosen connection type. For FDSN this *must* be either *IRIS* for the IRIS Federator or *EIDA* for the EIDAWS routing web service. For Seedlink or earthworm/winston servers this is the server URL:port, e.g. *rtserve.iris.washington.edu:18000* or *pubavo1.wr.usgs.gov:16022*
 * **SCNL** - These specify the data Station, Channel, Network and Location codes for the input data (wildcard "*" can be used)
 * **SCNL file** - checkbox to specify if you are supplying a text file containing a list of SCNL/SEED ids (i.e. if the station/channel list can't be expressed using wildcards). Input is a plain text file with one id per line, in ObsPy SEED\_id format N.S.L.C, e.g. *NO.SPA0.00.HHZ* or *VI.URA..HHZ* (see example files in the example_data directory).
 * **SCNL filename** - Path and name of SCNL file (you can also use the *Browse* button to select)
@@ -460,7 +470,7 @@ To run the example, simply copy the appropriate default values file (NO array) a
 and [start](#starting-the-software) the software. This should begin analysis of real-time data, with results similar to those shown [here](#figure-window).
 
 #### Seedink
-Note: this example configuration will also work using the IRIS seedlink server (*rtserve.iris.washington.edu:18000*) rather than the FDSN client as the data source. In this case the **Inventory file** checkbox must be checked as metadata cannot be retrieved automatically. The default for this configuration example is the *NO.xml* file supplied in the *retreat/example_data* directory.
+Note: this example configuration should also work using the IRIS seedlink server (*rtserve.iris.washington.edu:18000*) rather than the FDSN client as the data source. In this case the **Inventory file** checkbox must be checked as metadata cannot be retrieved automatically. The default for this configuration example is the *NO.xml* file supplied in the *retreat/example_data* directory.
 
 ### 2. *Archive* mode using data from FUTUREVOLC
 
