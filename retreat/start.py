@@ -6,6 +6,7 @@ def start(args):
     import sys
     import time
     import os
+    from importlib.machinery import SourceFileLoader
     #import logging
     import traceback
     from multiprocessing import Process
@@ -21,6 +22,7 @@ def start(args):
     # process arguments
     web=args.web
     cmd=args.cmd
+    defs=args.defaults
 
     #### CHECK DISPLAY
     if not cmd:
@@ -36,7 +38,7 @@ def start(args):
         #### CREATE GUI LAYOUT ####
         #from retreat.gui.gui_layout import layout, sg
         from retreat.gui.gui_layout import gui_layout
-        layout, sg = gui_layout(web, window_size, os.getcwd())
+        layout, sg = gui_layout(web, window_size, os.getcwd(), defs)
 
     #### DEFINE GLOBAL VARIABLES
     global P_LOCK, T1_LOCK, T2_LOCK, PT_LOCK, EVENT
@@ -128,17 +130,24 @@ def start(args):
         #### RE-IMPORT
         if web:
             ## fetch default values
-            from retreat.defaults.default_input_values import my_defaults
-            defaults = my_defaults(os.getcwd())
+            if defs:
+                # import from the path/filename supplied from command line
+                _, defaults_file = os.path.split(os.path.abspath(defs))
+                default = SourceFileLoader(os.path.splitext(defaults_file)[0], defs).load_module()
+                defaults = default.my_defaults(os.getcwd())
+            else:
+                # default path and name for defaults file
+                from retreat.defaults.default_input_values import my_defaults
+                defaults = my_defaults(os.getcwd())
 
-            ## re-add default values (PySimpleGUIWeb doesn't seem to inherit these for some reason?!)
+            ## re-add default values (PySimpleGUIWeb doesn't seem to inherit for some reason?!)
             for key in defaults:
                 window.FindElement(key).Update(value=defaults[key])
 
         # find and add default image dimension values:
         from retreat.gui.gui_sizes import get_figure_dims
         mydims, quot = get_figure_dims(screenx, screeny, aspect)
-        for key in ('timelinex', 'timeliney', 'polarx', 'polary', 
+        for key in ('timelinex', 'timeliney', 'polarx', 'polary',
                     'arrayx', 'arrayy', 'mapx', 'mapy'):
             window.FindElement(key).Update(value=mydims[key])
 
@@ -190,7 +199,8 @@ def start(args):
                         # 1. monitor log file and print output to screen:
 
                         if 't1' not in locals() or 't1' not in globals():
-                            t1 = KThread(target=print_log_to_screen, args=(logfile, window), daemon=True)
+                            t1 = KThread(target=print_log_to_screen, args=(logfile, window), \
+                                daemon=True)
                         if not t1.is_alive() and not T1_LOCK:
                             t1.start()
                             T1_LOCK = True
@@ -198,7 +208,8 @@ def start(args):
                         ## NOW CREATE AND OPEN THE FIGURE WINDOW
 
                         if not F_LOCK:
-                            figwindow, image_elem, figlayout = create_fig_window(gui_input["webfigs"])
+                            figwindow, image_elem, figlayout = \
+                                create_fig_window(gui_input["webfigs"])
                             figwindow.Finalize()
                             F_LOCK = True
                             if not gui_input["webfigs"]:
@@ -214,8 +225,9 @@ def start(args):
                         # 2. monitor figures and update:
 
                         if 't2' not in locals() or 't2' not in globals():
-                            t2 = KThread(target=update_image_window, args=(image_elem, figwindow,\
-                            gui_input["figpath"], gui_input["savefig"], gui_input["timelinefigname"],\
+                            t2 = KThread(target=update_image_window, args=(image_elem, \
+                            figwindow, gui_input["figpath"], gui_input["savefig"], \
+                            gui_input["timelinefigname"],\
                             gui_input["polarfigname"], gui_input["arrayfigname"],\
                             gui_input["mapfigname"], gui_input["polar"], gui_input["resp"],\
                             gui_input["bazmap"], ptime), daemon=True)
@@ -421,9 +433,19 @@ def start(args):
 
         ## fetch default values from file
         from retreat.gui.get_param_gui import get_param_cmd
-        from retreat.defaults.default_input_values import my_defaults
-        defaults = my_defaults(os.getcwd())
-        
+
+        if defs:
+            # import from the path/filename supplied from command line
+            from importlib.machinery import SourceFileLoader
+            defaults_path, defaults_file = os.path.split(os.path.abspath(defs))
+            default = SourceFileLoader(os.path.splitext(defaults_file)[0], \
+                defs).load_module()
+            defaults = default.my_defaults(os.getcwd())
+        else:
+            # default path and name for defaults file
+            from retreat.defaults.default_input_values import my_defaults
+            defaults = my_defaults(os.getcwd())
+
         # process for input
         cmd_input, logfile = get_param_cmd(defaults)
 

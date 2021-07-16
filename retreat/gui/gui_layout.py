@@ -1,5 +1,6 @@
+import os
 """SET UP GUI WINDOW LAYOUT"""
-def gui_layout(web, window_size, cwd):
+def gui_layout(web, window_size, cwd, defs):
     """Uses PySimpleGUI framework to create the layout for the GUI window. Defines and creates the
     input elements and logfile output element. Returns the complete window layout ('layout'
     variable) and the framework ('sg' variable) to the start module."""
@@ -28,8 +29,16 @@ def gui_layout(web, window_size, cwd):
     #import PySimpleGUIQt as sg
 
     # Import DEFAULT VALUES
-    from retreat.defaults.default_input_values import my_defaults
-    defaults = my_defaults(cwd)
+    if defs:
+        # import from the path/filename supplied from command line
+        from importlib.machinery import SourceFileLoader
+        _, defaults_file = os.path.split(os.path.abspath(defs))
+        default = SourceFileLoader(os.path.splitext(defaults_file)[0], defs).load_module()
+        defaults = default.my_defaults(os.getcwd())
+    else:
+        # default path and name for defaults file
+        from retreat.defaults.default_input_values import my_defaults
+        defaults = my_defaults(os.getcwd())
 
     # Set GUI colour scheme and text options
     #sg.ChangeLookAndFeel('GreenTan')
@@ -56,7 +65,7 @@ def gui_layout(web, window_size, cwd):
                 sg.Input(default_text=defaults["inv_file"], size=(16, 1), font=('Helvetica', font_small), key='inv_file'),
                 sg.FileBrowse(font=('Helvetica', font_small)),
                 sg.Text('File format:', font=('Helvetica', font_smaller)),
-                sg.InputCombo(defaults["inv_type"], default_value=defaults["inv_type"][0], key='inv_type', 
+                sg.InputCombo(defaults["inv_type"], default_value=defaults["inv_type"][0], key='inv_type',
                 font=('Helvetica', font_small), size=(11, 1)),
                 sg.Text('| SCNL filename:', font=('Helvetica', font_smaller)),
                 sg.Input(default_text=defaults["scnl_file"], size=(16, 1), font=('Helvetica', font_small), key='scnl_file'),
@@ -68,10 +77,10 @@ def gui_layout(web, window_size, cwd):
                 sg.Input(defaults["sds_root"], key='sds_root', size=(29, 1), font=('Helvetica', font_small)),
                 sg.FolderBrowse(font=('Helvetica', font_small)),
                 sg.Text('SDS type', size=(8, 1), font=('Helvetica', font_smaller)),
-                sg.InputCombo(defaults["sds_type"], default_value=defaults["sds_type"][0], key='sds_type', size=(1, 1), 
+                sg.InputCombo(defaults["sds_type"], default_value=defaults["sds_type"][0], key='sds_type', size=(1, 1),
                 font=('Helvetica', font_small)),
                 sg.Text('Data format', size=(10, 1), font=('Helvetica', font_smaller)),
-                sg.InputCombo(defaults["dataformat"], default_value=defaults["dataformat"][0], key='dataformat', size=(7, 1), 
+                sg.InputCombo(defaults["dataformat"], default_value=defaults["dataformat"][0], key='dataformat', size=(7, 1),
                 font=('Helvetica', font_small))],
                [sg.Checkbox('Custom Format:', size=(15, 1), default=defaults["customfmt"], key='customfmt', font=('Helvetica', font_smaller)),
                 sg.Input(defaults["myFMTSTR"], key='myFMTSTR', size=(85, 1), font=('Helvetica', font_small))]]
@@ -145,7 +154,7 @@ def gui_layout(web, window_size, cwd):
                 sg.Text('Overlap fraction', size=(13, 1), font=('Helvetica', font_smaller)),
                 sg.In(default_text=defaults["win_frac"], size=(4, 1), key='win_frac', font=('Helvetica', font_small)),
                 sg.Text('Semblance threshold', size=(17, 1), font=('Helvetica', font_smaller)),
-                sg.In(default_text=defaults["semb_thresh"], size=(5, 1), key='semb_thresh', font=('Helvetica', font_small)), 
+                sg.In(default_text=defaults["semb_thresh"], size=(5, 1), key='semb_thresh', font=('Helvetica', font_small)),
                 sg.Checkbox('LSQ Beamforming', size=(15, 1), key='lsq', default=defaults["lsq"], font=('Helvetica', font_smaller)),],
                [sg.Text('_'  * nchars, size=(line_chars, 1))],
                ### PLOTTING #################

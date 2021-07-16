@@ -150,8 +150,9 @@ Finally, to start the software follow the instructions below.
 
 The **RETREAT** package can be run in 3 modes:
 
-1. With a GUI interface, running in its own window
-2. With a web interface, where the input and output is displayed in a browser
+1. With a GUI interface, running in its own window - this is the default mode.
+2. With a web interface, where the input and output are displayed in a browser window
+3. (From the command line with no GUI or web interface)
 
 ### GUI window
 
@@ -168,7 +169,7 @@ Figures will appear in a *new window*.
 
 ### Web interface
 
-To run the software with a web interface in a browser, do the same as above, but simply give the ``-w`` command line argument, i.e. :
+To run the software with a web interface in a browser, do the same as above, but simply give the ``-w`` command line flag, i.e. :
 
 >```python3 -m retreat -w```
 
@@ -187,9 +188,9 @@ Figures will appear *below the Output Pane*.
 
 Although **specifically designed as a GUI tool**, a command-line mode allowing RETREAT to run from a shell without either a GUI or web interface, has now been implemented. This may be useful in certain circumstances, such as analysis of existing archive data. 
 
-Input options will be read from the **default_input_values.py** file in the *retreat/defaults* directory (see [default values section](#default-values)). Output messages in the log file will be displayed in the terminal window, and saved output figures will NOT be displayed in the GUI.
+Input options will be read from the **default_input_values.py** file in the *retreat/defaults* directory (see [default values section](#default-values)) or other supplied defaults file. Output messages in the log file will be displayed in the terminal window, and saved output figures will NOT be displayed in the GUI.
 
-To run the software in command-line mode, do the same as above, but give the ``-c`` argument, i.e. :
+To run the software in command-line mode, do the same as above, but give the ``-c`` flag or argument, i.e. :
 
 >```python3 -m retreat -c```
 
@@ -416,6 +417,12 @@ and
 
 which contains values to run the *archive* data example, using data from the B&aacute;r&eth;arbunga (UR) array.
 
+#### Command line input
+
+Note that the full path to an alternative defaults file (must have a .py extension), can be supplied using the ``-d`` command line option. For example:
+
+>```python3 -m retreat -d /path/to/defaults_file.py```
+
 ## Control Buttons
 
 There are 3 simple buttons to control the software:
@@ -545,4 +552,3 @@ Patrick Smith. (2020, May 11). RETREAT - a REal-time TREmor Analysis Tool (Versi
 <!--[travis-image]: https://img.shields.io/travis/dbader/node-datadog-metrics/master.svg?style=flat-square-->
 <!--[travis-url]: https://travis-ci.org/dbader/node-datadog-metrics-->
 <!--[wiki]: https://github.com/yourname/yourproject/wiki-->
-
