@@ -134,7 +134,7 @@ These are:
 
 More information on *obspy* and *PySimpleGUI* is available from:
 
-[https://www.obspy.org/]() and [https://pysimplegui.readthedocs.io/en/latest/#install]()
+[https://www.obspy.org/](https://www.obspy.org/) and [https://pysimplegui.readthedocs.io/en/latest/#install](https://pysimplegui.readthedocs.io/en/latest/#install)
 
 Ubuntu/Debian package names are shown in brackets where available, and can be installed via: 
 
