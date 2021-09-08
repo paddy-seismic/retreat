@@ -509,6 +509,8 @@ Eibl, E. P. S., Bean, C. J., Jónsdóttir, I., Höskuldsson, A., Thordarson, T.,
 ## Release History
 * 0.0.1
     * First release. Work in progress
+* 1.0.0 Snapshot of (working) single array version of RETREAT
+* 1.0.1 Updated README
 
 ## Licensing
 
