@@ -60,18 +60,18 @@ def slink2st(scnl, scnl_supply, myclient, t, length, logfile):
             if not scnl_supply: # SCNL is simple or can be specified using wildcards
                 st = client.get_waveforms(scnl["N"], scnl["S"], scnl["L"], scnl["C"], t, t + length)
             else: # SCNL has multiple stations/channels requiring reading a list from file
-                # conver list to seedlink "multiselect" format, i.e.  
+                # conver list to seedlink "multiselect" format, i.e.
                 # "NETWORK_STATION:LOCATIONCHANNEL,NETWORK_STATION:LOCATIONCHANNEL" etc
-                multiselect=""
-                for i, id in enumerate(scnl):
-                    if not id[2]:
-                        id[2] = "  "
-                    new_entry = id[0]+"_"+id[1]+":"+id[2]+id[3]
-                    if i>0:
+                multiselect = ""
+                for i, myid in enumerate(scnl):
+                    if not myid[2]:
+                        myid[2] = "  "
+                    new_entry = myid[0]+"_"+myid[1]+":"+myid[2]+myid[3]
+                    if i > 0:
                         new_entry = ","+new_entry
-                    multiselect += new_entry 
+                    multiselect += new_entry
                 st = multiselect_request(client, multiselect, t, t+length)
-                
+
         except Exception as e:
             # ... log it, sleep, etc. ...
             print('Connection error: '+ str(e))
@@ -82,7 +82,7 @@ def slink2st(scnl, scnl_supply, myclient, t, length, logfile):
         else:
             break
     else:
-        st=None
+        st = None
         print("Can't connect to server. Giving up for now.")
 
     return st

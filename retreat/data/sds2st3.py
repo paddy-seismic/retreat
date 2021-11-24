@@ -12,7 +12,7 @@ def sds2st(scnl, scnl_supply, sds_root, sds_type, customfmt, myfmtstr, t, length
     sys.stderr = sys.stdout
 
     # set up client
-    client = Client(sds_root, sds_type)
+    client = Client(sds_root, sds_type=sds_type)
     if customfmt:
         print('Using custom directory structure:')
         print(myfmtstr)
@@ -25,27 +25,45 @@ def sds2st(scnl, scnl_supply, sds_root, sds_type, customfmt, myfmtstr, t, length
 
     print("Retrieving data from filesystem...")
 
+    debug = False
+
 ### DEBUGGING
-#        print(client.FMTSTR)
-#        print(client.format)
-#        print(client.sds_root)
-#        print(client.sds_type)
-#        print(t)
-#        print(length)
+    if debug:
+        print("FMTSTR=%s"%client.FMTSTR)
+        print("format=%s"%client.format)
+        print("sds_root=%s"%client.sds_root)
+        print("sds_type=%s"%client.sds_type)
+        print("t=", t)
+        print("length=", length)
+        print("scnl_supply=", scnl_supply)
+        print("SCNL=", scnl)
+        print(client)
 ###
     if not scnl_supply: # simple SCNL list that can be constructed using wildcards
         # fetch data
         st = client.get_waveforms(scnl["N"], scnl["S"], scnl["L"], scnl["C"], t, t+length, merge=1)
+        if debug:
+            #for ii, ss in enumerate(scnl):
+            #    print(ii,ss)
+            #print(client.get_all_nslc())
+            print("has data:", client.has_data(scnl["N"], scnl["S"], scnl["L"], scnl["C"]))
+            print(st)
     else: # something more complicated that requires a list read from a file
-        
-        # Simply loop over the supplied SEED ids 
+
+        # Simply loop over the supplied SEED ids
         # multiple connections to server not an issue as offline read - may be slightly slower
         # but not running in real-time so speed is not as critical
         st = Stream()
-        for id in scnl:
-            st_id = client.get_waveforms(id[0], id[1], id[2], id[3], t, t+length, merge=1)
+        for myid in scnl:
+            st_id = client.get_waveforms(myid[0], myid[1], myid[2], myid[3], t, t+length, merge=1)
+            if debug:
+                #print(client.get_all_nslc())
+                for ii, dd in enumerate(myid):
+                    print(ii, dd)
+                print("has_data: ", client.has_data(myid[0], myid[1], myid[2], myid[3]))
+                print(st)
             st += st_id
-        
+
     # check for empty stream:
     if not st or len(st) < 1:
         print("Error: Stream empty - please check your data source")
@@ -55,13 +73,13 @@ def sds2st(scnl, scnl_supply, sds_root, sds_type, customfmt, myfmtstr, t, length
         try:
             st.merge(method=1)
         except Exception as e:
-            print("Error merging stream data: ",e)
+            print("Error merging stream data: ", e)
             print("re-checking traces")
             st = merge_checks(st)
             try:
                 st.merge()
             except Exception as e:
-                print("Still error merging stream data: ",e)
+                print("Still error merging stream data: ", e)
                 st = None
 
     return st

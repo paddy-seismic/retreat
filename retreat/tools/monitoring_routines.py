@@ -26,10 +26,19 @@ def print_log_to_screen(log_file, window):
                 if window is not None:
                     window.Refresh()
 
+def print_log_to_terminal(log_file):
+    """updates and prints output from log file to terminal"""
+    while True:
+        if os.path.exists(log_file):
+            logfile = open(log_file, "r")
+            loglines = follow(logfile)
+            for line in loglines:
+                sys.stdout.write(line)
+
 def update_image_window(image_elem, figwindow, figpath, savefig, timelinefig, polarfig, arrayfig,\
     mapfig, polar, resp, bazmap, ptime):
     """checks for new and updated figures and updates the gui window"""
-#print('Thread t2 (images) id: {}'.format(os.getpid()))
+    #print('Thread t2 (images) id: {}'.format(os.getpid()))
 
 #    # redirect output to log file:
 #    sys.stdout = open(logfile, 'a+')
@@ -67,7 +76,7 @@ def update_image_window(image_elem, figwindow, figpath, savefig, timelinefig, po
 
                 while True:
 
-#                    print('Checking figures...')
+                    #print('Checking figures...')
 #                    print(figdex)
 
                     for j in figdex: # loop over indices of figures we need to process
@@ -75,8 +84,8 @@ def update_image_window(image_elem, figwindow, figpath, savefig, timelinefig, po
                         image_filename = figpath + "/" + fignames[j] + ".png"
 
                         if os.path.exists(image_filename):
-#                            print(image_filename + ' exists')
-#                            print("ii = ",ii)
+                           # print(image_filename + ' exists')
+                            #print("ii = ",ii)
 #                            print("moddate1 = ", moddate1)
 
                             # get mod time of image 1st time in loop
@@ -99,9 +108,18 @@ def update_image_window(image_elem, figwindow, figpath, savefig, timelinefig, po
 #                                        print(moddate1)
 #                                        print(moddate2)
                                         # image changed - reload !
-                                        #print('Adding ' + image_filename + ' to figure window')
-                                        image_elem[j].Update(filename=image_filename)
-                                        figwindow.Refresh()
+                                        print('Adding ' + image_filename + ' to figure window')
+                                        #print('image_elem[j]=',image_elem[j])
+                                        #print(image_elem[0].__class__)
+                                        #print('figwindow=',figwindow)
+
+                                        try:
+                                            image_elem[j].Update(filename=image_filename)
+                                         #   print('Updated OK')
+                                        except Exception as e:
+                                            print('Error:', e)
+                                        #image_elem[j].Update(filename=image_filename)
+                                        #figwindow.Refresh()
 
                                         # reset mod date
                                         moddate1[j] = moddate2[j]

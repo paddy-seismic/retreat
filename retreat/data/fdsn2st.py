@@ -48,32 +48,32 @@ def fdsn2st(scnl, scnl_supply, myclient, t, length, logfile):
             else: # more complicated list that is read from a file
 
                 # replace single values with comma separated values
-                myN = np.unique(scnl[:,0])
+                myN = np.unique(scnl[:, 0])
                 if len(myN) > 1:
-                    myN = ','.join(np.unique(scnl[:,0]).astype(str))
+                    myN = ','.join(np.unique(scnl[:, 0]).astype(str))
                 else:
-                    myN=myN[0]
+                    myN = myN[0]
 
-                myS = np.unique(scnl[:,1])
+                myS = np.unique(scnl[:, 1])
                 if len(myS) > 1:
-                    myS = ','.join(np.unique(scnl[:,1]).astype(str))
+                    myS = ','.join(np.unique(scnl[:, 1]).astype(str))
                 else:
-                    myS=myS[0]
+                    myS = myS[0]
 
-                myL = np.unique(scnl[:,2])
+                myL = np.unique(scnl[:, 2])
                 if len(myL) > 1:
-                    myL = ','.join(np.unique(scnl[:,2]).astype(str))
+                    myL = ','.join(np.unique(scnl[:, 2]).astype(str))
                 else:
-                    myL=myL[0]
+                    myL = myL[0]
 
-                myC = np.unique(scnl[:,3])
+                myC = np.unique(scnl[:, 3])
                 if len(myC) > 1:
-                    myC = ','.join(np.unique(scnl[:,3]).astype(str))
+                    myC = ','.join(np.unique(scnl[:, 3]).astype(str))
                 else:
-                    myC=myC[0]
+                    myC = myC[0]
 
                 # now fetch data
-                print(myN,myS,myL,myC,t,length)
+                print(myN, myS, myL, myC, t, length)
                 st = client.get_waveforms(network=myN, station=myS, location=myL, channel=myC,\
                     starttime=t, endtime=(t+length))
 
@@ -86,7 +86,7 @@ def fdsn2st(scnl, scnl_supply, myclient, t, length, logfile):
         else:
             break
     else:
-        st=None
+        st = None
         print("Can't connect to server. Giving up for now.")
 
     return st

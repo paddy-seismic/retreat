@@ -8,8 +8,8 @@ import sys
 #from obspy.core import UTCDateTime
 #from obspy import read, read_inventory, Stream
 #from obspy.io.xseed import Parser
-import concurrent.futures
-from retreat.tools.processpool import get_nproc
+#import concurrent.futures
+#from retreat.tools.processpool import get_nproc
 from retreat.data.check_for_gaps import check_for_gaps
 
 def array_preproc(st, inv, preproc, logfile):
@@ -29,8 +29,8 @@ def array_preproc(st, inv, preproc, logfile):
     if preproc["check_gaps"]:
         print("Checking stream for gaps")
         # NB if check_gaps AND demean are selected then demeaning is done by check_for_gaps
-        st, gap_status = check_for_gaps(st,preproc["min_nchan"],preproc["max_gap_size"],\
-            preproc["max_gap_ends"],preproc["demean"],logfile)
+        st, gap_status = check_for_gaps(st, preproc["min_nchan"], preproc["max_gap_size"],\
+            preproc["max_gap_ends"], preproc["demean"], logfile)
         print(st)
         # get/set end time of stream
         st_end = max([st[i].stats.endtime for i in range(st.count())])
@@ -43,6 +43,8 @@ def array_preproc(st, inv, preproc, logfile):
         if preproc["demean"]:
             st.detrend("demean")
 
+    sys.stdout.flush()
+
     if gap_status:
         # proceed with processing - (else: if not enough gap-free channels,
         # then no point in continuing...)
@@ -52,6 +54,8 @@ def array_preproc(st, inv, preproc, logfile):
             fmin = preproc["Fmin"]
             fmax = preproc["Fmax"]
             pre_filt = (0.5*fmin, fmin, fmax, 1.5*fmax)
+        else:
+            pre_filt = None
 
         # remove instrument response
         if preproc["removeresponse"]:
@@ -63,12 +67,15 @@ def array_preproc(st, inv, preproc, logfile):
             print("Starting response removal...")
             st.attach_response(inv)
 
+
             for tr in st:
                 print(tr.id)
-
-                with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc()) as executor:
-                    executor.submit(tr.remove_response,output="VEL", inventory=inv, \
-                        pre_filt=pre_filt, zero_mean=False, taper=False)
+                sys.stdout.flush()
+                tr.remove_response(output="VEL", inventory=inv, zero_mean=False, \
+                pre_filt=pre_filt, water_level=60)
+#                with concurrent.futures.ProcessPoolExecutor(max_workers=get_nproc()) as executor:
+#                    executor.submit(tr.remove_response,output="VEL", inventory=inv, \
+#                        pre_filt=pre_filt, zero_mean=False, taper=False)
 
             print("...complete")
 
@@ -95,25 +102,25 @@ def array_preproc(st, inv, preproc, logfile):
                 # get lat and lon from inventory:
                 seedid = tr.get_id()
                 if type(inv).__name__ == "Inventory":
-                    
+
                     # check if any channel info:
                     if inv.get_contents()["channels"]:
                         tr.stats.coordinates = inv.get_coordinates(seedid)
                     else:
                         # try using stations only
-                        mystat=tr.id.split(".")[1]
+                        mystat = tr.id.split(".")[1]
                         tr.stats.coordinates = dict(
                             latitude=inv.select(station=mystat)[0][0].latitude,
                             longitude=inv.select(station=mystat)[0][0].longitude,
                             elevation=inv.select(station=mystat)[0][0].elevation,
                             local_depth=0.0,
-                            )
+                        )
                 else:
                     tr.stats.coordinates = dict(
-                    latitude=inv[inv["id"] == seedid]["latitude"][0],
-                    longitude=inv[inv["id"] == seedid]["longitude"][0],
-                    elevation=inv[inv["id"] == seedid]["elevation"][0],
-                    local_depth=0.0,
+                        latitude=inv[inv["id"] == seedid]["latitude"][0],
+                        longitude=inv[inv["id"] == seedid]["longitude"][0],
+                        elevation=inv[inv["id"] == seedid]["elevation"][0],
+                        local_depth=0.0,
                     )
     else:
         print("Not enough channels without gaps. Skipping stream")

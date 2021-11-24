@@ -39,7 +39,7 @@ def my_defaults(cwd):
         Fmin=0.1,
         Fmax=10.0,
         prefilt=True,
-        removeresponse=True,
+        removeresponse=False,
         taper=True,
         taper_pc=0.005,
         zcomps=True,

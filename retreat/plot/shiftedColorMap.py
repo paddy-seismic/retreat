@@ -43,9 +43,9 @@ def shiftedColorMap(cmap, start=0, midpoint=0.5, stop=1.0, name='shiftedcmap', l
         ])
     else:
         shift_index = np.hstack([
-        np.linspace(0.0, midpoint, 128, endpoint=False),
-        np.geomspace(midpoint, 1.0, 129, endpoint=True)
-        ]) 
+            np.linspace(0.0, midpoint, 128, endpoint=False),
+            np.geomspace(midpoint, 1.0, 129, endpoint=True)
+        ])
 
     for ri, si in zip(reg_index, shift_index):
         r, g, b, a = cmap(ri)

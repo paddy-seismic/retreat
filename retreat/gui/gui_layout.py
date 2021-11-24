@@ -1,6 +1,6 @@
 import os
 """SET UP GUI WINDOW LAYOUT"""
-def gui_layout(web, window_size, cwd, defs):
+def gui_layout(web, window_size, cwd, args):
     """Uses PySimpleGUI framework to create the layout for the GUI window. Defines and creates the
     input elements and logfile output element. Returns the complete window layout ('layout'
     variable) and the framework ('sg' variable) to the start module."""
@@ -29,7 +29,8 @@ def gui_layout(web, window_size, cwd, defs):
     #import PySimpleGUIQt as sg
 
     # Import DEFAULT VALUES
-    if defs:
+    if args.defaults:
+        defs=args.defaults
         # import from the path/filename supplied from command line
         from importlib.machinery import SourceFileLoader
         _, defaults_file = os.path.split(os.path.abspath(defs))

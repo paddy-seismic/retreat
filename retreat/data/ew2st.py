@@ -20,8 +20,8 @@ def ew2st(scnl_in, scnl_supply, myclient, t, length, logfile):
     # check server/port input is valid:
     try:
         server, port = myclient.split(":")
-        if not isinstance(port,int):
-            port=int(port)
+        if not isinstance(port, int):
+            port = int(port)
     except ValueError:
         print("Error: Invalid server format. Please enter as 'SERVER:PORT'")
 
@@ -29,14 +29,14 @@ def ew2st(scnl_in, scnl_supply, myclient, t, length, logfile):
 
     ### use call to get_menu to check channels and process (any) wildcard(s)
 
-    chans=[]
+    chans = []
 
     # call getmenu for server and store results:
     for _ in range(max_retries):
         try:
             print("Retrieving channel list from server...")
             sys.stdout.flush()
-            chans = np.array(get_menu(server,port))
+            chans = np.array(get_menu(server, port))
         except Exception as e:
             print('Connection error: '+ str(e))
             print("Will retry in ", str(nsleep), "s")
@@ -46,37 +46,38 @@ def ew2st(scnl_in, scnl_supply, myclient, t, length, logfile):
         else:
             break
     else:
-        st=None
+        st = None
         print("Can't connect to server. Giving up for now.")
         return st
 
     # condense to scnl only
-    chans = chans[:,1:5]
-    shrunk=chans
-    
+    chans = chans[:, 1:5]
+    shrunk = chans
+
     if not scnl_supply: # simple SCNL or can create list using wildcards:
         # check scnl for wildcards and create list of matching channels
-        pos=[2,0,3,1]
-        order_to_process = ("N","S","L","C")
+        pos = [2, 0, 3, 1]
+        order_to_process = ("N", "S", "L", "C")
 
         for ii, key in enumerate(order_to_process):
             if '*' in scnl_in[key] or '?' in scnl_in[key]:
                 # replace wildcards with python regex values
-                val = re.sub('\*','.+',scnl_in[key])
-                val = re.sub('\?','.',val)
+                val = re.sub('\*', '.+', scnl_in[key])
+                val = re.sub('\?', '.', val)
                 reg = re.compile(val)
             else:
                 reg = re.compile(scnl_in[key])
                 try:
                     shrunk = shrunk[np.array([bool(re.match(reg, mystr)) for mystr \
-                        in shrunk[:,pos[ii]]])]
+                        in shrunk[:, pos[ii]]])]
                 except Exception as e:
                     print('Channel error: '+ str(e))
     else: # more complicated SCNL list - requiring read from file
         # reorder columns:
         scnl_in = scnl_in[:, [1, 3, 0, 2]]
         # find overlap/intersection between the two arrays using sets:
-        shrunk = np.array(list(set((tuple(i) for i in scnl_in)).intersection(set((tuple(i) for i in shrunk)))))
+        shrunk = np.array(list(set((tuple(i) for i in scnl_in))\
+            .intersection(set((tuple(i) for i in shrunk)))))
 
     if len(shrunk) < 1:
         raise Exception('Error: channels missing on server, check input')
@@ -95,7 +96,7 @@ def ew2st(scnl_in, scnl_supply, myclient, t, length, logfile):
                     st.append(client.get_waveforms(row[2], row[0], row[3], row[1],\
                         t, t + length)[0])
                 except Exception as e:
-                    print('Error fetching data:','.'.join(row))
+                    print('Error fetching data:', '.'.join(row))
                     print(str(e))
         except Exception as e:
             print('Connection error: '+ str(e))
@@ -106,7 +107,7 @@ def ew2st(scnl_in, scnl_supply, myclient, t, length, logfile):
         else:
             break
     else:
-        st=None
+        st = None
         print("Can't connect to server. Giving up for now.")
 
     return st

@@ -33,40 +33,40 @@ def fdsn2st(scnl, scnl_supply, myclient, t, length, logfile):
             # grab the data
             print("Connecting to server...")
             sys.stdout.flush()
-            
+
             if not scnl_supply: # simple SCNL list that can be constructed using wildcards
                 st = client.get_waveforms(scnl["N"], scnl["S"], scnl["L"], scnl["C"], t, t + length)
             else: # more complicated list that is read from a file
-                
+
                 # replace single values with comma separated values
-                myN = np.unique(scnl[:,0])
+                myN = np.unique(scnl[:, 0])
                 if len(myN) > 1:
-                    myN = ','.join(np.unique(scnl[:,0]).astype(str))
+                    myN = ','.join(np.unique(scnl[:, 0]).astype(str))
                 else:
-                    myN=myN[0]
-                
-                myS = np.unique(scnl[:,1])
+                    myN = myN[0]
+
+                myS = np.unique(scnl[:, 1])
                 if len(myS) > 1:
-                    myS = ','.join(np.unique(scnl[:,1]).astype(str))
+                    myS = ','.join(np.unique(scnl[:, 1]).astype(str))
                 else:
-                    myS=myS[0]
-                
-                myL = np.unique(scnl[:,2])
+                    myS = myS[0]
+
+                myL = np.unique(scnl[:, 2])
                 if len(myL) > 1:
-                    myL = ','.join(np.unique(scnl[:,2]).astype(str))
+                    myL = ','.join(np.unique(scnl[:, 2]).astype(str))
                 else:
-                    myL=myL[0]
-                    
-                myC = np.unique(scnl[:,3])
+                    myL = myL[0]
+
+                myC = np.unique(scnl[:, 3])
                 if len(myC) > 1:
-                    myC = ','.join(np.unique(scnl[:,3]).astype(str))
+                    myC = ','.join(np.unique(scnl[:, 3]).astype(str))
                 else:
-                    myC=myC[0]
+                    myC = myC[0]
 
                 # now fetch data
-                print(myN,myS,myL,myC,t,length)
+                print(myN, myS, myL, myC, t, length)
                 st = client.get_waveforms(myN, myS, myL, myC, t, t+length)
-            
+
         except Exception as e:
             print('Connection error: '+ str(e))
             print("Will retry in ", str(nsleep), "s")
@@ -76,7 +76,7 @@ def fdsn2st(scnl, scnl_supply, myclient, t, length, logfile):
         else:
             break
     else:
-        st=None
+        st = None
         print("Can't connect to server. Giving up for now.")
 
     return st

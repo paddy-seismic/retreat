@@ -1,6 +1,7 @@
 __pycache__/
 *.py[cod]
 *.nfs*
+*.swp
 .cache/
 *.md.bak
 filenr.lis
@@ -9,3 +10,5 @@ mulplt.out
 retreat/output/*
 # exception to the rule- should keep empty directory
 !retreat/output/.gitkeep
+# exclude example ETNA data (no permission?)
+retreat/example_data/ETNA

@@ -22,7 +22,7 @@ def set_font_sizes(xdim, plot_type):
         fslr = np.round(2.0*fsl)/2.0 # round to nearest 0.5
 
     ##### f-k polar/array resp/map #####
-    elif plot_type == "fkpolar" or plot_type == "resp" or plot_type == "map":
+    elif plot_type in ('fkpolar', 'resp', 'map'):
 
         # small font size
         fss = 13 - 5./(1 + (xdim/560)**15)

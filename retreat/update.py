@@ -18,7 +18,7 @@ from retreat.data.check_for_gaps import merge_checks
 from retreat.plot.update_plot import update_plot
 from retreat.tools.processpool import get_nproc
 
-def update(timing, mydata, preproc, kwargs, to_plot, spectro, array_resp, logfile, st_end):
+def update(timing, mydata, preproc, kwargs, to_plot, spectro, array_resp, logfile, st_end, dummy):
     """Routine to fetch (new) data and update output and figures as necessary"""
     # redirect output to log file:
     sys.stdout = open(logfile, 'a+')
@@ -179,15 +179,15 @@ def update(timing, mydata, preproc, kwargs, to_plot, spectro, array_resp, logfil
 
                 if mydata["connection"] == "FDSN":
                     st_in = fdsn2st(mydata["scnl"], mydata["scnl_supply"],\
-                    mydata["myclient"],t_in, timing["window_length"], logfile)
+                    mydata["myclient"], t_in, timing["window_length"], logfile)
 
                 elif mydata["connection"] == "seedlink":
                     st_in = slink2st(mydata["scnl"], mydata["scnl_supply"],\
-                    mydata["myclient"],t_in, timing["window_length"], logfile)
+                    mydata["myclient"], t_in, timing["window_length"], logfile)
 
                 elif mydata["connection"] == "earthworm":
                     st_in = ew2st(mydata["scnl"], mydata["scnl_supply"],\
-                    mydata["myclient"],t_in, timing["window_length"], logfile)
+                    mydata["myclient"], t_in, timing["window_length"], logfile)
 
                 else:
 
@@ -237,13 +237,13 @@ def update(timing, mydata, preproc, kwargs, to_plot, spectro, array_resp, logfil
         try:
             st.merge()
         except Exception as e:
-            print("Error merging stream data: ",e)
+            print("Error merging stream data: ", e)
             print("re-checking traces")
             st = merge_checks(st)
             try:
                 st.merge()
             except Exception as e:
-                print("Still error merging stream data: ",e)
+                print("Still error merging stream data: ", e)
                 st_end = st_end + timing["window_length"] # advance end by the window length
                 return st_end
 

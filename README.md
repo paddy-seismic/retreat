@@ -14,13 +14,15 @@ Dense, small-aperture arrays are particularly suited for analyzing volcanic trem
 
 This software tool uses seismic array data and array processing techniques to help detect, quantify and locate volcanic tremor signals. It is a python-based tool that utilises existing routines from the open-source *ObsPy* framework to carry out analysis of seismic array data in real-time. The tool performs beamforming using f-k (frequency-wavenumber) analysis, or a Least-squares inversion, to calculate the back azimuth and slowness in overlapping time windows, which can be used to detect and track the location of volcanic tremor sources.  While primarily intended as a tool for utilizing seismic array data to locate and track volcanic tremor, RETREAT also has the capability to analyze infrasonic array data to track acoustic sources.
 
+Version 2.x of RETREAT now also has the ability to analyse data from multiple arrays.
+
 ## Installation
 
 #### Download
 
 If you wish to use *git* you can download the latest version of the software by cloning the repository to a suitable location by typing:
 
->```git clone --recursive https://git.dias.ie/paddy/retreat```
+```git clone --recursive https://git.dias.ie/paddy/retreat```
 
 Or alternatively click on the download button (at the top of the page, below the project description) to download the source code as a zip, tar or compressed archive file:
 
@@ -47,9 +49,13 @@ retreat
 │   ├── screenshots
 │   │   ├── retreat-buttons.jpg
 │   │   ├── retreat-gitlab-download.png
+│   │   ├── retreat_GUI_2arrays_common.jpg
+│   │   ├── retreat_GUI_2arrays.jpg
 │   │   ├── retreat_GUI_figwindow.jpg
 │   │   ├── retreat_GUI.jpg
 │   │   ├── retreat_GUI_output.jpg
+│   │   ├── retreat_timeline_2arrays_arraysep.png
+│   │   ├── retreat_timeline_2arrays.png
 │   │   ├── retreat_WEB_bottom.jpg
 │   │   ├── retreat_WEB_figwindow.jpg
 │   │   ├── retreat_WEB_output.jpg
@@ -62,24 +68,29 @@ retreat
     ├── data
     │   ├── array_preproc.py
     │   ├── beamforming_lsqr.py
+    │   ├── check_for_gaps.py
+    │   ├── ew2st.py
     │   ├── fdsn2st.py
+    │   ├── fdsn2st3.py    
     │   ├── fix_times.py
     │   ├── get_array_response.py
     │   ├── get_meta.py
+    │   ├── get_nth.py
     │   ├── __init__.py
     │   ├── sds2st3.py
     │   ├── slink2st3.py
     │   └── stack.py
     ├── defaults
+    │   ├── default_input_values_narrays.py
     │   ├── default_input_values.py
     │   ├── default_input_values.py.NO
     │   ├── default_input_values.py.UR
     │   └── __init__.py
     ├── example_data
     │   ├── dataless.seed.UR
-    │   ├── UR.scnl
     │   ├── NO.xml
     │   ├── NO.scnl
+    │   ├── UR.scnl
     │   ├── VI.URA..HHZ.2014.246.00.00.mseed
     │   ├── VI.URB..HHZ.2014.246.00.00.mseed
     │   ├── VI.URD..HHZ.2014.246.00.00.mseed
@@ -90,10 +101,12 @@ retreat
     ├── gui
     │   ├── get_param_gui.py
     │   ├── gui_layout.py
+    │   ├── gui_layout_two.py                
     │   ├── gui_sizes.py
     │   └── __init__.py
     ├── __init__.py
     ├── __main__.py
+    ├── output
     ├── plot
     │   ├── add_logos.py
     │   ├── __init__.py
@@ -101,6 +114,7 @@ retreat
     │   ├── rms_rmes.py
     │   ├── set_font_sizes.py
     │   ├── shiftedColorMap.py
+    │   ├── update_plot2.py
     │   └── update_plot.py
     ├── realtime.py
     ├── start.py
@@ -110,6 +124,7 @@ retreat
     │   ├── monitoring_routines.py
     │   ├── processpool.py
     │   └── time_to_wait.py
+    ├── update2.py
     └── update.py
 ```
 
@@ -134,15 +149,15 @@ These are:
 
 More information on *obspy* and *PySimpleGUI* is available from:
 
-[https://www.obspy.org/](https://www.obspy.org/) and [https://pysimplegui.readthedocs.io/en/latest/#install](https://pysimplegui.readthedocs.io/en/latest/#install)
+[https://www.obspy.org/]() and [https://pysimplegui.readthedocs.io/en/latest/#install]()
 
 Ubuntu/Debian package names are shown in brackets where available, and can be installed via: 
 
-><code>sudo apt-get install *packagename*</code>
+<code>sudo apt-get install *packagename*</code>
 
 To install the required modules using **pip**, you can type the following:
 
->```pip3 install -r /path/to/requirements.txt```
+`pip3 install -r /path/to/requirements.txt`
 
 Finally, to start the software follow the instructions below.
 
@@ -158,7 +173,7 @@ The **RETREAT** package can be run in 3 modes:
 
 This the default mode. In a terminal window navigate to the directory you cloned or downloaded to and type:
 
->```python3 -m retreat```
+`python3 -m retreat`
 
 This will start the software and open a GUI window that should look something like this:
 
@@ -171,9 +186,9 @@ Figures will appear in a *new window*.
 
 To run the software with a web interface in a browser, do the same as above, but simply give the ``-w`` command line flag, i.e. :
 
->```python3 -m retreat -w```
+`python3 -m retreat -w`
 
-This will start the software and open a new tab in your browser and should look like this:
+This will start the software and open a new tab in your browser and should look something like this:
 
 ![GUI](doc/screenshots/retreat_WEB_top.jpg)
 
@@ -185,14 +200,53 @@ and the Control Buttons and Output Pane visible below if you scroll down the pag
 Figures will appear *below the Output Pane*.
 
 ### Command-line interface (optional/advanced)
+<a name="command_line_mode"></a> 
+Although **specifically designed as a GUI tool**, a command-line mode allowing RETREAT to run from a shell or terminal without either a GUI or web interface, has now been implemented. This may be useful in certain circumstances, such as analysis of existing archive data and/or use in scripts. 
 
-Although **specifically designed as a GUI tool**, a command-line mode allowing RETREAT to run from a shell without either a GUI or web interface, has now been implemented. This may be useful in certain circumstances, such as analysis of existing archive data. 
+Input options will be read from the **default_input_values.py** file in the *retreat/defaults* directory (see [default values section](#default-values)) or other supplied defaults file. Output messages in the log file will be displayed in the terminal window, and saved output figures will NOT be displayed in the GUI (unless the [figure output](#figure-output-destination) is specified)
 
-Input options will be read from the **default_input_values.py** file in the *retreat/defaults* directory (see [default values section](#default-values)) or other supplied defaults file. Output messages in the log file will be displayed in the terminal window, and saved output figures will NOT be displayed in the GUI.
+To run the software in command-line mode, do the same as above, but give the ``-c`` flag or argument, i.e.
 
-To run the software in command-line mode, do the same as above, but give the ``-c`` flag or argument, i.e. :
+`python3 -m retreat -c`
 
->```python3 -m retreat -c```
+### Other command line options (optional/advanced)
+
+As well as the options to specify a GUI, web or command line interface, RETREAT has several other command line options - including the ability to analyse [mutiple arrays](#multiple-arrays).
+
+#### Figure output destination
+
+When running in command line mode (see above), there is also the option to still display the figure output in either a GUI window or web interface, with the output remaining in your terminal. To do this use the `-f`  argument as specify the destination as "gui" for a GUI window or "web" to display in a browser window, i.e.:
+
+`python3 -m retreat -c -f gui`
+
+Note that this option is ONLY valid if also running in command line mode.
+
+#### Specify defaults file
+
+If you wish to use a different [default values file](#default-values) other than the default location/filename (*retreat/defaults/default_input_values.py)* the `-d` can option can be used to specify the full path to the file, e.g:
+
+`python3 -m retreat -d /home/user/my_defaults.py`
+
+#### Multiple array mode 
+
+Version 2.x of RETREAT now has the ability to analyse multiple arrays. This option can be turned on by specifying the number of arrays with the command option `-n`, e.g.:
+
+`python3 -m retreat -n 2`
+
+See [multiple arrays](#multiple-arrays) section for more details on using more than one array 
+
+#### Summary
+
+All command line options are also summarised in the Table below:
+
+| Option        | alternative           | Purpose                                                      |
+| ------------- | --------------------- | ------------------------------------------------------------ |
+| -h            | --help                | Show help message and command line options [flag]            |
+| -w            | --web                 | Run RETREAT using web interface in browser [flag]            |
+| -c            | --cmd                 | Run RETREAT using command line interface (no GUI or web interface) [flag] |
+| -f *FIGS*     | --figs *FIGS*         | Specify figure output destination. *FIGS* argument MUST be one of either "gui" or "web". e.g. -f gui. ONLY valid in command line mode (-c, --cmd) |
+| -d *DEFAULTS* | --defaults *DEFAULTS* | Specify path to defaults file if not using standard. *DEFAULTS* argument should be the full path to the file |
+| -n *NARRAYS*  | --narrays *NARRAYS*   | Use multiple arrays. *NARRAYS* argument is the (integer) number of arrays, e.g. -n 2 |
 
 ## Description of Input Parameters
 
@@ -201,18 +255,24 @@ To run the software in command-line mode, do the same as above, but give the ``-
 These parameters define the source and properties of the input data. The fields are:
 
 * **Connection type** - Used for realtime data only. Can currently use the dropbox to choose from an FDSN, seedlink or earthworm/winston client.
-* **Client/Server** - Details of the server for the chosen connection type. For FDSN this *must* be either *IRIS* for the IRIS Federator or *EIDA* for the EIDAWS routing web service. For Seedlink or earthworm/winston servers this is the server URL:port, e.g. *rtserve.iris.washington.edu:18000* or *pubavo1.wr.usgs.gov:16022*
-* **SCNL** - These specify the data Station, Channel, Network and Location codes for the input data (wildcard "*" can be used)
-* **SCNL file** - checkbox to specify if you are supplying a text file containing a list of SCNL/SEED ids (i.e. if the station/channel list can't be expressed using wildcards). Input is a plain text file with one id per line, in ObsPy SEED\_id format N.S.L.C, e.g. *NO.SPA0.00.HHZ* or *VI.URA..HHZ* (see example files in the example_data directory).
-* **SCNL filename** - Path and name of SCNL file (you can also use the *Browse* button to select)
-* **Inventory file** - checkbox to specify if you are supplying an inventory or metadata file (required if Connection type is **not** FDSN or if using archive data)
-* **Inventory filename** - Path and name of inventory file (you can also use the *Browse* button to select)
-* **File format** - Specify format of inventory file. You can use all formats supported by *obspy* (including: STATIONXML, dataless SEED, XSEED). RESP format is NOT supported as RESP files do not contain station coordinates. While a proper full inventory file is preferred, the only essential metadata required is the station locations. If you do not have an inventory for your network you can supply the station coordinates in a plain text file (choose ASCII format), with the following 4 columns: SEED_id (i.e. N.S.L.C), longitude, latitude, elevation. e.g.
->```
->NO.SPA0.00.HHZ 16.36998 78.177711 323.0
->```
 
->Note that if ASCII format is selected then you are unable select the pre-processing option to remove the [instrument response](#remove_resp) (as no response information was supplied in the inventory). See also [this note](#coords) on coordinate specification.
+* **Client/Server** - Details of the server for the chosen connection type. For FDSN this *must* be either *IRIS* for the IRIS Federator or *EIDA* for the EIDAWS routing web service. For Seedlink or earthworm/winston servers this is the server URL:port, e.g. *rtserve.iris.washington.edu:18000* or *pubavo1.wr.usgs.gov:16022*
+
+* **SCNL** - These specify the data Station, Channel, Network and Location codes for the input data (wildcard "*" can be used)
+
+* **SCNL file** - checkbox to specify if you are supplying a text file containing a list of SCNL/SEED ids (i.e. if the station/channel list can't be expressed using wildcards). Input is a plain text file with one id per line, in ObsPy SEED\_id format N.S.L.C, e.g. *NO.SPA0.00.HHZ* or *VI.URA..HHZ* (see example files in the example_data directory).
+
+* **SCNL filename** - Path and name of SCNL file (you can also use the *Browse* button to select)
+
+* **Inventory file** - checkbox to specify if you are supplying an inventory or metadata file (required if Connection type is **not** FDSN or if using archive data)
+
+* **Inventory filename** - Path and name of inventory file (you can also use the *Browse* button to select)
+
+* **File format** - Specify format of inventory file. You can use all formats supported by *obspy* (including: STATIONXML, dataless SEED, XSEED). RESP format is NOT supported as RESP files do not contain station coordinates. While a proper full inventory file is preferred, the only essential metadata required is the station locations. If you do not have an inventory for your network you can supply the station coordinates in a plain text file (choose ASCII format), with the following 4 columns: SEED_id (i.e. N.S.L.C), longitude, latitude, elevation. e.g.
+
+  `NO.SPA0.00.HHZ 16.36998 78.177711 323.0`
+
+Note that if ASCII format is selected then you are unable select the pre-processing option to remove the [instrument response](#remove_resp) (as no response information was supplied in the inventory). See also [this note](#coords) on coordinate specification.
 
 * **Replay mode** - checkbox for replay or archive data. Leave unchecked for real-time data.
 * **SDS directory** - path to the root of an SDS (Seiscomp Directory Structure - you can also use the *Browse* button to select)
@@ -282,7 +342,7 @@ Finally, there is also an option to use a Least-Squares beamforming method as an
 
 <a name="coords"></a> 
 Note on **coordinates**: although the *obspy* array_processing module accepts coordinates as either Cartesian (*xy*) or latitude and longitude (*lonlat*), for convenience in plotting the array response function and map of the array, please note that latitude and longitude (*lonlat*) format is assumed. Therefore, *please ensure your station coordinates are specified as latitude and longitude* in your station metadata/inventory file.
- 
+
 ### Results and Plots
 
 The parameters in this section define what you wish to plot as the output of the analysis as well as various settings for these figures. For more details and examples see the [Figures](#figures-and-output) section. The main timeseries figure can have up to 7 panels, with the desired output selected by the 7 checkboxes:
@@ -490,13 +550,94 @@ The second example uses archive data from the 2014 eruption at B&aacute;r&eth;ar
 
 Again, to run this example, simply copy the appropriate default values file (UR array) and overwrite the default values:
 
-> ```cd retreat/defaults/```
+`cd retreat/defaults/`
 
->```cp default_input_values.py.UR default_input_values.py```
+`cp default_input_values.py.UR default_input_values.py`
 
 and [start](#starting-the-software) the software. This should begin analysis of the archive data.
 
 <!--**CHECK - what can we make available here?? and HOW!?**-->
+
+## Multiple arrays
+
+A new feature in version 2.x of RETREAT is the ability to process and analyse data from more than one array. If the `-n` command line option is selected, RETREAT is enabled in multiple array mode, with the number of arrays specified as an argument. This means RETREAT is now able to analyse input data from multiple arrays and display the results together in the output window. Note that in this configuration RETREAT does not (currently) jointly invert the data, but simply performs the beamforming separately for each array.
+
+### Format of defaults file
+
+To accomodate the fact that there are now two (or more arrays), the format of the **default_input_values.py** file for multiple array mode is slightly different. Rather than a single dictionary of parameters, the file now contains a dictionary of common parameters that are common to all arrays:
+```
+    # default parameter values
+    #############################
+    ### Start with values/parameters common to all arrays
+    defaults_common = dict(
+        #########################
+        # TIMING
+        plot_window=3600,
+        window_length=900,
+        update_interval=900,
+        ...
+        savedata=False,
+        datafile="array_output",
+        ########################
+        )
+```
+as well as two (or more) separate dictionaries - one for each array - for parameters that can be different for each array:
+
+    ## ARRAY 1    
+    defaults_array_one = dict(
+        #########################
+        # DATA SOURCES - REALTIME
+        myclient="IRIS",
+        ...
+        clim_max=1.0,
+        cmap="jet",
+    )
+    
+    ## ARRAY 2    
+    defaults_array_two = dict(
+        #########################
+        # DATA SOURCES - REALTIME
+        myclient="GFZ",
+        ...
+        clim_max=2.0,
+        cmap="jet",
+    )
+
+An example input file for use with multiple arrays is included with the RETREAT distribution: *retreat/defaults/default_input_values_narray.py* that can be modified as required, such as adding additonal dictionaries for more arrays.
+
+### Extra parameter
+
+Most of the input parameters in multiple array mode are identical to those used for single array processing. However there is one addtional input parameter that must be specified:
+
+- **Separate timeline plots**  - this parameter specifies whether the timeseries output plots (back azmiuth, slowness, seismogram etc.) from each array should be displayed as separate panels or overlaid in a single plot. Note that this parameter is labelled *arraysep* in the default values input file dictionary
+
+If **unchecked**, the default is to superimpose the output results into a single plot, as shown in the example below:
+
+![retreat_timeline_2arrays](doc/screenshots/retreat_timeline_2arrays.png)
+
+If **checked**, each timeline variable selected to be plotted will have two separate panels - one for each array - as shown below:
+
+![retreat_timeline_2arrays_arraysep](doc/screenshots/retreat_timeline_2arrays_arraysep.png)
+
+### GUI interface
+
+#### Two arrays
+
+If the *narrays* argument is equal to 2, then a GUI interface can be used. Starting retreat with the appropriate  arguments:
+
+`python3 -m retreat -n 2 -d retreat/defaults/default_input_values_narrays.py`
+
+should start the GUI window and look something like this:
+
+![GUI_2arrays](doc/screenshots/retreat_GUI_2arrays.jpg)
+
+Each of the two arrays has its own set of parameters that can be different for each array, including: connection, station/channel information, pre-processing, array processing and spectrogram parameters.
+
+Common parameters that are the same for both arrays,  e.g. timing, plotting and output options, are specified beneath these and can be accessed via the vertical scroll bar.
+
+#### More than two arrays
+
+To avoid the size of the GUI becoming too large and complicated, if more than two arrays are to be used, then RETREAT *must* be run in [command line mode](#command_line_mode), specified with the `-c` option. Output figures can still be displayed in a GUI window or web browser if desired by setting the `-f` option and specifying *gui* or *web*. See: [command line options](#summary) for more details on these options.
 
 ## References
 
@@ -506,15 +647,18 @@ Eibl, Eva P. S., Bean, C.J., Vogfjörd, K.S., Ying, Y., Lokmer, I., Möllhoff, M
 
 Eibl, E. P. S., Bean, C. J., Jónsdóttir, I., Höskuldsson, A., Thordarson, T., Coppola, D., Witt, T., and Walter, T. R. (2017b), Multiple coincident eruptive seismic tremor sources during the 2014–2015 eruption at Holuhraun, Iceland, J. Geophys. Res. Solid Earth, 122, 2972– 2987, doi:[10.1002/2016JB013892](https://doi.org/10.1002/2016JB013892).
 
+Smith, P. J. and Bean, C. J., (2020), RETREAT: A REal-Time TREmor Analysis Tool for Seismic Arrays, With Applications for Volcano Monitoring. Front. Earth Sci. 8:586955. [https://doi.org/10.3389/feart.2020.586955](doi:10.3389/feart.2020.586955)
+
 ## Release History
 * 0.0.1
     * First release. Work in progress
 * 1.0.0 Snapshot of (working) single array version of RETREAT
 * 1.0.1 Updated README
+* 2.0.0 Added multiple array capabilities
 
 ## Licensing
 
-Copyright (c) 2020, Patrick Smith and all persons listed in [CONTRIBUTORS.md](https://git.dias.ie/paddy/retreat/blob/master/CONTRIBUTORS.md). This project is licensed under the EUPL, v1.2. See [LICENSE.txt](https://git.dias.ie/paddy/retreat/blob/master/LICENSE.txt) for more information.
+Copyright (c) 2021, Patrick Smith and all persons listed in [CONTRIBUTORS.md](https://git.dias.ie/paddy/retreat/blob/master/CONTRIBUTORS.md). This project is licensed under the EUPL, v1.2. See [LICENSE.txt](https://git.dias.ie/paddy/retreat/blob/master/LICENSE.txt) for more information.
 
 ## Meta
  Patrick Smith – psmith@cp.dias.ie

@@ -70,7 +70,7 @@ def get_figure_dims(x, y, myratio):
 
 def default_cmd_figure_dims():
     cmd_fig_dims = dict(
-        timelinex = 1600, 
+        timelinex = 1600,
         timeliney = 1200,
         polarx=800,
         polary=600,

@@ -10,7 +10,8 @@ def get_array_response(st, inv, array_resp):
     trace = st[0]
     if 'latitude' in trace.stats.coordinates:
         for trace in st:
-            coords.append(np.array([trace.stats.coordinates.longitude, trace.stats.coordinates.latitude, trace.stats.coordinates.elevation]))
+            coords.append(np.array([trace.stats.coordinates.longitude,\
+                trace.stats.coordinates.latitude, trace.stats.coordinates.elevation]))
         coords = np.array(coords)
     else:
         print('no coordinates found in stream')

@@ -52,10 +52,10 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
     sl_s = array_params["sl_s"]
 
     # check if using infrasound data - for axis label(s):
-    infra=False
+    infra = False
     for tr in st:
         if tr.stats.channel.endswith('F'):
-            infra=True
+            infra = True
             break
 
     ### MAIN TIMELINE ######################################
@@ -203,7 +203,7 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
         # if all are NOT true, then we have some NaNs
         if not np.all(non_nan_mask):
             print("Replacing NaNs in relpow")
-            relpow=np.nan_to_num(relpow, copy=True, nan=1.0)
+            relpow = np.nan_to_num(relpow, copy=True, nan=1.0)
 
         # choose number of fractions in plot (desirably 360 degree/N is an integer!)
         N = to_plot["nbin_baz"]
@@ -479,7 +479,7 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
             # if all are NOT true, then we have some NaNs
             if not np.all(non_nan_mask):
                 print("Replacing NaNs in relpow")
-                relpow=np.nan_to_num(relpow, copy=True, nan=1.0)
+                relpow = np.nan_to_num(relpow, copy=True, nan=1.0)
 
             # choose number of fractions in plot (desirably 360 degree/N is an integer!)
             N = to_plot["nbin_baz"] #72
@@ -508,7 +508,7 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
         # if all are NOT true, then we have some NaNs
         if not np.all(non_nan_mask):
             print("Replacing NaNs with 0")
-            hist=np.nan_to_num(hist, copy=True, nan=0.0)
+            hist = np.nan_to_num(hist, copy=True, nan=0.0)
 
         # transform to radian
         baz_edges = np.radians(baz_edges)
@@ -546,10 +546,10 @@ def update_plot(st, data, array_params, to_plot, spectro, inv, array_resp, logfi
         # set colorbar limits
         if not to_plot["norm"]:
             cbar = ColorbarBase(cax, cmap=cmap, norm=Normalize(vmin=hist.min(), vmax=hist.max()))
-            normstr=''
+            normstr = ''
         else:
             cbar = ColorbarBase(cax, cmap=cmap, norm=Normalize(vmin=0, vmax=1))
-            normstr='Normalized '
+            normstr = 'Normalized '
 
         if array_resp["lsq"]:
             cbar.set_label(normstr+'Frequency (count)', rotation=270, labelpad=15)

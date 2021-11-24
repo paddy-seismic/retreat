@@ -3,7 +3,7 @@
 # Purpose: Functions for performing Least-Squares beamforming
 # Author: Paddy Smith, DIAS. 2020
 # Adapted for python from: https://github.com/silvioda/Infrasound-Array-Processing-Matlab
-# which was written for Matlab by Silvio De Angelis. 
+# which was written for Matlab by Silvio De Angelis.
 # See https://doi.org/10.3389/feart.2020.00169
 # Email: psmith@cp.dias.ie
 # --------------------------------------------------------------------
@@ -138,7 +138,7 @@ def do_inversion(st, **kwargs):
                 lags = np.append(lags, ll[np.argmax(cc)])
 
         # store mean as MCCM
-        mccm=np.mean(cmax)
+        mccm = np.mean(cmax)
 
         # Convert time lags to seconds
         dt = lags/fs

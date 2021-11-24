@@ -39,8 +39,8 @@ def check_start_end_times(tr, starts, ends, max_gap_ends, demean, myfill):
                 tr.trim(starttime=min(starts), pad=True, fill_value=myfill)
         # else remove
         else:
-            remove=True
-            print(tr.id,"starts late, removing...")
+            remove = True
+            print(tr.id, "starts late, removing...")
     else:
         if tr.stats.endtime < max(ends): # trace ends early
             # try to pad
@@ -57,8 +57,8 @@ def check_start_end_times(tr, starts, ends, max_gap_ends, demean, myfill):
                     tr.trim(endtime=max(ends), pad=True, fill_value=myfill)
             # else remove
             else:
-                remove=True
-                print(tr.id,"ends early, removing...")
+                remove = True
+                print(tr.id, "ends early, removing...")
 
     return tr, remove
 
@@ -100,14 +100,14 @@ def check_for_gaps(st, min_nchan, max_gap_size, max_gap_ends, demean, logfile):
     nchan = len(st)
 
     # initialise counter
-    _i=0
+    _i = 0
 
     ### START LOOP OVER TRACES
     for tr in st:
 
-        print("Checking trace",tr.id)
+        print("Checking trace", tr.id)
 
-        myfill=0
+        myfill = 0
         if not demean: # grab and store mean to add back on later if needed
             mymean = np.mean(tr.data)
             myfill = int(np.round(mymean))
@@ -125,7 +125,7 @@ def check_for_gaps(st, min_nchan, max_gap_size, max_gap_ends, demean, logfile):
 
         # check nchan again before bothering to continue
         if nchan < min_nchan:
-            print("Error: Only",nchan,"valid channels")
+            print("Error: Only", nchan, "valid channels")
             chan_status = False
             break # no point continuing, exit loop completely
 
@@ -142,7 +142,7 @@ def check_for_gaps(st, min_nchan, max_gap_size, max_gap_ends, demean, logfile):
                 if not big_gaps:
 
                     # ALL the gaps are less than max_gap_size, so fill them in
-                    print("Found gaps in",tr.id,", but all less than max_gap_size. \
+                    print("Found gaps in", tr.id, ", but all less than max_gap_size. \
                           Attempting to fill gaps...")
 
                     # split, demean, then fill gaps with zeroes during remerge
@@ -155,18 +155,18 @@ def check_for_gaps(st, min_nchan, max_gap_size, max_gap_ends, demean, logfile):
 
                 else: # we found some gaps, but larger than max_gap_size, so remove
                       # these channels
-                    print("Found gaps in",tr.id,"larger than max_gap_size. \
+                    print("Found gaps in", tr.id, "larger than max_gap_size. \
                           Removing this channel...")
                     st.remove(tr)
                     nchan = nchan - 1
                     if nchan < min_nchan:
-                        print("Error: Only",nchan,"valid channels")
+                        print("Error: Only", nchan, "valid channels")
                         chan_status = False
                         break # no point continuing, exit loop completely
                     continue  # skip to next trace/channel
 
             else:
-                print("No gaps found in",tr.id)
+                print("No gaps found in", tr.id)
 
         # check for weird bug where trace data is masked but ALL mask values are False
         # (i.e masked but there are NO GAPS!) - fix by replacing with normal np.array
@@ -178,7 +178,7 @@ def check_for_gaps(st, min_nchan, max_gap_size, max_gap_ends, demean, logfile):
 
                 # trace still masked... try and fix
                 print(tr)
-                print("trace",tr.id,"still masked. Checking if all False")
+                print("trace", tr.id, "still masked. Checking if all False")
 
                 if not any(tr.data.mask):
                     print("Fixing...")
@@ -196,7 +196,7 @@ def check_for_gaps(st, min_nchan, max_gap_size, max_gap_ends, demean, logfile):
                         nchan = nchan - 1
                         continue # skip to next trace/channel
                     else:
-                        tr=tr2
+                        tr = tr2
                         st[_i] = tr2
 
             # remove mean if necessary
@@ -204,12 +204,12 @@ def check_for_gaps(st, min_nchan, max_gap_size, max_gap_ends, demean, logfile):
                 tr.detrend('demean')
 
             # finally, advance counter:
-            _i=_i+1
+            _i = _i+1
 
     # Final status check again after gap fill/removal
     nchan = len(st)
     if nchan < min_nchan:
-        print("Error: Only",nchan,"channels without gaps")
+        print("Error: Only", nchan, "channels without gaps")
         chan_status = False
 
     return st, chan_status
