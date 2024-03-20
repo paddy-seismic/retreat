@@ -97,31 +97,31 @@ def array_preproc(st, inv, preproc, logfile):
                 factor = int(round(tr.stats.sampling_rate/preproc["newfreq"]))
                 tr.decimate(factor)
 
-            # add coordinates
-            for tr in st:
-                # get lat and lon from inventory:
-                seedid = tr.get_id()
-                if type(inv).__name__ == "Inventory":
+        # add coordinates
+        for tr in st:
+            # get lat and lon from inventory:
+            seedid = tr.get_id()
+            if type(inv).__name__ == "Inventory":
 
-                    # check if any channel info:
-                    if inv.get_contents()["channels"]:
-                        tr.stats.coordinates = inv.get_coordinates(seedid)
-                    else:
-                        # try using stations only
-                        mystat = tr.id.split(".")[1]
-                        tr.stats.coordinates = dict(
-                            latitude=inv.select(station=mystat)[0][0].latitude,
-                            longitude=inv.select(station=mystat)[0][0].longitude,
-                            elevation=inv.select(station=mystat)[0][0].elevation,
-                            local_depth=0.0,
-                        )
+                # check if any channel info:
+                if inv.get_contents()["channels"]:
+                    tr.stats.coordinates = inv.get_coordinates(seedid)
                 else:
+                    # try using stations only
+                    mystat = tr.id.split(".")[1]
                     tr.stats.coordinates = dict(
-                        latitude=inv[inv["id"] == seedid]["latitude"][0],
-                        longitude=inv[inv["id"] == seedid]["longitude"][0],
-                        elevation=inv[inv["id"] == seedid]["elevation"][0],
+                        latitude=inv.select(station=mystat)[0][0].latitude,
+                        longitude=inv.select(station=mystat)[0][0].longitude,
+                        elevation=inv.select(station=mystat)[0][0].elevation,
                         local_depth=0.0,
                     )
+            else:
+                tr.stats.coordinates = dict(
+                    latitude=inv[inv["id"] == seedid]["latitude"][0],
+                    longitude=inv[inv["id"] == seedid]["longitude"][0],
+                    elevation=inv[inv["id"] == seedid]["elevation"][0],
+                    local_depth=0.0,
+                )
     else:
         print("Not enough channels without gaps. Skipping stream")
 
